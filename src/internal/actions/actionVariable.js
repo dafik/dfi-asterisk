@@ -1,7 +1,6 @@
 "use strict";
-const
-    dAmiLib = require("../../../examples/dfi-asterisk-ami/src/dAmi"),
-    Getvar = dAmiLib.Actions.Getvar,
+const  dAmiLib = require("local-dfi-asterisk-ami"),
+        Getvar = dAmiLib.Actions.Getvar,
     Setvar = dAmiLib.Actions.Setvar;
 
 class AsteriskActionVariable {

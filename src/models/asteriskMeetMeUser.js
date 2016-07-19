@@ -1,7 +1,7 @@
 "use strict";
 const AsteriskModel = require('../internal/asteriskModel'),
     MeetMeUserState = require('./../enums/defs/meetMeUserStates'),
-    dAmiLib = require("../../examples/dfi-asterisk-ami/src/dAmi"),
+    dAmiLib = require("local-dfi-asterisk-ami"),
     actions = dAmiLib.Actions,
 
     COMMAND_PREFIX = "meetme",

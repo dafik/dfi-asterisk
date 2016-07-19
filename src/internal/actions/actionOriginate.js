@@ -1,8 +1,7 @@
 "use strict";
 const
     Moment = require('moment'),
-
-    dAmiLib = require("../../../examples/dfi-asterisk-ami/src/dAmi"),
+    dAmiLib = require("local-dfi-asterisk-ami"),
     Originate = dAmiLib.Actions.Originate,
 
     OriginateCallbackData = require('../../interface/originateCallbackData'),

@@ -1,7 +1,6 @@
 "use strict";
-const
-    dAmiLib = require("../../../examples/dfi-asterisk-ami/src/dAmi"),
-    SipPeers = dAmiLib.Actions.SIPpeers;
+const  dAmiLib = require("local-dfi-asterisk-ami"),
+        SipPeers = dAmiLib.Actions.SIPpeers;
 
 class AsteriskActionPeers {
     constructor(server) {

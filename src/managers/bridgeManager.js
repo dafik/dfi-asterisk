@@ -2,10 +2,7 @@
 const
     Moment = require('moment'),
     _ = require('lodash'),
-
-
-
-    dAmiLib = require("../../examples/dfi-asterisk-ami/src/dAmi"),
+    dAmiLib = require("local-dfi-asterisk-ami"),
     actions = dAmiLib.Actions,
     events = dAmiLib.Events,
 

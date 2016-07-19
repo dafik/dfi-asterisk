@@ -4,8 +4,7 @@ const
     util = require('util'),
     _ = require('lodash'),
     EventObject = require('./internal/eventObject'),
-
-    dAmiLib = require("../examples/dfi-asterisk-ami/src/dAmi"),
+    dAmiLib = require("local-dfi-asterisk-ami"),
     DAmi = dAmiLib.DAmi,
 
     actions = dAmiLib.Actions,

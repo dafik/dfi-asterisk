@@ -1,7 +1,6 @@
 "use strict";
 const AsteriskModel = require('../internal/asteriskModel'),
-
-    dAmiLib = require("../../examples/dfi-asterisk-ami/src/dAmi"),
+    dAmiLib = require("local-dfi-asterisk-ami"),
     actions = dAmiLib.Actions,
 
     responses = dAmiLib.Responses,

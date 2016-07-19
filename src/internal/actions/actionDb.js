@@ -1,6 +1,5 @@
 "use strict";
-const
-    dAmiLib = require("../../../examples/dfi-asterisk-ami/src/dAmi"),
+const  dAmiLib = require("local-dfi-asterisk-ami"),
     actions = dAmiLib.Actions,
 
     DbGet = actions.DBGet,

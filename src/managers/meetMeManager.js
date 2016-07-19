@@ -3,8 +3,7 @@ const
 
     Moment = require('moment'),
     AsteriskManager = require('../internal/asteriskManager'),
-
-    dAmiLib = require("../../examples/dfi-asterisk-ami/src/dAmi"),
+    dAmiLib = require("local-dfi-asterisk-ami"),
     actions = dAmiLib.Actions,
 
 

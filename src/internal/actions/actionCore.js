@@ -1,11 +1,9 @@
 "use strict";
-const
-    dAmiLib = require("../../../examples/dfi-asterisk-ami/src/dAmi"),
-    actions = dAmiLib.Actions,
-    responses = dAmiLib.Responses,
+const dAmiLib = require("local-dfi-asterisk-ami"),
+    Filter = dAmiLib.Actions.Filter,
+    CommandAction = dAmiLib.Actions.Command,
+    CommandResponse = dAmiLib.Responses.CommandResponse,
 
-
-    CommandAction = actions.Command,
     Version = require('../../internal/asteriskVersion'),
 
     SHOW_VERSION_FILES_COMMAND = "core show file version",
@@ -54,7 +52,7 @@ class AsteriskActionCore {
 
     filterRTCP(callback) {
         this.server.loggers.logger.debug('on onAvailableActions');
-        var action = new actions.Filter('Add', '!Event: RTCP');
+        var action = new Filter('Add', '!Event: RTCP');
         this.server.sendAction(action, callback);
     }
 
@@ -166,7 +164,7 @@ class AsteriskActionCore {
                 callback.call(thisp, err);
                 return;
             }
-            if (response instanceof responses.CommandResponse) {
+            if (response instanceof CommandResponse) {
                 //Map < String, String >
                 var map;
                 map = new Collection();

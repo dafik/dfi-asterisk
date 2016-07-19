@@ -1,8 +1,6 @@
 "use strict";
-const
-    dAmiLib = require("../../../examples/dfi-asterisk-ami/src/dAmi"),
-    actions = dAmiLib.Actions,
-    GetConfigAction = actions.GetConfig;
+const dAmiLib = require("local-dfi-asterisk-ami"),
+    GetConfigAction = dAmiLib.Actions.GetConfig;
 
 class AsteriskActionConfig {
     constructor(server) {
