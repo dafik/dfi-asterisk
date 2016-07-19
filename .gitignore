@@ -1,0 +1,7 @@
+/.idea/
+/asterisk-backbone.iml
+/node_modules/
+/tmp/
+/logs/
+/examples/
+/src/event-classification.js

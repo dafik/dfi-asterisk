@@ -1,0 +1,41 @@
+{
+  "appenders": [
+    {
+      "type": "console",
+      "category": [
+        "[all]"
+      ]
+    }
+  ],
+  "appenders-n": [
+    {
+      "type": "local-log4js-fileonstart-appender",
+      "filename": "/logs/console.log",
+      "maxLogSize": 204800,
+      "backups": 10,
+      "category": [
+        "xx"
+      ]
+    },
+    {
+      "type": "local-log4js-fileonstart-appender",
+      "filename": "/logs/nami.request.log",
+      "category": "Nami.Request",
+      "maxLogSize": 204800,
+      "backups": 10
+    }
+  ],
+  "levels": {
+    "[all]": "TRACE",
+    "[default]": "TRACE",
+    "AsteriskServer": "DEBUG",
+    "Nami.Request": "INFO",
+    "Nami.Response": "INFO",
+    "Nami.Client": "INFO",
+    "Nami.Disp.Events": "WARN",
+    "Nami.Disp.Responses": "ERROR",
+    "ChannelManager": "WARN",
+    "PeerManager":"INFO" ,
+    "AS:Dispatcher": "ERROR"
+  }
+}

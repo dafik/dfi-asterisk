@@ -1,0 +1,58 @@
+{
+  "version": "v0.6.6",
+  "io": {
+    "port": 8082
+  },
+  "db-l": {
+    "host": "localhost",
+    "database": "cc",
+    "user": "root",
+    "password": "alamakota",
+    "connectionLimit": 5
+  },
+  "db": {
+    "host": "dev",
+    "database": "cc",
+    "user": "dafi",
+    "password": "alamakota",
+    "connectionLimit": 5
+  },
+  "asterisk-l": {
+    "server": {
+      "host": "10.0.11.10",
+      "port": 5038,
+      "username": "node",
+      "secret": "node@pbx"
+    },
+    "deleteOldChannelsOnStartup": false
+  },
+  "asterisk": {
+    "server": {
+      "host": "pbx",
+      "port": 5038,
+      "username": "node",
+      "secret": "node@pbx"
+    },
+    "deleteOldChannelsOnStartup": false
+  },
+  "cc": {
+    "db": {
+      "host": "dev",
+      "user": "dafi",
+      "password": "alamakota",
+      "database": "cc"
+    }
+  },
+  "messages": {
+    "host": "localhost",
+    "port": "7999"
+  },
+  "dialer": {
+    "autoStartPredictors": false,
+    "autoStartCallers": false
+  },
+  "tcpServer": {
+    "port": 13000,
+    "host": "localhost"
+  }
+}
