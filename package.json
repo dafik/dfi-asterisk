@@ -1,14 +1,10 @@
 {
-  "name": "local-asterisk-backbone",
+  "name": "local-dfi-asterisk",
   "version": "0.0.1",
   "description": "asterisk-java port to node",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh//git@gitlab.dev:z.wieczorek/asterisk-backbone.git"
   },
   "author": "z.wieczorek",
   "license": "private",
