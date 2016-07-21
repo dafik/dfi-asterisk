@@ -6,13 +6,13 @@ const assert = require("assert"),
 
 const actions = require('local-dfi-asterisk-ami').Actions,
     OriginateCallback = require('../src/objects/originateCallback'),
-    Linphone = require('../tmp/dfi-linphone/src/linphone');
+    Linphone = require('local-dfi-linphone');
 
 /**
  * @type {AsteriskServer}
  */
 var asterisk = require('./mock/asterisk-real');
-var endpointManger = require('../tmp/dfi-linphone-endpoint-manager/endpointManager').getInstance(asterisk);
+endpointManger = require('local-dfi-linphone-endpoint-manager').getInstance(asterisk);
 
 
 var answerTimeout = 2000;

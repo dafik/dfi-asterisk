@@ -1,15 +1,14 @@
-
 const assert = require("assert"),
     fs = require('fs'),
     ami = require('local-dfi-asterisk-ami'),
     PeerStates = require('../src/enums/defs/peerStates'),
     DeviceStates = require('../src/enums/defs/deviceStates'),
     /**
-     * @type {Asterisk}
+     * @type {AsteriskServer}
      */
     asterisk = require('./mock/asterisk-real'),
 
-    endpointManger = require('../tmp/dfi-linphone-endpoint-manager/endpointManager').getInstance(asterisk),
+    endpointManger = require('local-dfi-linphone-endpoint-manager').getInstance(asterisk),
 
 
     config = require('./mock/config.json');
