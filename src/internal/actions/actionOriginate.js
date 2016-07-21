@@ -8,6 +8,8 @@ const
     OriginateCallback = require('../../objects/originateCallback'),
     AsteriskChannel = require('../../models/asteriskChannel'),
 
+    ChannelStates = require('../../enums/defs/channelStates'),
+
     VARIABLE_TRACE_ID = "AJ_TRACE_ID",
     ACTION_ID_PREFIX_ORIGINATE = "AJ_ORIGINATE_"
     ;
@@ -88,12 +90,12 @@ class AsteriskActionOriginate {
         if (callbackData == null) {
             return;
         }
-        this.originateCallbacks.remove(traceId);
+        this.originateCallbacks.delete(traceId);
 
 
         cb = callbackData.getCallback();
-        if (!AstUtil.isNull(originateEvent.getUniqueid())) {
-            channel = this.managers.channel.getChannelById(originateEvent.getUniqueid());
+        if (originateEvent.uniqueid) {
+            channel = this.server.getManager('channel').getChannelById(originateEvent.uniqueid);
         } else {
             channel = callbackData.getChannel();
         }
@@ -116,7 +118,7 @@ class AsteriskActionOriginate {
                 return;
             }
 
-            otherChannel = this.managers.channel.getOtherSideOfLocalChannel(channel);
+            otherChannel = this.server.getManager('channel').getOtherSideOfLocalChannel(channel);
             // special treatment of local channel side
             // the interesting things happen to the other side so we have a look at that
             if (otherChannel != null) {
@@ -125,7 +127,7 @@ class AsteriskActionOriginate {
                  */
                 var dialedChannel;
 
-                dialedChannel = otherChannel.getDialedChannel();
+                dialedChannel = otherChannel.linkedChannel;
 
                 // on busy the other channel is in state busy when we receive the originate event
                 if (otherChannel.wasBusy()) {
@@ -182,8 +184,6 @@ class AsteriskActionOriginate {
             throw t;
         }
     }
-
-
 
 
     /**
@@ -426,7 +426,7 @@ class AsteriskActionOriginate {
 
         // async must be set to true to receive OriginateEvents.
         originateAction.set('Async', true.toString());
-        originateAction.set('ActionId', traceId);
+        originateAction.set('ActionID', traceId);
 
         if (cb != null) {
             /**
@@ -437,7 +437,7 @@ class AsteriskActionOriginate {
             callbackData = new OriginateCallbackData(originateAction, new Moment(), cb, thisp);
             // register callback
 
-            this.originateCallbacks.add(traceId, callbackData);
+            this.originateCallbacks.set(traceId, callbackData);
 
         }
 

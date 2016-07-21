@@ -34,6 +34,10 @@ class AsteriskEventDispatcher {
         this.logger.debug('event %j', event.event);
         this.logger.trace('event %j', event);
 
+        if (event.event == 'originateresponse') {
+            this.server.actions.originate._handleOriginateEvent(event);
+        }
+
         if (this.subscription.has(event.event)) {
             var sub = this.subscription.get(event.event);
             sub.forEach(function (manager) {

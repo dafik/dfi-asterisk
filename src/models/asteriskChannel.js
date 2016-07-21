@@ -200,18 +200,11 @@ class AsteriskChannel extends AsteriskModel {
         /**
          ** @type {ChannelStateHistoryEntry}
          */
-        var historyEntry;
-        var key;
-        for (key in this.stateHistory) {
-            if (this.stateHistory.hasOwnProperty(key)) {
-                historyEntry = this.stateHistory[key];
-                if (historyEntry.getState() == state) {
-                    return true;
-                }
+        for (let historyEntry of this.get('stateHistory')) {
+            if (historyEntry.state.status == state) {
+                return true;
             }
         }
-
-
         return false;
     }
 

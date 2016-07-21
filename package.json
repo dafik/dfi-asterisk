@@ -19,8 +19,8 @@
   },
   "devDependencies": {
     "json-stringify-safe": "^5.0.1",
-    "local-endpointmanager": "^1.0.2",
-    "local-linphone": "^1.0.3",
+    "local-dfi-linphone-endpoint-manager": "*",
+    "local-dfi-linphone": "*",
     "mocha": "^2.5.3",
     "should": "^8.4.0",
     "heapdump": "latest"

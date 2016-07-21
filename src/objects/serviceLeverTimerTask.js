@@ -1,3 +1,4 @@
+"use strict";
 /**
  * TimerTask that monitors exceeding service levels.
  * @typedef ServiceLevelTimerTask

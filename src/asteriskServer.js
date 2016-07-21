@@ -211,7 +211,7 @@ class AsteriskServer extends EventObject {
         function onResponse(response) {
             if (response instanceof ManagerError) {
                 this.logger.error('ManagerCommunicationException %s ,  action: %j response %j', action.Action, action, response);
-                maybeCallback(callback, thisp, err, response);
+                maybeCallback(callback, thisp, response);
                 return;
             }
             if (action.Action == 'Command') {
@@ -483,7 +483,7 @@ class AsteriskServer extends EventObject {
 
         function onInitializedError(err) {
             this.logger.debug('on onInitializedError %j', err);
-            maybeCallback(callback, thisp);
+            maybeCallback(callback, thisp, err);
         }
 
         var errorFn = onConnectionError.bind(this);
@@ -674,7 +674,7 @@ class AsteriskServer extends EventObject {
     }
 
 
-    static idCounter() {
+    idCounter() {
         return ActionUniqueId();
     }
 

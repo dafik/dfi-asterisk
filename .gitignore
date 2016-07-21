@@ -1,5 +1,5 @@
 /.idea/
-/asterisk-backbone.iml
+/*.iml
 /node_modules/
 /tmp/
 /logs/
