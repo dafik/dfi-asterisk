@@ -1,6 +1,3 @@
-var events = require('events');
-var util = require('util');
-var log4js = require('log4js');
 var asteriskServer = require('../../src/asteriskServer');
 
 /**
