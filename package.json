@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+ssh// git@gitlab.dev:z.wieczorek/dfi-asterisk.git"
+    "url": "git@gitlab.dev:dfi/dfi-asterisk.git"
   },
   "author": "z.wieczorek",
   "license": "private",
