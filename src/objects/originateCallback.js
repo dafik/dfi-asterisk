@@ -13,7 +13,7 @@ class OriginateCallback extends EventObject {
             this._callbacks[callbackType] = [];
         }, this);
 
-        this.logger = new AsteriskLogger('OriginateCallback');
+        this.logger = new AsteriskLogger('dfi:as:'+this.constructor.name);
     }
 
     /**

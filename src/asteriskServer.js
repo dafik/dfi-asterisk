@@ -26,68 +26,6 @@ const
 
     ManagerError = responses.ManagerError;
 
-const amiHandlers = {
-    amiLoginIncorrect () {
-        this.logger.debug('on amiLoginIncorrect' + JSON.stringify(arguments));
-    },
-    amiConnected () {
-        this.logger.debug('on amiConnected' + JSON.stringify(arguments));
-        this.emit(AsteriskServerEvents.Connected);
-    },
-
-    amiEvent (event) {
-        this.logger.trace('on amiEvent: %j', event);
-        this.dispatcher.dispatch(event);
-    },
-
-    //socket
-
-    amiConnectionConnect () {
-        this.logger.debug('on amiConnectionConnect' + JSON.stringify(arguments));
-    },
-    amiConnectionError (had_error) {
-        /**
-         * @type {Error}
-         */
-        //var e = arguments[0].error;
-        this.logger.error('on amiConnectionError' + JSON.stringify(arguments));
-
-        //throw new Error('ManagerCommunicationException("' + e.message + "  -  " + JSON.stringify(e));
-        //TODO reconnect
-
-    },
-    amiConnectionClose () {
-        this.logger.warn('on amiConnectionClose' + JSON.stringify(arguments));
-        console.log('restart');
-
-        //TODO
-        this._reInitialize();
-    },
-    amiConnectionTimeout () {
-        this.logger.warn('on amiConnectionTimeout' + JSON.stringify(arguments));
-    },
-    amiConnectionEnd () {
-        this.logger.warn('on amiConnectionEnd' + JSON.stringify(arguments));
-    },
-    /**
-     * @this AsteriskServer
-     * @param event
-     */
-    waitHandler(event) {
-        if (event.event == 'fullybooted') {
-            amiHandlers.amiEvent.call(this, event);
-        } else {
-            this.get('pendingEvents').push(event);
-        }
-    }
-};
-
-
-var maybeCallback = function (callback, thisp, err, response) {
-    if (_.isFunction(callback)) {
-        callback.call(thisp, err, response)
-    }
-};
 
 /**
  * @namespace ast
@@ -304,9 +242,9 @@ class AsteriskServer extends EventObject {
 
     _initializeLoggers() {
         this.set('loggers', {});
-        this.loggers.logger = new AsteriskLogger('AsteriskServer');
-        this.loggers.loggerRequest = new AsteriskLogger('Ami.Request');
-        this.loggers.loggerResponse = new AsteriskLogger('Ami.Response');
+        this.loggers.logger = new AsteriskLogger('dfi:as');
+        this.loggers.loggerRequest = new AsteriskLogger('dfi:ami:request');
+        this.loggers.loggerResponse = new AsteriskLogger('dfi:ami:response');
     }
 
     _initializeOptions(options) {
@@ -558,7 +496,7 @@ class AsteriskServer extends EventObject {
     /**
      * @private
      */
-    _bindAmiEvents() {
+    _bindAmiEvents(finishEvent) {
         /**
          * @this AsteriskServer
          */
@@ -689,6 +627,69 @@ class AsteriskServer extends EventObject {
         }
     }
 }
+
+const amiHandlers = {
+    amiLoginIncorrect () {
+        this.logger.debug('on amiLoginIncorrect' + JSON.stringify(arguments));
+    },
+    amiConnected () {
+        this.logger.debug('on amiConnected' + JSON.stringify(arguments));
+        this.emit(AsteriskServerEvents.Connected);
+    },
+
+    amiEvent (event) {
+        this.logger.trace('on amiEvent: %j', event);
+        this.dispatcher.dispatch(event);
+    },
+
+    //socket
+
+    amiConnectionConnect () {
+        this.logger.debug('on amiConnectionConnect' + JSON.stringify(arguments));
+    },
+    amiConnectionError (had_error) {
+        /**
+         * @type {Error}
+         */
+        //var e = arguments[0].error;
+        this.logger.error('on amiConnectionError' + JSON.stringify(arguments));
+
+        //throw new Error('ManagerCommunicationException("' + e.message + "  -  " + JSON.stringify(e));
+        //TODO reconnect
+
+    },
+    amiConnectionClose () {
+        this.logger.warn('on amiConnectionClose' + JSON.stringify(arguments));
+        console.log('restart');
+
+        //TODO
+        this._reInitialize();
+    },
+    amiConnectionTimeout () {
+        this.logger.warn('on amiConnectionTimeout' + JSON.stringify(arguments));
+    },
+    amiConnectionEnd () {
+        this.logger.warn('on amiConnectionEnd' + JSON.stringify(arguments));
+    },
+    /**
+     * @this AsteriskServer
+     * @param event
+     */
+    waitHandler(event) {
+        if (event.event == 'fullybooted') {
+            amiHandlers.amiEvent.call(this, event);
+        } else {
+            this.get('pendingEvents').push(event);
+        }
+    }
+};
+
+
+var maybeCallback = function (callback, thisp, err, response) {
+    if (_.isFunction(callback)) {
+        callback.call(thisp, err, response)
+    }
+};
 
 
 /**

@@ -7,7 +7,7 @@ const AsteriskLogger = require('./asteriskLogger');
 class AsteriskEventDispatcher {
     constructor(server) {
         this.server = server;
-        this.logger = new AsteriskLogger('AsteriskEventDispatcher');
+        this.logger = new AsteriskLogger('dfi:as:'+this.constructor.name);
         this.subscription = new Map();
     }
 

@@ -25,7 +25,7 @@ class AsteriskModel extends EventObject {
         super(options);
 
         this.setProp('sourceEvent', attributes['event']);
-        this.setProp('logger', new AsteriskLogger(this.constructor.name));
+        this.setProp('logger', new AsteriskLogger('dfi:as:' + this.constructor.name));
 
         this.attributes = this._filterAttributes(attributes);
 
@@ -88,7 +88,7 @@ class AsteriskModel extends EventObject {
         if (this.logger) {
             return this.logger
         }
-        return new AsteriskLogger('default');
+        return new AsteriskLogger('dfi:as:default');
     }
 
     _filterAttributes(attributes, additional) {

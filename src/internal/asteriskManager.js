@@ -3,7 +3,7 @@ const
     _ = require('lodash'),
     AsteriskLogger = require('./asteriskLogger'),
     EventObject = require('../internal/eventObject'),
-    defaultLogger = new AsteriskLogger('AsteriskManager');
+    defaultLogger = new AsteriskLogger('dfi:as:asteriskManager');
 
 
 class AsteriskManager extends EventObject {
@@ -13,7 +13,7 @@ class AsteriskManager extends EventObject {
 
         this.set('collection', collection);
         this.set('eventsMap', new Map());
-        this.set('logger', new AsteriskLogger(this.constructor.name));
+        this.set('logger', new AsteriskLogger('dfi:as:' + this.constructor.name));
 
         this.set('enabled', state);
     }

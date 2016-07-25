@@ -96,7 +96,7 @@ class State {
     }
 }
 
-State.prototype.logger = new AsteriskLogger('State');
+State.prototype.logger = new AsteriskLogger('dfi:as:state');
 State.prototype.unknown = [];
 
 module.exports = State;

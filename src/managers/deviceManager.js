@@ -81,6 +81,14 @@ class DeviceManager extends AsteriskManager {
         this.server.sendEventGeneratingAction(action, onResponse, this);
     }
 
+
+    reStart(callback, thisp) {
+        if (typeof callback == "function") {
+            this.server.loggers.logger.info('manager %s restarted', this.constructor.name);
+            callback.call(thisp, null, this.constructor.name);
+        }
+    }
+
     disconnected() {
         this.devices.clear();
     }

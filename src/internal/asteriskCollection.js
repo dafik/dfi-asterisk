@@ -14,7 +14,7 @@ class AsteriskCollection extends EventEmitter {
         super();
         this.collection = new Map();
 
-        this.logger = new AsteriskLogger(this.constructor.name);
+        this.logger = new AsteriskLogger('dfi:as:'+this.constructor.name);
     }
 
     has(element) {
