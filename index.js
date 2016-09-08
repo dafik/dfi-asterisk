@@ -1,1 +1,1 @@
-module.exports.asteriskServer = require('./src/asteriskServer');
+module.exports = require('./src/asteriskServer');

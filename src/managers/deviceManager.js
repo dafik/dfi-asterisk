@@ -1,5 +1,5 @@
 "use strict";
-const     moment = require('moment'),
+const moment = require('moment'),
     dAmiLib = require("local-dfi-asterisk-ami"),
     actions = dAmiLib.Actions,
 
@@ -107,7 +107,7 @@ class DeviceManager extends AsteriskManager {
         var device = this.devices.get(event.device);
         var oldState;
         if (device) {
-            oldState = device.get('state').name;
+            oldState = device.get('state');
             device.set('state', DeviceState.byName(event.state));
             device.set('dateupdate', moment());
         } else {
@@ -116,8 +116,8 @@ class DeviceManager extends AsteriskManager {
             this._addDevice(device);
         }
 
-        this.emit('change', device, event.state, oldState);
-        this.emit('change:' + device.id, device, event.state, oldState);
+        this.emit('changeState', device, device.get('state'), oldState);
+        this.emit('changeState:' + device.id, device, device.state, oldState);
 
     }
 
