@@ -50,7 +50,7 @@ class AsteriskModel extends EventObject {
     }
 
     stampLastUpdate() {
-        this.set('lastUpdate', Date.now());
+        this.attributes['lastUpdate'] = Date.now();
     }
 
     get logger() {
@@ -123,6 +123,7 @@ class AsteriskModel extends EventObject {
     set(attribute, value) {
         var old = this.get(attribute);
         this.attributes[attribute] = value;
+        this.stampLastUpdate();
         if (old == undefined) {
             this.emit('add', this);
         }

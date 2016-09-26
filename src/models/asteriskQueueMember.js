@@ -139,7 +139,7 @@ class AsteriskQueueMember extends AsteriskModel {
         var oldState = this.get('state');
         if (oldState && state.status != oldState.status) {
             this.set('state', state);
-            this.emit(Events.PROPERTY_STATE, {old: oldState, new: state});
+            this.emit(Events.PROPERTY_STATE, this, {old: oldState, new: state});
         }
     }
 
@@ -147,14 +147,14 @@ class AsteriskQueueMember extends AsteriskModel {
         var oldPenalty = this.get('penalty');
         if (oldPenalty != penalty) {
             this.set('penalty', penalty);
-            this.emit(Events.PROPERTY_PENALTY, {old: oldPenalty, new: penalty});
+            this.emit(Events.PROPERTY_PENALTY, this, {old: oldPenalty, new: penalty});
         }
     }
 
     pausedChanged(paused) {
         var oldPaused = this.get('paused');
         this.set('paused', paused);
-        this.emit(Events.PROPERTY_PAUSED, {old: oldPaused, new: paused});
+        this.emit(Events.PROPERTY_PAUSED, this, {old: oldPaused, new: paused});
     }
 
     isAvailable() {

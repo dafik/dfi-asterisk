@@ -259,7 +259,7 @@ class AsteriskServer extends EventObject {
             agent: true,
             meetMe: true
         };
-        var currentState = !_.isUndefined(options, 'managers') ? options.managers : {};
+        var currentState = _.has(options, 'managers') ? options.managers : {};
 
         options['allowedActions'] = ['Command'];
         options['managers'] = _.extend(defaultState, currentState);

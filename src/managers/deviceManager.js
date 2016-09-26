@@ -109,7 +109,6 @@ class DeviceManager extends AsteriskManager {
         if (device) {
             oldState = device.get('state');
             device.set('state', DeviceState.byName(event.state));
-            device.set('dateupdate', moment());
         } else {
             device = new AsteriskDevice(event, {server: this.server});
             this.logger.info("Adding device " + device.get('device') + "(" + device.get('state') + ")");
