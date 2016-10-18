@@ -1,0 +1,13 @@
+enum CdrFlags {
+    DISPOSITION_NO_ANSWER = <any> "NO ANSWER",
+    DISPOSITION_FAILED = <any> "FAILED",
+    DISPOSITION_BUSY = <any> "BUSY",
+    DISPOSITION_ANSWERED = <any> "ANSWERED",
+    DISPOSITION_UNKNOWN = <any> "UNKNOWN",
+
+    AMA_FLAG_OMIT = <any> "OMIT",
+    AMA_FLAG_BILLING = <any> "BILLING",
+    AMA_FLAG_DOCUMENTATION = <any> "DOCUMENTATION",
+    AMA_FLAG_UNKNOWN = <any> "Unknown"
+}
+export = CdrFlags;

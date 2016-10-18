@@ -1,232 +1,144 @@
 "use strict";
-const 
-    _ = require('lodash'),
-    AsteriskManager = require('../internal/asteriskManager'),
-    dAmiLib = require("local-dfi-asterisk-ami"),
-    actions = dAmiLib.Actions,
-
-
-
-    PeersCollection = require('../collections/peers'),
-    AsteriskPJSIPPeer = require('../models/peers/asteriskPJSIPPeer'),
-    AsteriskIAXPeer = require('../models/peers/asteriskIAXPeer'),
-    AsteriskSipPeer = require('../models/peers/asteriskSIPPeer');
-
-
+const AsteriskManager = require("../internal/server/Manager");
+const Peers = require("../collections/PeersCollection");
+const Peer = require("../models/peers/PeerModel");
+const actionNames_1 = require("../internal/asterisk/actionNames");
+const eventNames_1 = require("../internal/asterisk/eventNames");
+const AstUtil = require("../internal/astUtil");
+const IAXPeer = require("../models/peers/IAXPeerModel");
+const PJSIPPeer = require("../models/peers/PJSIPPeerModel");
+const SIPPeer = require("../models/peers/SIPPeerModel");
+const Ip = require("../models/IpAddress");
 /**
  * Manages all events related to peers on Asterisk server. For correct work
  * ensure enabled PeerCalledEvents. You have to set
  * <code>eventwhencalled = yes</code> in <code>queues.conf</code>.
  *
- * @memberOf manager
- * @param {AsteriskServer} asteriskServer
- * @constructor
- *
- * @property {Logger} logger
- * @property {AsteriskServer} server
- * @property {PeersCollection} peers A Map of peers by their peersId.
- * @property {ChannelManager} channelManager
-
  */
 class PeerManager extends AsteriskManager {
-
     constructor(options, state) {
-        super(options, state);
-        this.peers = new PeersCollection();
+        super(options, state, new Peers());
     }
-
+    get peers() {
+        return this._collection;
+    }
     /**
      * Retrieves all peers registered at Asterisk server by sending an PeersAction.
-     * @param {function} [callback]
-     * @param {*} [thisp] callback this
+     * @param {function} [callbackFn]
+     * @param {*} [context] callback this
      */
-    start(callback, thisp) {
-        var waiting = 0;
-        var action;
-
-        function handleIaxPeers(err, response) {
-            if (err) {
-                callback.call(thisp, err);
-                return
-            }
-            if (typeof response != "undefined") {
-                response.getEvents().forEach(onEachEvent, this)
-            }
-            waiting--;
-            checkWaiting.call(this);
-            function onEachEvent(event) {
-                //if (event.event == 'EndpointList' || event.event == 'events'.EndpointList) {
-                if (event.event == 'peerentry') {
-                    handlePeerEntry.call(this, event);
-                } else {
-                    var x = 1;
-                }
-            }
-        }
-
-        function handleSipPeers(err, response) {
-            if (err) {
-                callback.call(thisp, err);
-                return
-            }
-            if (typeof response != "undefined") {
-                response.getEvents().forEach(onEachEvent, this)
-            }
-            //TODO implement
-            waiting--;
-            checkWaiting.call(this);
-
-            function onEachEvent(event) {
-                //if (event.event == 'EndpointList' || event.event == 'events'.EndpointList) {
-                if (event.event == 'peerentry') {
-                    handlePeerEntry.call(this, event);
-                } else {
-                    var x = 1;
-                }
-            }
-        }
-
-        function handlePjsipPeers(err, response) {
-            if (err) {
-                callback.call(thisp, err);
-                return
-            }
-            if (typeof response != "undefined") {
-                response.getEvents().forEach(onEachEvent, this)
-            }
-            waiting--;
-            checkWaiting.call(this);
-            function onEachEvent(event) {
-                //if (event.event == 'EndpointList' || event.event == 'events'.EndpointList) {
-                if (event.event == 'endpointlist') {
-                    handleEndpointList.call(this, event);
-                } else {
-                    var x = 1;
-                }
-            }
-        }
-
-        function handlePeerEntry(event) {
-            /**
-             * @type {AsteriskPeer}
-             */
-            var peer;
-            if (event.channeltype == 'SIP') {
-                peer = new AsteriskSipPeer(event, {server: this.server});
-            } else if (event.channeltype == 'IAX') {
-                peer = new AsteriskIAXPeer(event, {server: this.server});
-            } else {
-                this.logger.info('unknown peer technology: "' + event.channeltype + '"');
-            }
-
-            this.logger.debug("Adding peer %j (%s)", peer.id, peer.get('state').name);
-            this._addPeer(peer);
-        }
-
-        function handleEndpointList(event) {
-            /**
-             * @type {AsteriskPeer}
-             */
-            var peer = new AsteriskPJSIPPeer(event, {server: this.server, event: event});
-            this.logger.debug("Adding peer %j (%s)", peer.id, peer.get('state').name);
-            this._addPeer(peer);
-            //this.peers.add(peer);
-        }
-
+    start(callbackFn, context) {
+        let waiting = 0;
         function finish() {
-            if (typeof callback == "function") {
-                this.server.loggers.logger.info('manager "PeerManager" started');
-                callback.call(thisp, null, 'PeerManager');
+            if (waiting === 0) {
+                this.server.logger.info('manager "PeerManager" started');
+                AstUtil.maybeCallback(callbackFn, context, null, "PeerManager");
             }
         }
-
-        function checkWaiting() {
-            if (waiting == 0) {
-                finish.call(this);
+        let handlePeers = (err, response) => {
+            if (err && err.Message !== "No endpoints found") {
+                AstUtil.maybeCallback(callbackFn, context, err);
+                return;
             }
-        }
-
-        this.server.loggers.logger.info('starting manager "PeerManager"');
-
+            if (typeof response !== "undefined") {
+                response.getEvents().forEach((event) => {
+                    let peer;
+                    if (event.Event === eventNames_1.AST_EVENT.ENDPOINT_LIST) {
+                        let peer = new PJSIPPeer(event);
+                        this.logger.debug("Adding peer %j (%s)", peer.id, peer.state.name);
+                    }
+                    else if (event.Event === eventNames_1.AST_EVENT.PEER_ENTRY) {
+                        if (event.Channeltype === "SIP") {
+                            peer = new SIPPeer(event);
+                        }
+                        else if (event.Channeltype === "IAX") {
+                            peer = new IAXPeer(event);
+                        }
+                        else {
+                            this.logger.info('unknown peer technology: "' + event.Channeltype + '"');
+                        }
+                        this.logger.debug("Adding peer %j (%s)", peer.id, peer.state.name);
+                    }
+                    this._addPeer(peer);
+                });
+            }
+            waiting--;
+            finish.call(this);
+        };
+        this.server.logger.info('starting manager "PeerManager"');
         if (!this.enabled) {
             finish.call(this);
-            return
+            return;
         }
-
-        var map = {
-            //peerStatus
-
-            'peerstatus': this._handlePeerStatusEvent
-        };
-
+        let map = {};
+        map[eventNames_1.AST_EVENT.PEER_STATUS] = this._handlePeerStatusEvent;
         this._mapEvents(map);
-
-        action = new actions.IAXpeerlist();  //asterisk < 12
-        if (this.server.checkIsActionAllowed(action)) {
+        let action1 = { Action: actionNames_1.AST_ACTION.IAX_PEERLIST };
+        if (this.server._allowedActions.has(action1.Action)) {
             waiting++;
-            this.server.sendEventGeneratingAction(action, handleIaxPeers, this)
+            this.server.sendEventGeneratingAction(action1, handlePeers, this);
         }
-        action = new actions.SIPpeers();
-        if (this.server.checkIsActionAllowed(action)) {
+        let action2 = { Action: actionNames_1.AST_ACTION.SIP_PEERS };
+        if (this.server._allowedActions.has(action2.Action)) {
             waiting++;
-            this.server.sendEventGeneratingAction(action, handleSipPeers, this)
+            this.server.sendEventGeneratingAction(action2, handlePeers, this);
         }
-        action = new actions.PJSIPShowEndpoints();
-        if (this.server.checkIsActionAllowed(action)) {
+        let action3 = { Action: actionNames_1.AST_ACTION.PJSIP_SHOW_ENDPOINTS };
+        if (this.server._allowedActions.has(action3.Action)) {
             waiting++;
-            this.server.sendEventGeneratingAction(action, handlePjsipPeers, this);
+            this.server.sendEventGeneratingAction(action3, handlePeers, this);
         }
-        checkWaiting.call(this);
+        finish.call(this);
     }
-
     disconnected() {
         this.peers.clear();
     }
-
-    _handlePeerStatusEvent(event) {
-        this.logger.debug("handle  PeerStatusEvent peer: %j,(%s),%j", event.peer, event.peerstatus, event.address);
-
-        var peer = this.peers.get(event.peer);
-        if (!peer) {
-            this.logger.error('discarding peerstatus: peer not found: "' + event.peer + '"');
-        }
-        peer.handleStatus(event.dateReceived, event.peerstatus, event.address);
+    gc() {
+        this._removeOldHistory();
     }
-
-    /**
-     * Add a new peer to the manager.
-     *
-     * @param {AsteriskPeer} peer peer to add.
-     */
+    _handlePeerStatusEvent(event) {
+        this.logger.debug("handle  PeerStatusEvent peer: %j,(%s),%j", event.Peer, event.PeerStatus, event.Address);
+        let peer = this.peers.get(event.Peer);
+        if (!peer) {
+            this.logger.error('discarding peerstatus: peer not found: %s "', event.Peer);
+        }
+        else {
+            let port;
+            let address;
+            let mask = "255.255.255.255";
+            if (peer.technology === Peer.PEER_TECH.SIP) {
+                let parts = event.Address.split(":");
+                address = parts[0];
+                port = parts[1];
+            }
+            else if (peer.technology === Peer.PEER_TECH.IAX) {
+                throw new Error();
+            }
+            else if (peer.technology === Peer.PEER_TECH.PJSIP) {
+                throw new Error();
+            }
+            let ip = new Ip({
+                ipAddress: address,
+                mask,
+                port: parseInt(port, 10)
+            });
+            peer.handleStatus(event.$time, event.PeerStatus, ip);
+        }
+    }
     _addPeer(peer) {
         if (this.server.managers.device.enabled) {
-            var device = this.server.managers.device.devices.get(peer.id);
+            let device = this.server.managers.device.devices.get(peer.id);
             if (device) {
                 peer.device = device;
             }
         }
-
         this.peers.add(peer);
     }
-
-    toJSON() {
-        var obj = super.toJSON();
-        obj.collection = this.peers.toJSON();
-
-
-        return obj;
-    }
-    _removeOldHistory(){
-        
-        this.peers.forEach(function (peer) {
-            peer._removeOldHistory()
+    _removeOldHistory() {
+        this.peers.forEach((peer) => {
+            peer.removeOldHistory();
         });
     }
-
-    gc(){
-        this._removeOldHistory()
-    }
-
 }
-
 module.exports = PeerManager;
+//# sourceMappingURL=peerManager.js.map

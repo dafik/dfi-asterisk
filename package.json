@@ -1,28 +1,33 @@
 {
-  "name": "local-dfi-asterisk",
-  "version": "0.0.7",
-  "description": "asterisk-java port to node",
-  "main": "index.js",
+  "name": "local-dfi-asterisk-ts",
+  "version": "1.0.0",
+  "description": "asterisk-java port to node in type script",
+  "main": "./src/asteriskServerInstance.ts",
   "repository": {
     "type": "git",
     "url": "git@gitlab.dev:dfi/dfi-asterisk.git"
   },
   "author": "z.wieczorek",
-  "license": "private",
+  "license": "UNLICENSED",
   "dependencies": {
+    "@types/async": "^2.0.32",
+    "@types/lodash": "^4.14.36",
+    "@types/moment": "^2.13.0",
+    "@types/node": "^6.0.41",
+    "asterisk-ami-client": "^1.0.5",
     "async": "^2.0.0-rc.5",
-    "debug": "^2.2.0",
-    "eventemitter3": "^1.2.0",
-    "local-dfi-asterisk-ami": "*",
+    "local-dfi-base": "*",
+    "local-dfi-debug-logger": "^0.1.5",
     "lodash": "^4.13.1",
     "moment": "*"
   },
   "devDependencies": {
+    "heapdump": "latest",
     "json-stringify-safe": "^5.0.1",
-    "local-dfi-linphone-endpoint-manager": "*",
+    "local-dfi-debug-logger": "^0.1.5",
     "local-dfi-linphone": "*",
+    "local-dfi-linphone-endpoint-manager": "*",
     "mocha": "^2.5.3",
-    "should": "^8.4.0",
-    "heapdump": "latest"
+    "should": "^8.4.0"
   }
 }

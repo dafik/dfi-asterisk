@@ -1,255 +1,235 @@
 "use strict";
-const
-    async = require('async'),
-    util = require('util'),
-    _ = require('lodash'),
-    EventObject = require('./internal/eventObject'),
-    dAmiLib = require("local-dfi-asterisk-ami"),
-    DAmi = dAmiLib.DAmi,
-
-    actions = dAmiLib.Actions,
-    events = dAmiLib.Events,
-    responses = dAmiLib.Responses,
-    AsteriskAction = dAmiLib.AsteriskAction,
-
-    Command = actions.Command,
-
-    AsteriskLogger = require('./internal/asteriskLogger'),
-
-    ManagerConnectionStates = require('./enums/defs/managerConnectionStates'),
-
-    AsteriskServerEvents = require('./events/def/asteriskServerEvents'),
-    ActionUniqueId = require('./internal/actions/actionUniqueId'),
-    AsteriskServerDispatcher = require('./internal/asteriskEventDispatcher'),
-    AsteriskActions = require('./internal/asteriskActions'),
-    AsteriskManagers = require('./internal/asteriskManagers'),
-
-    ManagerError = responses.ManagerError;
-
-
-/**
- * @namespace ast
- */
-
-/**
- * @namespace ast.enums
- */
-/**
- * @namespace ast.events
- */
-/**
- * @namespace ast.interface
- */
-/**
- * @namespace ast.internal
- */
-/**
- * @namespace ast.managers
- */
-/**
- * @namespace ast.models
- */
-
-
-/**
- * @typedef AsteriskServer
- * @extends EventObject
- * @extends EventEmitter
- * @property {function} emit
- */
-class AsteriskServer extends EventObject {
-
-
-    /**
-     * @returns {{logger :AsteriskLogger,loggerRequest:AsteriskLogger,loggerResponse:AsteriskLogger }}
-     */
-    get loggers() {
-        return this.get('loggers');
+const async = require("async");
+const _ = require("lodash");
+const eventNames_1 = require("./internal/asterisk/eventNames");
+const DfiEventObject = require("local-dfi-base/src/dfiEventObject");
+const EventDispatcher = require("./internal/server/EventDispatcher");
+const ServerActions = require("./internal/server/Actions");
+const ServerManagers = require("./internal/server/Managers");
+const AmiClient = require("asterisk-ami-client");
+const AstUtil = require("./internal/astUtil");
+const ManagerCommunication = require("./errors/ManagerCommunication");
+const ManagerError = require("./errors/ManagerError");
+class AsteriskServer extends DfiEventObject {
+    constructor(options) {
+        super({ loggerName: "dfi:as:" });
+        this.setProp("initialized", false);
+        this.setProp("initializationStarted", false);
+        this.setProp("pendingEvents", []);
+        this.setProp("responses", new Map());
+        this.setProp("allowedActions", new Set());
+        this._initializeOptions(options);
+        this._initializeEventConnection();
+        this._initializeAmiHandlers();
+        this.setProp("dispatcher", new EventDispatcher(this));
+        this.setProp("actions", new ServerActions(this));
+        this.setProp("managers", new ServerManagers(this));
     }
-
-    get logger() {
-        return this.get('loggers').logger;
-    }
-
-    get dispatcher() {
-        return this.get('dispatcher');
-    }
-
-    get events() {
-        return this.get('events');
-    }
-
-    get actions() {
-        return this.get('actions');
-    }
-
-    /**
-     * @returns {AsteriskManagers}
-     */
     get managers() {
-        return this.get('managers');
+        return this.getProp("managers");
     }
-
-    /**
-     * @returns {dAmi.DAmi}
-     */
-    get eventConnection() {
-        return this.get('eventConnection');
+    get actions() {
+        return this.getProp("actions");
     }
-
+    get dispatcher() {
+        return this.getProp("dispatcher");
+    }
     get initialized() {
-        return this.get('initialized');
+        return this.getProp("initialized");
     }
-
-    /**
-     *
-     * @param {string} name
-     * @returns {AsteriskManager}
-     */
-    getManager(name) {
-        return this.managers.get(name);
+    get version() {
+        return this.getProp("version");
     }
-
-    isMangerEnabled(name) {
-        var manager = this.getManager(name);
-        if (manager) {
-            return manager.isEnabled();
-        }
-        return undefined;
+    set version(version) {
+        this.setProp("version", version);
     }
-
-
-    //send
-
-    /**
-     * @param {dAmi.actions} action
-     * @param {function((ManagerError|null),ManagerResponse)} [callback]
-     * @param {*} [thisp] callback this
-     */
-    sendEventGeneratingAction(action, callback, thisp) {
-        if (!this.checkIsActionAllowed(action)) {
-            if (_.isFunction(callback)) {
-                var message = 'Not Allowed Action: ' + action.get('Action');
-                var err = new ManagerError(message, this);
-                err.message = message;
-                err.actionid = action.ActionID;
-                callback.call(thisp, err);
-            }
+    static get events() {
+        return Events;
+    }
+    get _ami() {
+        return this.getProp("ami");
+    }
+    ;
+    get _allowedActions() {
+        return this.getProp("allowedActions");
+    }
+    start() {
+        return new Promise((resolve, reject) => {
+            this._initializeIfNeeded(err => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve();
+            });
+        });
+    }
+    isConnected() {
+        return this._ami && this._ami.isConnected;
+    }
+    sendEventGeneratingAction(action, callbackFn, context) {
+        if (!this._allowedActions.has(action.Action)) {
+            AstUtil.maybeCallback(callbackFn, context, "Not Allowed Action: " + action.Action);
             return;
         }
-        this.logger.debug('action eg: "' + action.Action + '" id:' + action.id);
-        this.logger.trace('sending ' + action.Action + "\n" + action.marshall());
-
-        this.loggers.loggerRequest.trace("\n\n" + action.marshall().trim() + "\n");
-
-
-        this.eventConnection.send(action, onResponse, this);
-
-
+        if (!Object.hasOwnProperty.call(action, "ActionID")) {
+            action.ActionID = "AN_" + AstUtil.uniqueActionID();
+        }
+        this.logger.debug('action eg: "%s" id: %s', action.Action, action.ActionID);
+        this.logger.trace("sending %s %j", action.Action, action);
+        this.logger.trace("\n\n %j \n", action);
+        let responses = this.getProp("responses");
         function onResponse(response) {
-            if (response instanceof ManagerError) {
+            if (response.ActionID) {
+                let resp = responses.get(response.ActionID);
+                if (response.EventList) {
+                    if (response.EventList === "start") {
+                        if (resp) {
+                            Object.assign(resp, response);
+                        }
+                        else {
+                            let x = 1;
+                        }
+                    }
+                    else if (response.EventList === "Complete") {
+                        responses.delete(response.ActionID);
+                        if (responses.size === 0) {
+                            this._ami.removeListener("event", handler);
+                        }
+                        if (resp) {
+                            let callb = resp.callback;
+                            let thisp1 = resp.thisp;
+                            delete resp["callback"];
+                            delete resp["thisp"];
+                            AstUtil.maybeCallback(callb, thisp1, null, resp);
+                        }
+                        else {
+                            let x = 1;
+                        }
+                    }
+                    else {
+                        let x = 1;
+                    }
+                }
+                else if (resp) {
+                    resp.events.push(response);
+                }
+                else {
+                    let x = 1;
+                }
+            }
+        }
+        let handler = onResponse.bind(this);
+        responses.set(action.ActionID, {
+            callback: callbackFn,
+            events: [],
+            getEvents: function () {
+                return this.events;
+            },
+            thisp: context,
+        });
+        if (responses.size === 1) {
+            this._ami.on("event", handler);
+        }
+        let actionToSend = action;
+        if (action.serialize) {
+            actionToSend = AstUtil.serializeMessage(action);
+        }
+        this._ami.send(actionToSend, true)
+            .then((response) => {
+            if (response.Response && response.Response === "Error") {
                 this.logger.error('ManagerCommunicationException %s ,  action: %j response %j', action.Action, action, response);
-                maybeCallback(callback, thisp, response);
+                responses.delete(response.ActionID);
+                if (responses.size === 0) {
+                    this._ami.removeListener("event", handler);
+                }
+                AstUtil.maybeCallback(callbackFn, context, response);
                 return;
             }
-            if (action.Action == 'Command') {
-                this.logger.debug('response for ev: %s command: %s response: %s', action.Action, action.Command, response.response);
-            } else {
-                this.logger.debug('response for ev: %s response: %s ', action.Action, response.response);
+            if (action.Action === "Command") {
+                this.logger.debug('response for ev: %s command: %s response: %s', action.Action, action.Command, response.Response);
             }
-            if (this.logger.trace.enabled) {
-                var log = _.clone(response);
-                delete log.lines;
-                this.logger.trace('sendEventGeneratingResponse - %j' + log);
+            else {
+                this.logger.debug('response for ev: %s response: %s ', action.Action, response.Response);
             }
-            maybeCallback(callback, thisp, null, response);
-        }
+            if (this.logger.isTraceEnabled()) {
+                this.logger.trace('sendEventGeneratingResponse - %j', response);
+            }
+            onResponse.call(this, response);
+        })
+            .catch(error => error)
+            .then(error => {
+            if (error instanceof Error) {
+                AstUtil.maybeCallback(callbackFn, context, error);
+            }
+        });
     }
-
-    checkIsActionAllowed(action) {
-        if (action instanceof AsteriskAction) {
-            action = action.get('Action');
-        }
-        return -1 != this.options.allowedActions.indexOf(action);
-    }
-
-
-    /**
-     * @param {AsteriskAction|dAmi.actions} action
-     * @param {function((ManagerError|null),(ManagerResponse))} [callback]
-     * @param {*} [thisp] callback this
-     */
-    sendAction(action, callback, thisp) {
-        callback = callback || null;
-
-        if (-1 == this.options.allowedActions.indexOf(action.get('Action'))) {
-            if (_.isFunction(callback)) {
-                var message = 'Not Allowed Action: ' + action.get('Action');
-                var err = new ManagerError(message);
-                err.message = message;
-                err.actionid = action.ActionID;
-                callback.call(thisp, err);
-            }
+    sendAction(action, callbackFn, context) {
+        if (!this._allowedActions.has(action.Action)) {
+            AstUtil.maybeCallbackOnce(callbackFn, context, 'Not Allowed Action: ' + action.Action);
             return;
         }
-        if (action.Action == 'Getvar') {
+        if (action.Action == "Getvar") {
             this.logger.debug('action: "' + action.Action + '" var: "' + action.Variable + '" channel: "' + action.Channel + '"');
-        } else {
-            if (action.Action == 'Command') {
+        }
+        else {
+            if (action.Action == "Command") {
                 this.logger.debug('action: "' + action.Action + '" comm: ' + action.Command);
-            } else {
+            }
+            else {
                 this.logger.debug('action: "' + action.Action + '"');
             }
         }
-        this.logger.trace('sending ' + action.Action + "\n" + action.marshall());
-        this.loggers.loggerRequest.trace("\n\n" + action.marshall().trim() + "\n");
-
-        if (action.Action == 'Getvar') {
-            //setTimeout(function () {
-            this.eventConnection.send(action, onResponse, this);
-            //}.bind(this), 10)
-        } else {
-            this.eventConnection.send(action, onResponse, this);
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace("sending %s %j", action.Action, action);
+            this.logger.trace("\n\n %j \n", action);
         }
-
-
-        function onResponse(response) {
-            if (response instanceof ManagerError) {
-                if (action.Action != 'Getvar' && response.message != 'No such channel') {
-                    this.logger.error('ManagerCommunicationException %s ,  action: %j response %j', action.Action, action, response.message);
-                    maybeCallback(callback, thisp, response);
-                    return;
+        let actionToSend = action;
+        if (action.serialize) {
+            actionToSend = AstUtil.serializeMessage(action);
+        }
+        this._ami.send(actionToSend, true)
+            .then((response) => {
+            if (response.Response === "Error") {
+                throw response;
+            }
+            /*       if (response instanceof ManagerError) {
+             if (action.Action != "Getvar" && response.message != "No such channel") {
+             this.logger.error('ManagerCommunicationException %s ,  action: %j response %j', action.Action, action, response.message);
+             AstUtil.maybeCallback(callbackFn, context, response);
+             return;
+             }
+             }*/
+            if (action.Action === "Getvar") {
+                this.logger.debug('response for: "' + action.Action + '" var: "' + response.Variable +
+                    '" value: "' + response.Value + '" channel: "' + action.Channel + '"');
+            }
+            else if (action.Action === "Command") {
+                this.logger.debug('response for: "' + action.Action + ":" + action.Command +
+                    '" result: "' + response.Response + '" ' + response.Message);
+            }
+            else {
+                this.logger.debug('response for: "' + action.Action + '" result: "' + response.Response + '" ' +
+                    (response.Message ? response.Message : ""));
+            }
+            if (this.logger.isTraceEnabled()) {
+                this.logger.trace("%j", response);
+            }
+            AstUtil.maybeCallbackOnce(callbackFn, context, null, response);
+        })
+            .catch(error => error)
+            .then((response) => {
+            if (response instanceof Error || response.Response === "Error") {
+                let error = response;
+                if (response.Response === "Error") {
+                    error = new ManagerError(response.Message);
                 }
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
-            if (action.Action == 'Getvar') {
-                this.logger.debug('response for: "' + action.Action + '" var: "' + Object.keys(response.variables)[0] + '" value: "' + response.value + '" channel: "' + action.Channel + '"');
-            } else {
-                this.logger.debug('response for: "' + action.Action + '" result: "' + response.getResult() + '" ' + ((response.getMessage() && response.getMessage() != 'Success') ? response.getMessage() : ''));
-            }
-            var trace = JSON.parse(JSON.stringify(response));
-            delete  trace.lines;
-            delete trace.EOL;
-            this.logger.trace('%j', trace);
-            maybeCallback(callback, thisp, null, response)
-        }
+        });
     }
-
-    sendActionOnEventConnection() {
-        return this.sendAction.apply(this, arguments)
-    }
-
-    //private
-
-    _initializeLoggers() {
-        this.set('loggers', {});
-        this.loggers.logger = new AsteriskLogger('dfi:as');
-        this.loggers.loggerRequest = new AsteriskLogger('dfi:ami:request');
-        this.loggers.loggerResponse = new AsteriskLogger('dfi:ami:response');
-    }
-
     _initializeOptions(options) {
-
-        var defaultState = {
+        let defaultState = {
             channel: true,
             peer: true,
             device: true,
@@ -259,456 +239,209 @@ class AsteriskServer extends EventObject {
             agent: true,
             meetMe: true
         };
-        var currentState = !_.isUndefined(options, 'managers') ? options.managers : {};
-
-        options['allowedActions'] = ['Command'];
-        options['managers'] = _.extend(defaultState, currentState);
-
-        this.set('options', options);
+        let currentState = _.has(options, "managers") ? options.managers : {};
+        this._allowedActions.add("Command");
+        options["managers"] = Object.assign(defaultState, currentState);
+        this.setProp("options", options);
     }
-
     _initializeEventConnection() {
-
-        let opts = _.has(this.get('options'), 'server') ? this.get('options').server : null;
-
-        if (_.has(opts, 'port') && _.has(opts, 'host') && _.has(opts, 'username') && _.has(opts, 'secret')) {
-            let eventConnection = new DAmi(opts);
-            this.set('eventConnection', eventConnection);
-            AsteriskServer.registerResponseClasses(eventConnection);
-
-        } else {
-            throw new Error('improper configuration');
-            //improper configuration
+        let opts = _.has(this.getProp("options"), "server") ? this.getProp("options").server : null;
+        if (_.has(opts, "port") && _.has(opts, "host") && _.has(opts, "username") && _.has(opts, "secret")) {
+            //let eventConnection = new DAmi(opts);
+            let eventConnection = new AmiClient({
+                reconnect: true,
+                maxAttemptsCount: 30,
+                attemptsDelay: 1000,
+                keepAlive: true,
+                keepAliveDelay: 1000,
+                emitEventsByTypes: true,
+                eventTypeToLowerCase: false,
+                emitResponsesById: true,
+                addTime: true,
+                eventFilter: null // filter disabled
+            });
+            this.setProp("ami", eventConnection);
         }
-
-
+        else {
+            throw new Error("improper configuration");
+        }
     }
-
     _initializeAmiHandlers() {
-        var handlers = {};
+        let handlers = {};
         for (let eventName in amiHandlers) {
             if (_.has(amiHandlers, eventName)) {
                 handlers[eventName] = amiHandlers[eventName].bind(this);
             }
         }
-        this.set('amiHandlers', handlers);
-
+        this.setProp("amiHandlers", handlers);
     }
-
-    constructor(options) {
-        super();
-        this._initializeLoggers();
-        this._initializeOptions(options);
-        this._initializeEventConnection();
-
-        this._initializeAmiHandlers();
-
-
-        this.set('dispatcher', new AsteriskServerDispatcher(this));
-        this.set('actions', new AsteriskActions(this));
-        this.set('managers', new AsteriskManagers(this));
-
-        this.set('initialized', false);
-        this.set('initializationStarted', false);
-        this.set('pendingEvents', []);
-
-
-        this.logger.error('test');
-        this.logger.warn('test');
-
-    }
-
-    handleEvent(event) {
-        switch (event.event) {
-
-            case 'connect':
-                this._handleConnectEvent(event);
-                break;
-            case 'disconnect':
-                this._handleDisconnectEvent(event);
-                break;
-
-            case 'originateresponse':
-                this._handleOriginateEvent(event);
-                break;
-
-            default:
-                this.logger.error('try to handle event %j', event.event);
-        }
-    }
-
-    /**
-     * @param {function((ManagerError|null))} [callback]
-     * @param {*} [thisp] callback this
-     * @private
-     */
-    _initializeIfNeeded(callback, thisp) {
-
-        /**
-         * @this AsteriskServer
-         */
+    _initializeIfNeeded(callbackFn, context) {
         function initialize() {
-            let eventConnection = this.eventConnection;
-
-            this.emit(AsteriskServerEvents.BeforeInitialized);
-            if (typeof eventConnection == "undefined") {
-                onInitializedError.call(thisp, new Error('nor event connection object and proper configuration provided'));
+            let ami = this._ami;
+            this.emit(AsteriskServer.events.BEFORE_INIT);
+            if (typeof ami === "undefined") {
+                let err = new Error("nor event connection object and proper configuration provided");
+                onInitializedError.call(this, err);
             }
-            if (_.isFunction(callback)) {
-                this.once(AsteriskServerEvents.Initialized, function () {
-                    eventConnection.removeListener('amiConnectionTimeout', errorFn);
-                    eventConnection.removeListener('amiConnectionError', errorFn);
-
-                    onInitialized.call(this)
-                }, this)
+            if (_.isFunction(callbackFn)) {
+                this.once(AsteriskServer.events.INIT, () => {
+                    ami.removeListener("amiConnectionTimeout", errorFn);
+                    ami.removeListener("amiConnectionError", errorFn);
+                    onInitialized.call(this);
+                }, this);
             }
-            if (this.get('initializationStarted')) {
+            if (this.getProp("initializationStarted")) {
                 return;
             }
-            this.once(AsteriskServerEvents.Connected, onConnected.bind(this));
-
-            eventConnection.once('amiConnectionTimeout', errorFn);
-            eventConnection.once('amiConnectionError', errorFn);
-
-            if (eventConnection.getState() == ManagerConnectionStates.INITIAL || eventConnection.getState() == ManagerConnectionStates.DISCONNECTED) {
-                this.set('initializationStarted', true);
+            this.once(AsteriskServer.events.CONNECTED, onConnected.bind(this));
+            ami.once("amiConnectionTimeout", errorFn);
+            ami.once("amiConnectionError", errorFn);
+            if (!ami._connection) {
+                let opts = _.has(this.getProp("options"), "server") ? this.getProp("options").server : null;
+                this.setProp("initializationStarted", true);
                 this._bindAmiEvents();
-                eventConnection.open();
+                ami.connect(opts.username, opts.secret, { host: opts.host, port: opts.port })
+                    .catch((onInitializedError.bind(this)));
             }
-            this.set('gcTimer', setInterval(this._gc.bind(this), 10000));
         }
-
         function onConnectionError(event) {
-            //TODO reconnect
-            onInitializedError.call(this, new Error('ManagerCommunicationException("Unable to login: " + ' + event.error.message + ', ' + event.error + ');'));
+            // TODO reconnect
+            let err = new ManagerCommunication("Unable to login: " + event.error.message + ", " + event.error);
+            onInitializedError.call(this, err);
         }
-
         function onConnected() {
-            var self = this;
-
+            let self = this;
             async.series([
                 self.actions.core.getAvailableActions.bind(self.actions.core),
                 self.actions.core.filterRTCP.bind(self.actions.core),
                 self.managers.start.bind(self.managers),
-
-                onAll.bind(self)
-            ], function (err) {
+                onAll.bind(self),
+            ], (err) => {
                 if (err) {
-                    maybeCallback(callback, thisp, err);
+                    AstUtil.maybeCallback(callbackFn, context, err);
                 }
-
             });
         }
-
         /**
          * @this AsteriskServer
          * @param callback
          */
         function onAll(callback) {
-            this.logger.debug('on onAll');
+            this.logger.debug("on onAll");
             this.logger.info("Initializing done");
-            this.set('initialized', true);
-            this.set('initializationStarted', false);
-
-            this.emit(AsteriskServerEvents.Initialized);
-            maybeCallback(callback, thisp);
+            this.setProp("initialized", true);
+            this.setProp("initializationStarted", false);
+            this.emit(AsteriskServer.events.INIT);
+            AstUtil.maybeCallback(callback, context);
         }
-
         function onInitialized() {
-            this.logger.debug('on onInitialized');
-            maybeCallback(callback, thisp);
+            this.logger.debug("on onInitialized");
+            AstUtil.maybeCallback(callbackFn, context);
         }
-
         function onInitializedError(err) {
             this.logger.debug('on onInitializedError %j', err);
-            maybeCallback(callback, thisp, err);
+            AstUtil.maybeCallback(callbackFn, context, err);
         }
-
-        var errorFn = onConnectionError.bind(this);
-
-
+        let errorFn = onConnectionError.bind(this);
         if (this.initialized) {
             onInitialized.call(this);
-        } else {
+        }
+        else {
             initialize.call(this);
         }
     }
-
-    _reInitialize() {
-
-        /**
-         * @this AsteriskServer
-         */
-        function initialize() {
-            let eventConnection = this.eventConnection;
-
-            this.emit(AsteriskServerEvents.BeforeReInitialized);
-            if (typeof eventConnection == "undefined") {
-                onInitializedError.call(thisp, new Error('nor event connection object and proper configuration provided'));
-            }
-            this.once(AsteriskServerEvents.ReInitialized, function () {
-                eventConnection.removeListener('amiConnectionTimeout', errorFn);
-                eventConnection.removeListener('amiConnectionError', errorFn);
-
-            }, this);
-
-            if (this.get('initializationStarted')) {
-                return;
-            }
-            this.once(AsteriskServerEvents.Connected, onConnected.bind(this));
-
-            eventConnection.once('amiConnectionTimeout', errorFn);
-            eventConnection.once('amiConnectionError', errorFn);
-
-            if (eventConnection.getState() == ManagerConnectionStates.INITIAL || eventConnection.getState() == ManagerConnectionStates.DISCONNECTED) {
-                this.set('initializationStarted', true);
-                eventConnection.reopen();
-            }
-        }
-
-        function onConnectionError(event) {
-            //TODO reconnect
-            onInitializedError.call(this, new Error('ManagerCommunicationException("Unable to login: " + ' + event.error.message + ', ' + event.error + ');'));
-        }
-
-        function onConnected() {
-            this.managers.reStart(function () {
-                this.emit(AsteriskServerEvents.ReInitialized);
-            }, this);
-
-        }
-
-        function onInitialized() {
-            this.logger.debug('on onReInitialized');
-            maybeCallback(callback, thisp);
-        }
-
-        function onInitializedError(err) {
-            this.logger.debug('on onReInitializedError %j', err);
-
-        }
-
-        var errorFn = onConnectionError.bind(this);
-
-        initialize.call(this);
-    }
-
-    /**
-     * @private
-     */
-    _bindAmiEvents(finishEvent) {
+    _bindAmiEvents() {
         /**
          * @this AsteriskServer
          */
         function onInitialized() {
-            this.logger.info('onINITIALIZED');
-
+            this.logger.info("onINITIALIZED");
             process.nextTick(run.bind(this));
             /**
              * @this AsteriskServer
              */
             function run() {
                 let wEvent;
-                let pendingEvents = this.get('pendingEvents');
-
+                let pendingEvents = this.getProp("pendingEvents");
                 if (pendingEvents.length > 0) {
-                    this.logger.info('begin issuing pending events');
+                    this.logger.info("begin issuing pending events");
                     while (pendingEvents.length > 0) {
                         wEvent = pendingEvents.shift();
-                        handlers.amiEvent.call(this, wEvent);
+                        handlers.event.call(this, wEvent);
                     }
-                    this.logger.info('end issuing pending events');
+                    this.logger.info("end issuing pending events");
                 }
-                this.eventConnection.removeListener('amiEvent', handlers.waitHandler);  //remove tmp handler
-                this.eventConnection.on('amiEvent', handlers.amiEvent);  //restore original handler
+                this._ami.removeListener("event", handlers.waitHandler); //remove tmp handler
+                this._ami.on("event", handlers.event); //restore original handler
             }
         }
-
-        let handlers = this.get('amiHandlers');
-
+        let handlers = this.getProp("amiHandlers");
         for (let eventName in handlers) {
             if (handlers.hasOwnProperty(eventName)) {
-                if (eventName != 'amiEvent') {
-                    if (eventName == 'waitHandler') {
-                        this.eventConnection.on('amiEvent', handlers[eventName]);
-                    } else {
-                        this.eventConnection.on(eventName, handlers[eventName]);
+                if (eventName != "event") {
+                    if (eventName == "waitHandler") {
+                        this._ami.on("event", handlers[eventName]);
+                    }
+                    else {
+                        this._ami.on(eventName, handlers[eventName]);
                     }
                 }
             }
         }
-        this.once(AsteriskServerEvents.Initialized, onInitialized.bind(this));
-    }
-
-    /**
-     * @private
-     */
-    _unbindAmiEvents() {
-        let eventConnection = this.get('eventConnection');
-        let amiHandlers = this.get('amiHandlers');
-
-        for (let event in amiHandlers) {
-            if (amiHandlers.hasOwnProperty(event)) {
-                eventConnection.removeListener(event, amiHandlers[event]);
-            }
-        }
-
-    }
-
-
-    /**
-     * Requests the current state from the asterisk server after the connection
-     * to the asterisk server is restored.
-     * @private
-     */
-    _handleConnectEvent() {
-        try {
-            this.start();
-        }
-        catch (e) {
-            //Exception
-            this.logger.error("Unable to reinitialize state after reconnection", e);
-        }
-    }
-
-
-    /**
-     * Resets the internal state when the connection to the asterisk server is lost.
-     * @private
-     */
-    _handleDisconnectEvent() {
-        this._unbindAmiEvents();
-
-        // same for channels, agents and queues rooms, they are reinitialized when reconnected
-        this.managers.channel.disconnected();
-        //this.managers.agent.disconnected();
-        //this.managers.meetMe.disconnected();
-        this.managers.queue.disconnected();
-        this.set('initialized', false);
-    }
-
-
-    /**
-     * @param {function((ManagerError|null))} [callback]
-     * @param {*} [thisp] callback this
-     */
-    start(callback, thisp) {
-
-        this._initializeIfNeeded(callback, thisp);
-    }
-
-
-    shutdown() {
-        let eventConnection = this.get('eventConnection');
-        if (eventConnection != null && (eventConnection.getState() == ManagerConnectionStates.CONNECTED || eventConnection.getState() == ManagerConnectionStates.RECONNECTING)) {
-            eventConnection.close();
-        }
-        //TODO check events ar un bind
-    }
-
-
-    _gc() {
-        this.managers.gc();
-    }
-
-
-    idCounter() {
-        return ActionUniqueId();
-    }
-
-    static registerResponseClasses(eventConnection) {
-        let responseClass, responseMap = {
-//            GetConfig: 'GetConfigResponse',
-//            MailboxCount: 'MailboxCountResponse'
-        };
-        for (let action in responseMap) {
-            responseClass = responseMap[action];
-            eventConnection.registerResponseClass(action, responseClass);
-        }
+        this.once(AsteriskServer.events.INIT, onInitialized.bind(this));
     }
 }
-
 const amiHandlers = {
-    amiLoginIncorrect () {
-        this.logger.debug('on amiLoginIncorrect' + JSON.stringify(arguments));
+    amiLoginIncorrect() {
+        this.logger.debug("on amiLoginIncorrect" + JSON.stringify(arguments));
     },
-    amiConnected () {
-        this.logger.debug('on amiConnected' + JSON.stringify(arguments));
-        this.emit(AsteriskServerEvents.Connected);
+    connect() {
+        this.logger.debug("on amiConnected");
+        this.emit(AsteriskServer.events.CONNECTED);
     },
-
-    amiEvent (event) {
+    event(event) {
         this.logger.trace('on amiEvent: %j', event);
         this.dispatcher.dispatch(event);
     },
-
-    //socket
-
-    amiConnectionConnect () {
-        this.logger.debug('on amiConnectionConnect' + JSON.stringify(arguments));
+    response(response) {
+        this.logger.trace('on amiResponse: %j', response);
     },
-    amiConnectionError (had_error) {
-        /**
-         * @type {Error}
-         */
-        //var e = arguments[0].error;
-        this.logger.error('on amiConnectionError' + JSON.stringify(arguments));
-
+    internalError(had_error) {
+        //let e = arguments[0].error;
+        this.logger.error("on amiConnectionError" + JSON.stringify(arguments));
         //throw new Error('ManagerCommunicationException("' + e.message + "  -  " + JSON.stringify(e));
         //TODO reconnect
-
+        throw had_error;
     },
-    amiConnectionClose () {
-        this.logger.warn('on amiConnectionClose' + JSON.stringify(arguments));
-        console.log('restart');
-
+    amiConnectionClose() {
+        this.logger.warn("on amiConnectionClose" + JSON.stringify(arguments));
+        console.log("restart");
         //TODO
         this._reInitialize();
     },
-    amiConnectionTimeout () {
-        this.logger.warn('on amiConnectionTimeout' + JSON.stringify(arguments));
+    amiConnectionTimeout() {
+        this.logger.warn("on amiConnectionTimeout" + JSON.stringify(arguments));
     },
-    amiConnectionEnd () {
-        this.logger.warn('on amiConnectionEnd' + JSON.stringify(arguments));
+    amiConnectionEnd() {
+        this.logger.warn("on amiConnectionEnd" + JSON.stringify(arguments));
     },
-    /**
-     * @this AsteriskServer
-     * @param event
-     */
     waitHandler(event) {
-        if (event.event == 'fullybooted') {
-            amiHandlers.amiEvent.call(this, event);
-        } else {
-            this.get('pendingEvents').push(event);
+        if (event.Event == eventNames_1.AST_EVENT.FULLY_BOOTED) {
+            amiHandlers.event.call(this, event);
+        }
+        else {
+            if (!event.ActionID) {
+                this.getProp("pendingEvents").push(event);
+            }
         }
     }
 };
-
-
-var maybeCallback = function (callback, thisp, err, response) {
-    if (_.isFunction(callback)) {
-        callback.call(thisp, err, response)
-    }
-};
-
-
-/**
- * @type {AsteriskServer}
- */
-var instance = null;
-/**
- * @param {object} options
- * @returns AsteriskServer
- */
-module.exports.getInstance = function (options) {
-    if (instance === null) {
-        instance = new AsteriskServer(options);
-    }
-    return instance;
-};
-module.exports.destroy = function () {
-    if (instance !== null) {
-        instance.shutdown();
-        instance = null;
-    }
-};
+const Events = Object.assign(Object.assign({}, DfiEventObject.events), {
+    CONNECTED: Symbol("astConnected"),
+    BEFORE_INIT: Symbol("astBeforeInitialized"),
+    INIT: Symbol("astInitialized"),
+    REINIT: Symbol("astReInitialized"),
+    BEFORE_REINIT: Symbol("astBeforeReInitialized"),
+});
+module.exports = AsteriskServer;
+//# sourceMappingURL=asteriskServer.js.map

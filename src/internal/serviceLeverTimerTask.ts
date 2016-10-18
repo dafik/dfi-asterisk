@@ -1,0 +1,33 @@
+"use strict";
+import QueueEntry = require("../models/queues/QueueEntryModel");
+import DfiObject = require("local-dfi-base/src/dfiObject");
+import Queue = require("../models/queues/QueueModel");
+
+const PROP_ENTRY = Symbol("entry");
+const PROP_QUEUE = Symbol("queue");
+const PROP_TIMER = Symbol("timer");
+
+/**
+ * TimerTask that monitors exceeding service levels.
+ */
+class ServiceLevelTimerTask extends DfiObject {
+    constructor(queue: Queue, entry: QueueEntry) {
+        super();
+
+        this.setProp(PROP_ENTRY, entry);
+        this.setProp(PROP_QUEUE, queue);
+    }
+
+    public schedule(delay) {
+        this.setProp(PROP_TIMER, setInterval(() => this.run, delay));
+    }
+
+    public cancel() {
+        clearInterval(this.getProp(PROP_TIMER));
+    }
+
+    private run() {
+        (this.getProp(PROP_QUEUE) as Queue).fireServiceLevelExceeded(this.getProp(PROP_ENTRY));
+    };
+}
+export = ServiceLevelTimerTask;
