@@ -121,14 +121,18 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
         if (!peer) {
             this.logger.error('discarding peerstatus: peer not found: %s "', event.Peer);
         } else {
-            let port;
-            let address;
+            let port = "0";
+            let address = null;
             let mask = "255.255.255.255";
 
             if (peer.technology === Peer.PEER_TECH.SIP) {
-                let parts = event.Address.split(":");
-                address = parts[0];
-                port = parts[1];
+                if (event.Address) {
+                    let parts = event.Address.split(":");
+                    address = parts[0];
+                    port = parts[1];
+                } else {
+                    this.logger.error("no addres found");
+                }
             } else if (peer.technology === Peer.PEER_TECH.IAX) {
                 this.logger.error("error");
             } else if (peer.technology === Peer.PEER_TECH.PJSIP) {

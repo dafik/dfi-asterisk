@@ -21,7 +21,7 @@ class Peers extends AsteriskCollection {
         super.forEach(fn, context);
     }
     get peerTechs() {
-        return new Map([...this.getProp(P_PROP_PEERS_BY_TECH).keys()]);
+        return new Set([...this.getProp(P_PROP_PEERS_BY_TECH).keys()]);
     }
     getPeersByTech(tech) {
         if (this.peerTechs.has(tech)) {

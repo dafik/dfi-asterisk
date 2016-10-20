@@ -29,7 +29,7 @@ class Peers extends AsteriskCollection<Peer> {
     }
 
     public get peerTechs() {
-        return new Map([...this.getProp(P_PROP_PEERS_BY_TECH).keys()]);
+        return new Set([...this.getProp(P_PROP_PEERS_BY_TECH).keys()]);
     }
 
     public getPeersByTech(tech) {
