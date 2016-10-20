@@ -10,10 +10,6 @@
   "author": "z.wieczorek",
   "license": "UNLICENSED",
   "dependencies": {
-    "@types/async": "^2.0.32",
-    "@types/lodash": "^4.14.36",
-    "@types/moment": "^2.13.0",
-    "@types/node": "^6.0.41",
     "asterisk-ami-client": "^1.0.5",
     "async": "^2.0.0-rc.5",
     "local-dfi-base": "*",
@@ -22,6 +18,14 @@
     "moment": "*"
   },
   "devDependencies": {
+    "@types/asterisk-ami-client": "^0.0.2",
+    "@types/async": "^2.0.32",
+    "@types/include-path": "^0.4.7",
+    "@types/json-stringify-safe": "^5.0.1",
+    "@types/lodash": "^4.14.36",
+    "@types/mocha": "^2.2.32",
+    "@types/moment": "^2.13.0",
+    "@types/node": "^6.0.41",
     "heapdump": "latest",
     "json-stringify-safe": "^5.0.1",
     "local-dfi-debug-logger": "^0.1.5",

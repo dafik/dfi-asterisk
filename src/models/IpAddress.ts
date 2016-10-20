@@ -1,5 +1,5 @@
 import {IDfiAstModelAttribsIpAddress} from "../definitions/models";
-import DfiModel = require("../../tmp/local-dfi-base/src/dfiModel");
+import DfiModel = require("local-dfi-base/src/dfiModel");
 
 const PROP_IP = "ipAddress";
 const PROP_MASK = "mask";
@@ -18,10 +18,10 @@ class Ip extends DfiModel {
         let ipReg = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
 
         if (!attributes.mask.match(ipReg)) {
-            throw new Error();
+            this.logger.error("error");
         }
         if (attributes.ipAddress && !attributes.ipAddress.match(ipReg)) {
-            throw new Error();
+            this.logger.error("error");
         }
     }
 

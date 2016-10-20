@@ -131,7 +131,7 @@ class AstUtil {
             case 3:
                 return parseInt(parts[2], 10) + parseInt(parts[1], 10) * 60 + parseInt(parts[0], 10) * 24;
             default:
-                throw new Error();
+                logger.error("error");
         }
     }
 
@@ -148,7 +148,12 @@ class AstUtil {
     public static maybeCallbackOnce(fn: IDfiCallback, context, err?, response?): void {
         if (_.isFunction(fn)) {
             if (fn.fired) {
-                AstUtil.logger.error("callback was fired before fn : \n%s", fn.prototype.constructor);
+                try {
+                    AstUtil.logger.error("callback was fired before fn : \n%s", ((fn.prototype && fn.prototype.constructor) ? fn.prototype.constructor : fn.toString()));
+                } catch (err) {
+                    throw  err;
+                }
+                throw err ? err : response;
             } else {
                 fn.fired = true;
                 fn.call(context, err, response);

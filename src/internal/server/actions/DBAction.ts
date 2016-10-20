@@ -1,12 +1,13 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiCallback} from "../../../definitions/interfaces";
+import {IDfiActionCallback, IDfiDBGetCallback} from "../../../definitions/interfaces";
 import {AST_ACTION} from "../../asterisk/actionNames";
 import {IAstActionDBDel, IAstActionDBDelTree, IAstActionDBGet, IAstActionDBPut} from "../../asterisk/actions";
+import {IAstEventDBGetResponse} from "../../asterisk/events";
 import AstUtil = require("../../astUtil");
 
 class DBServerAction extends BaseServerAction {
 
-    public dbGet(family: string, key: string, callbackFn: IDfiCallback, context?) {
+    public dbGet(family: string, key: string, callbackFn: IDfiDBGetCallback, context?) {
         this._server.start()
             .then(() => {
                 let action: IAstActionDBGet = {
@@ -14,17 +15,14 @@ class DBServerAction extends BaseServerAction {
                     Family: family,
                     Key: key
                 };
-                this._server.sendEventGeneratingAction(action, (err, response) => {
+                this._server.sendEventGeneratingAction<IAstEventDBGetResponse>(action, (err, response) => {
                     if (err) {
-                        callbackFn.call(context, err);
+                        AstUtil.maybeCallbackOnce(callbackFn, context, err);
                         return;
                     }
                     let dbgre;
                     if (response.events.length > 0) {
-
                         dbgre = response.events[0];
-                    } else {
-                        dbgre = response;
                     }
                     AstUtil.maybeCallbackOnce(callbackFn, context, null, dbgre);
 
@@ -38,7 +36,7 @@ class DBServerAction extends BaseServerAction {
             });
     }
 
-    public dbDel(family: string, key: string, callbackFn: IDfiCallback, context?) {
+    public dbDel(family: string, key: string, callbackFn: IDfiActionCallback, context?) {
         this._server.start()
             .then(() => {
                 let action: IAstActionDBDel = {
@@ -56,7 +54,7 @@ class DBServerAction extends BaseServerAction {
             });
     }
 
-    public dbDelTree(family: string, key: string, callbackFn: IDfiCallback, context?) {
+    public dbDelTree(family: string, key: string, callbackFn: IDfiActionCallback, context?) {
         this._server.start()
             .then(() => {
                 let action: IAstActionDBDelTree = {
@@ -92,7 +90,7 @@ class DBServerAction extends BaseServerAction {
             });
     }
 
-    public dbPut(family: string, key: string, value: string, callbackFn: IDfiCallback, context?) {
+    public dbPut(family: string, key: string, value: string, callbackFn: IDfiActionCallback, context?) {
         this._server.start()
             .then(() => {
                 let action: IAstActionDBPut = {

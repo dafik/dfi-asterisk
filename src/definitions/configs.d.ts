@@ -23,5 +23,4 @@ export interface IDfiAstConfigAstManager extends Object {
     dahdi: boolean;
     queue: boolean;
     agent: boolean;
-    meetMe: boolean;
 }

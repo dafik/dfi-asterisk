@@ -40,7 +40,6 @@ abstract class AsteriskModel extends DfiModel {
 
     public destroy() {
         super.destroy();
-        delete this.id;
     }
 
     public toPlain() {

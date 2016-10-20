@@ -51,7 +51,7 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
                 return;
             }
             if (typeof response !== "undefined") {
-                response.getEvents().forEach((event: IAstEventEndpointList|IAstEventPeerEntry) => {
+                response.events.forEach((event: IAstEventEndpointList|IAstEventPeerEntry) => {
 
                     let peer: SIPPeer|IAXPeer|PJSIPPeer;
 
@@ -89,17 +89,17 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
         this._mapEvents(map);
 
         let action1: IAstActionIAXpeerlist = {Action: AST_ACTION.IAX_PEERLIST};
-        if (this.server._allowedActions.has(action1.Action)) {
+        if (this.server.allowedActions.has(action1.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action1, handlePeers, this);
         }
         let action2: IAstActionSIPpeers = {Action: AST_ACTION.SIP_PEERS};
-        if (this.server._allowedActions.has(action2.Action)) {
+        if (this.server.allowedActions.has(action2.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action2, handlePeers, this);
         }
         let action3: IAstActionPJSIPShowEndpoints = {Action: AST_ACTION.PJSIP_SHOW_ENDPOINTS};
-        if (this.server._allowedActions.has(action3.Action)) {
+        if (this.server.allowedActions.has(action3.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action3, handlePeers, this);
         }
@@ -130,9 +130,9 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
                 address = parts[0];
                 port = parts[1];
             } else if (peer.technology === Peer.PEER_TECH.IAX) {
-                throw new Error();
+                this.logger.error("error");
             } else if (peer.technology === Peer.PEER_TECH.PJSIP) {
-                throw new Error();
+                this.logger.error("error");
             }
             let ip = new Ip({
                 ipAddress: address,

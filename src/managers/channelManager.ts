@@ -70,15 +70,6 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             AstUtil.maybeCallbackOnce(callbackFn, context, null, "ChannelManager");
         }
 
-        function onResponse(err, re) {
-            if (err) {
-                callbackFn.call(context, err);
-                return;
-            }
-            re.getEvents().forEach(onForeach, this);
-            finish.call(this);
-        }
-
         function onForeach(event: IAstEventStatus |IAstEventCoreShowChannel) {
             if (event.Event === AST_EVENT.STATUS || event.Event === AST_EVENT.CORE_SHOW_CHANNEL) {
 
@@ -125,7 +116,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
                         bridge.addChannel(channel);
                         channel._bridges.add(bridge);
                     } else {
-                        throw new Error();
+                        this.logger.error();
                     }
                 }
 
@@ -192,7 +183,14 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             found.forEach((technology) => {
                 this.technologyCount[technology] = 0;
             });
-            this.server.sendEventGeneratingAction({Action: AST_ACTION.CORE_SHOW_CHANNELS}, onResponse, this);
+            this.server.sendEventGeneratingAction({Action: AST_ACTION.CORE_SHOW_CHANNELS}, (err1, re) => {
+                if (err1) {
+                    callbackFn.call(context, err1);
+                    return;
+                }
+                re.events.forEach(onForeach, this);
+                finish.call(this);
+            }, this);
         }, this);
 
     }
@@ -253,7 +251,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
                 // return the most recent channel or when dates are similar, the active one
 
                 if (dateOfCreation != null) {
-                    throw new Error();
+                    this.logger.error("error");
                 }
                 if (dateOfCreation == null || moment(tmp.createDate).isAfter(dateOfCreation) || (moment(tmp.createDate).isSame(dateOfCreation) && tmp.state.status !== ChannelStates.HANGUP)) {
                     channel = tmp;
@@ -483,7 +481,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
                 this.logger.error("Ignored HangupEvent for unknown channel " + event.Uniqueid + "@" + moment.unix(parseFloat(event.Uniqueid)).format() + " - " + event.Channel);
                 return;
             } else {
-                throw new Error();
+                this.logger.error("error");
             }
         }
 
@@ -500,10 +498,10 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             if (this.technologyCount[technology] > 0) {
                 this.technologyCount[technology]--;
             } else {
-                throw new Error();
+                this.logger.error("error");
             }
         } else {
-            throw new Error();
+            this.logger.error("error");
         }
     }
 
@@ -713,7 +711,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         let linkedChannel = this.channels.get(event.Linkedid);
         if (channel && linkedChannel) {
             if (channel.linkedChannel && channel.linkedChannel.id === event.Linkedid) {
-                // throw new Error();
+                // throw new Error("error");
                 // TODO check this
                 // this.logger.warn("linkedChannel is setup %j", event);
             }
@@ -782,7 +780,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
 
         function onEachChannel(channel) {
             if (!channel) {
-                throw new Error();
+                this.logger.error();
             }
             dateOfRemoval = channel.get("dateOfRemoval");
             if (channel.get("state").status === ChannelStates.HANGUP && dateOfRemoval != null) {

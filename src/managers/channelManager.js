@@ -32,14 +32,6 @@ class ChannelManager extends AsteriskManager {
             this.server.logger.info('manager "ChannelManager" started');
             AstUtil.maybeCallbackOnce(callbackFn, context, null, "ChannelManager");
         }
-        function onResponse(err, re) {
-            if (err) {
-                callbackFn.call(context, err);
-                return;
-            }
-            re.getEvents().forEach(onForeach, this);
-            finish.call(this);
-        }
         function onForeach(event) {
             if (event.Event === eventNames_1.AST_EVENT.STATUS || event.Event === eventNames_1.AST_EVENT.CORE_SHOW_CHANNEL) {
                 let extension = null;
@@ -79,7 +71,7 @@ class ChannelManager extends AsteriskManager {
                         channel._bridges.add(bridge);
                     }
                     else {
-                        throw new Error();
+                        this.logger.error();
                     }
                 }
                 let linkedChannel = this.getChannelById(event.Linkedid);
@@ -137,7 +129,14 @@ class ChannelManager extends AsteriskManager {
             found.forEach((technology) => {
                 this.technologyCount[technology] = 0;
             });
-            this.server.sendEventGeneratingAction({ Action: actionNames_1.AST_ACTION.CORE_SHOW_CHANNELS }, onResponse, this);
+            this.server.sendEventGeneratingAction({ Action: actionNames_1.AST_ACTION.CORE_SHOW_CHANNELS }, (err1, re) => {
+                if (err1) {
+                    callbackFn.call(context, err1);
+                    return;
+                }
+                re.events.forEach(onForeach, this);
+                finish.call(this);
+            }, this);
         }, this);
     }
     disconnected() {
@@ -184,7 +183,7 @@ class ChannelManager extends AsteriskManager {
             if (tmp.name != null && tmp.name === name) {
                 // return the most recent channel or when dates are similar, the active one
                 if (dateOfCreation != null) {
-                    throw new Error();
+                    this.logger.error("error");
                 }
                 if (dateOfCreation == null || moment(tmp.createDate).isAfter(dateOfCreation) || (moment(tmp.createDate).isSame(dateOfCreation) && tmp.state.status !== ChannelStates.HANGUP)) {
                     channel = tmp;
@@ -378,7 +377,7 @@ class ChannelManager extends AsteriskManager {
                 return;
             }
             else {
-                throw new Error();
+                this.logger.error("error");
             }
         }
         if (event.Cause != null) {
@@ -395,11 +394,11 @@ class ChannelManager extends AsteriskManager {
                 this.technologyCount[technology]--;
             }
             else {
-                throw new Error();
+                this.logger.error("error");
             }
         }
         else {
-            throw new Error();
+            this.logger.error("error");
         }
     }
     _handleDialEvent(event) {
@@ -621,7 +620,7 @@ class ChannelManager extends AsteriskManager {
         channels.forEach(onEachChannel, this);
         function onEachChannel(channel) {
             if (!channel) {
-                throw new Error();
+                this.logger.error();
             }
             dateOfRemoval = channel.get("dateOfRemoval");
             if (channel.get("state").status === ChannelStates.HANGUP && dateOfRemoval != null) {

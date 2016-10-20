@@ -178,6 +178,9 @@ class Channel extends AsteriskModel {
     set hangupRequestMethod(val) {
         this.setProp(P_PROP_HANGUP_REQUEST_METHOD, val);
     }
+    getStateHistory() {
+        return [...this.getProp(P_PROP_STATE_HISTORY)];
+    }
     get _varsCallbacks() {
         return this.getProp(P_PROP_VARS_CALLBACKS);
     }

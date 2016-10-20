@@ -4643,11 +4643,11 @@ export interface IAstEventParkedCall extends IAstEvent {
  * @description Syntax
  * @see See {@link https://wiki.asterisk.org/wiki/display/AST/Asterisk+13+ManagerEvent_Shutdown }
  *
- * @property {string} Shutdown -   -  Whether  the  shutdown  is  proceeding  cleanly  (all  channels  were  hungup  successfully)  or  uncleanly  (channels  will  be  terminated)  
- * Uncleanly  
+ * @property {string} Shutdown -   -  Whether  the  shutdown  is  proceeding  cleanly  (all  channels  were  hungup  successfully)  or  uncleanly  (channels  will  be  terminated)
+ * Uncleanly
  * Cleanly
- * @property {string} Restart -   -  Whether  or  not  a  restart  will  occur.  
- * True  
+ * @property {string} Restart -   -  Whether  or  not  a  restart  will  occur.
+ * True
  * False
  */
 export interface IAstEventShutdown extends IAstEvent {
@@ -4945,7 +4945,7 @@ export interface IAstEventSuccessfulAuth extends IAstEvent {
 /**
  * ParkedCallSwap Event - Raised when a channel takes the place of a previously parked channel
  *
- * @description This event is raised when a channel initially parked in the parking lot is swapped out with a different channel. 
+ * @description This event is raised when a channel initially parked in the parking lot is swapped out with a different channel.
  * The most common case for this is when an attended transfer to a parking lot occurs. The Parkee information in the event will indicate the party that was swapped into the parking lot.
  * @see See {@link https://wiki.asterisk.org/wiki/display/AST/Asterisk+13+ManagerEvent_ParkedCallSwap }
  *
@@ -5992,13 +5992,13 @@ export interface IAstEventUnhold extends IAstEvent {
  * @see See {@link https://wiki.asterisk.org/wiki/display/AST/Asterisk+13+ManagerEvent_Reload }
  *
  * @property {string} Module - The name of the module that was reloaded, or All if all modules were reloaded
- * @property {string} Status -   -  The  numeric  status  code  denoting  the  success  or  failure  of  the  reload  request. 
- * 0  -  Success  
- * 1  -  Request  queued  
- * 2  -  Module  not  found  
- * 3  -  Error  
- * 4  -  Reload  already  in  progress  
- * 5  -  Module  uninitialized  
+ * @property {string} Status -   -  The  numeric  status  code  denoting  the  success  or  failure  of  the  reload  request.
+ * 0  -  Success
+ * 1  -  Request  queued
+ * 2  -  Module  not  found
+ * 3  -  Error
+ * 4  -  Reload  already  in  progress
+ * 5  -  Module  uninitialized
  * 6  -  Reload  not  supported
  */
 export interface IAstEventReload extends IAstEvent {
@@ -6738,15 +6738,15 @@ export interface IAstEventDNDState extends IAstEvent {
  * @property {string} CallsTaken - The number of calls this queue member has serviced.
  * @property {string} LastCall - The time this member last took a call, expressed in seconds since 00:00, Jan 1, 1970 UTC.
  * @property {string} InCall -  * - * Set * to * 1 * if * member * is * in * call. * Set * to * 0 * after * LastCall * time * is * updated. * 0 * 1
- * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  
- * 0  -  AST_DEVICE_UNKNOWN  
- * 1  -  AST_DEVICE_NOT_INUSE 
- * 2  -  AST_DEVICE_INUSE  
- * 3  -  AST_DEVICE_BUSY  
- * 4  -  AST_DEVICE_INVALID  
- * 5  -  AST_DEVICE_UNAVAILABLE  
- * 6  -  AST_DEVICE_RINGING  
- * 7  -  AST_DEVICE_RINGINUSE  
+ * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.
+ * 0  -  AST_DEVICE_UNKNOWN
+ * 1  -  AST_DEVICE_NOT_INUSE
+ * 2  -  AST_DEVICE_INUSE
+ * 3  -  AST_DEVICE_BUSY
+ * 4  -  AST_DEVICE_INVALID
+ * 5  -  AST_DEVICE_UNAVAILABLE
+ * 6  -  AST_DEVICE_RINGING
+ * 7  -  AST_DEVICE_RINGINUSE
  * 8  -  AST_DEVICE_ONHOLD
  * @property {string} Paused -  * 0 * 1
  * @property {string} PausedReason - If set when paused, the reason the queue member was paused.
@@ -7014,6 +7014,16 @@ export interface IAstEventBridgeListItem extends IAstEvent {
 export interface IAstEventEndpointDetailComplete extends IAstEvent {
     ListItems: string;
 }
+
+/**
+ * undocumented
+ */
+export interface IAstEventDBGetResponse extends IAstEvent {
+    Family: string;
+    Key: string;
+    Val: string;
+}
+
 /**
  * DTMFBegin Event - Raised when a DTMF digit has started on a channel.
  *
@@ -7422,9 +7432,9 @@ export interface IAstEventConfbridgeLeave extends IAstEvent {
  * @property {string} Context - The dialplan context the channel is currently executing in.
  * @property {string} Application - The dialplan application the channel is currently executing.
  * @property {string} AppData - The arguments passed to the dialplan Application.
- * @property {string} AMAFlags -   -  A  flag  that  informs  a  billing  system  how  to  treat  the  CEL.  
- * OMIT  -  This  event  should  be  ignored.  
- * BILLING  -  This  event  contains  valid  billing  data.  
+ * @property {string} AMAFlags -   -  A  flag  that  informs  a  billing  system  how  to  treat  the  CEL.
+ * OMIT  -  This  event  should  be  ignored.
+ * BILLING  -  This  event  contains  valid  billing  data.
  * DOCUMENTATION  -  This  event  is  for  documentation  purposes.
  * @property {string} UniqueID - The unique ID of the channel.
  * @property {string} LinkedID - The linked ID of the channel, which ties this event to other related channel's events.
@@ -7533,18 +7543,18 @@ export interface IAstEventMiniVoiceMail extends IAstEvent {
 /**
  * AttendedTransfer Event - Raised when an attended transfer is complete.
  *
- * @description The headers in this event attempt to describe all the major details of the attended transfer. 
- * The two transferer channels and the two bridges are determined based on their chronological establishment. 
- * So consider that Alice calls Bob, and then Alice transfers the call to Voicemail. 
+ * @description The headers in this event attempt to describe all the major details of the attended transfer.
+ * The two transferer channels and the two bridges are determined based on their chronological establishment.
+ * So consider that Alice calls Bob, and then Alice transfers the call to Voicemail.
  * The transferer and bridge headers would be arranged as follows:
  * @see See {@link https://wiki.asterisk.org/wiki/display/AST/Asterisk+13+ManagerEvent_AttendedTransfer }
  *
- * @property {string} Result -   -  Indicates  if  the  transfer  was  successful  or  if  it  failed.  
- * Fail  -  An  internal  error  occurred.  
- * Invalid  -  Invalid  configuration  for  transfer  (e.g.  Not  bridged)  
- * Not  Permitted  -  Bridge  does  not  permit  transfers  
- * Success  -  Transfer  completed  successfully  
- * Note -  A  result  of  Success  does  not  necessarily  mean  that  a  target  was  succesfully  contacted.  
+ * @property {string} Result -   -  Indicates  if  the  transfer  was  successful  or  if  it  failed.
+ * Fail  -  An  internal  error  occurred.
+ * Invalid  -  Invalid  configuration  for  transfer  (e.g.  Not  bridged)
+ * Not  Permitted  -  Bridge  does  not  permit  transfers
+ * Success  -  Transfer  completed  successfully
+ * Note -  A  result  of  Success  does  not  necessarily  mean  that  a  target  was  succesfully  contacted.
  * It  means  that  a  party  was  succesfully  placed  into  the  dialplan  at  the  expected  location.
  * @property {string} OrigTransfererChannel
  * @property {string} OrigTransfererChannelState - A numeric code for the channel's current state, related to OrigTransfererChannelStateDesc
@@ -7584,12 +7594,12 @@ export interface IAstEventMiniVoiceMail extends IAstEvent {
  * @property {string} SecondBridgeCreator - Entity that created the bridge if applicable
  * @property {string} SecondBridgeName - Name used to refer to the bridge by its BridgeCreator if applicable
  * @property {string} SecondBridgeNumChannels - Number of channels in the bridge
- * @property {string} DestType -   -  Indicates  the  method  by  which  the  attended  transfer  completed.  
- * Bridge  -  The  transfer  was  accomplished  by  merging  two  bridges  into  one.  
- * App  -  The  transfer  was  accomplished  by  having  a  channel  or  bridge  run  a  dialplan  application.  
- * Link  -  The  transfer  was  accomplished  by  linking  two  bridges  together  using  a  local  channel  pair.  
+ * @property {string} DestType -   -  Indicates  the  method  by  which  the  attended  transfer  completed.
+ * Bridge  -  The  transfer  was  accomplished  by  merging  two  bridges  into  one.
+ * App  -  The  transfer  was  accomplished  by  having  a  channel  or  bridge  run  a  dialplan  application.
+ * Link  -  The  transfer  was  accomplished  by  linking  two  bridges  together  using  a  local  channel  pair.
  * Threeway  -  The  transfer  was  accomplished  by  placing  all  parties  into  a  threeway  call.  Fail  -  The  transfer  failed.
- * @property {string} DestBridgeUniqueid -   -  Indicates  the  surviving  bridge  when  bridges  were  merged  to  complete  the  transfer  
+ * @property {string} DestBridgeUniqueid -   -  Indicates  the  surviving  bridge  when  bridges  were  merged  to  complete  the  transfer
  * Note  Icon  This  header  is  only  present  when  DestType  is  Bridge  or  Threeway
  * @property {string} DestApp -   -  Indicates  the  application  that  is  running  when  the  transfer  completes  Note  Icon  This  header  is  only  present  when  DestType  is  App
  * @property {string} LocalOneChannel
@@ -7618,7 +7628,7 @@ export interface IAstEventMiniVoiceMail extends IAstEvent {
  * @property {string} LocalTwoPriority
  * @property {string} LocalTwoUniqueid
  * @property {string} LocalTwoLinkedid - Uniqueid of the oldest channel associated with this channel.
- * @property {string} DestTransfererChannel -   -  The  name  of  the  surviving  transferer  channel  when  a  transfer  results  in  a  threeway  call  
+ * @property {string} DestTransfererChannel -   -  The  name  of  the  surviving  transferer  channel  when  a  transfer  results  in  a  threeway  call
  * Note  Icon  This  header  is  only  present  when  DestType  is  Threeway
  * @property {string} TransfereeChannel
  * @property {string} TransfereeChannelState - A numeric code for the channel's current state, related to TransfereeChannelStateDesc
@@ -7812,15 +7822,15 @@ export interface IAstEventNewAccountCode extends IAstEvent {
  * @property {string} CallsTaken - The number of calls this queue member has serviced.
  * @property {string} LastCall - The time this member last took a call, expressed in seconds since 00:00, Jan 1, 1970 UTC.
  * @property {string} InCall -  * - * Set * to * 1 * if * member * is * in * call. * Set * to * 0 * after * LastCall * time * is * updated. * 0 * 1
- * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  
- * 0  -  AST_DEVICE_UNKNOWN  
- * 1  -  AST_DEVICE_NOT_INUSE  
- * 2  -  AST_DEVICE_INUSE  
- * 3  -  AST_DEVICE_BUSY  
- * 4  -  AST_DEVICE_INVALID  
- * 5  -  AST_DEVICE_UNAVAILABLE  
- * 6  -  AST_DEVICE_RINGING  
- * 7  -  AST_DEVICE_RINGINUSE  
+ * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.
+ * 0  -  AST_DEVICE_UNKNOWN
+ * 1  -  AST_DEVICE_NOT_INUSE
+ * 2  -  AST_DEVICE_INUSE
+ * 3  -  AST_DEVICE_BUSY
+ * 4  -  AST_DEVICE_INVALID
+ * 5  -  AST_DEVICE_UNAVAILABLE
+ * 6  -  AST_DEVICE_RINGING
+ * 7  -  AST_DEVICE_RINGINUSE
  * 8  -  AST_DEVICE_ONHOLD
  * @property {string} Paused -  * 0 * 1
  * @property {string} PausedReason - If set when paused, the reason the queue member was paused.
@@ -7917,26 +7927,26 @@ export interface IAstEventAgentDump extends IAstEvent {
  * @property {string} Exten - Name of the extension.
  * @property {string} Context - Context that owns the extension.
  * @property {string} Hint - Hint set for the extension
- * @property {string} Status -   -  Numerical  value  of  the  extension  status.  Extension  status  is  determined  by  the  combined  device  state  of  all  items  contained  in  the  hint. 
- * -2  -  The  extension  was  removed  from  the  dialplan.  
- * -1  -  The  extension's  hint  was  removed  from  the  dialplan.  
- *  0  -  Idle  -  Related  device(s)  are  in  an  idle  state.  
- *  1  -  InUse  -  Related  device(s)  are  in  active  calls  but  may  take  more  calls.  
- *  2  -  Busy  -  Related  device(s)  are  in  active  calls  and  may  not  take  any  more  calls.  
- *  4  -  Unavailable  -  Related  device(s)  are  not  reachable.  
- *  8  -  Ringing  -  Related  device(s)  are  currently  ringing.  
- *  9  -  InUse&Ringing  -  Related  device(s)  are  currently  ringing  and  in  active  calls.  
- *  16 -  Hold  -  Related  device(s)  are  currently  on  hold.  
+ * @property {string} Status -   -  Numerical  value  of  the  extension  status.  Extension  status  is  determined  by  the  combined  device  state  of  all  items  contained  in  the  hint.
+ * -2  -  The  extension  was  removed  from  the  dialplan.
+ * -1  -  The  extension's  hint  was  removed  from  the  dialplan.
+ *  0  -  Idle  -  Related  device(s)  are  in  an  idle  state.
+ *  1  -  InUse  -  Related  device(s)  are  in  active  calls  but  may  take  more  calls.
+ *  2  -  Busy  -  Related  device(s)  are  in  active  calls  and  may  not  take  any  more  calls.
+ *  4  -  Unavailable  -  Related  device(s)  are  not  reachable.
+ *  8  -  Ringing  -  Related  device(s)  are  currently  ringing.
+ *  9  -  InUse&Ringing  -  Related  device(s)  are  currently  ringing  and  in  active  calls.
+ *  16 -  Hold  -  Related  device(s)  are  currently  on  hold.
  *  17 -  InUse&Hold  -  Related  device(s)  are  currently  on  hold  and  in  active  calls.
- * @property {string} StatusText -   -  Text  representation  of  Status.  
- * Idle 
- * InUse  
- * Busy  
- * Unavailable  
- * Ringing  
- * InUse&Ringing  
- * Hold  
- * InUse&Hold  
+ * @property {string} StatusText -   -  Text  representation  of  Status.
+ * Idle
+ * InUse
+ * Busy
+ * Unavailable
+ * Ringing
+ * InUse&Ringing
+ * Hold
+ * InUse&Hold
  * Unknown  -  Status  does  not  match  any  of  the  above  values.
  */
 export interface IAstEventExtensionStatus extends IAstEvent {
@@ -8039,7 +8049,7 @@ export interface IAstEventAgentConnect extends IAstEvent {
  * @property {string} SSRC - The SSRC identifier for our stream
  * @property {string} PT -  * - * The * type * of * packet * for * this * RTCP * report. * 200(SR) * 201(RR)
  * @property {string} To - The address the report is sent to.
- * @property {string} ReportCount -   -  The  number  of  reports  that  were  sent.  The  report  count  determines  the  number  of  ReportX  headers  in  the  message.  
+ * @property {string} ReportCount -   -  The  number  of  reports  that  were  sent.  The  report  count  determines  the  number  of  ReportX  headers  in  the  message.
  * The  X  for  each  set  of  report  headers  will  range  from  0  to  ReportCount  -  1.
  * @property {string} ReportXSourceSSRC - The SSRC for the source of this report block.
  * @property {string} ReportXFractionLost - The fraction of RTP data packets from ReportXSourceSSRC lost since the previous SR or RR report was sent.
@@ -8100,8 +8110,8 @@ export interface IAstEventRTCPSent extends IAstEvent {
  * @property {string} CallsTaken - The number of calls this queue member has serviced.
  * @property {string} LastCall - The time this member last took a call, expressed in seconds since 00:00, Jan 1, 1970 UTC.
  * @property {string} InCall -  * - * Set * to * 1 * if * member * is * in * call. * Set * to * 0 * after * LastCall * time * is * updated. * 0 * 1
- * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  
- * 2  -  AST_DEVICE_INUSE  3  -  AST_DEVICE_BUSY  
+ * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE
+ * 2  -  AST_DEVICE_INUSE  3  -  AST_DEVICE_BUSY
  * 4  -  AST_DEVICE_INVALID  5  -  AST_DEVICE_UNAVAILABLE  6  -  AST_DEVICE_RINGING  7  -  AST_DEVICE_RINGINUSE  8  -  AST_DEVICE_ONHOLD
  * @property {string} Paused -  * 0 * 1
  * @property {string} PausedReason - If set when paused, the reason the queue member was paused.
@@ -8239,15 +8249,15 @@ export interface IAstEventUnParkedCall extends IAstEvent {
  * @property {string} EndTime - The time when the CDR was finished. This occurs when the Party A hangs up or when the bridge between Party A and Party B is broken.
  * @property {string} Duration - The time, in seconds, of EndTime
  * @property {string} BillableSeconds - The time, in seconds, of AnswerTime
- * @property {string} Disposition -   -  The  final  known  disposition  of  the  CDR.  NO  ANSWER  -  The  channel  was  not  answered.  This  is  the  default  disposition.  
- * FAILED  -  The  channel  attempted  to  dial  but  the  call  failed.  
- * Note  Icon  The  congestion  setting  in  cdr.conf  can  result  in  the  AST_CAUSE_CONGESTION  hang  up  cause  or  the  CONGESTION  dial  status  to  map  to  this  disposition.  
- * BUSY  -  The  channel  attempted  to  dial  but  the  remote  party  was  busy.  
- * ANSWERED  -  The  channel  was  answered.  The  hang  up  cause  will  no  longer  impact  the  disposition  of  the  CDR.  
+ * @property {string} Disposition -   -  The  final  known  disposition  of  the  CDR.  NO  ANSWER  -  The  channel  was  not  answered.  This  is  the  default  disposition.
+ * FAILED  -  The  channel  attempted  to  dial  but  the  call  failed.
+ * Note  Icon  The  congestion  setting  in  cdr.conf  can  result  in  the  AST_CAUSE_CONGESTION  hang  up  cause  or  the  CONGESTION  dial  status  to  map  to  this  disposition.
+ * BUSY  -  The  channel  attempted  to  dial  but  the  remote  party  was  busy.
+ * ANSWERED  -  The  channel  was  answered.  The  hang  up  cause  will  no  longer  impact  the  disposition  of  the  CDR.
  * CONGESTION  -  The  channel  attempted  to  dial  but  the  remote  party  was  congested.
- * @property {string} AMAFlags -   -  A  flag  that  informs  a  billing  system  how  to  treat  the  CDR.  
- * OMIT  -  This  CDR  should  be  ignored.  
- * BILLING  -  This  CDR  contains  valid  billing  data.  
+ * @property {string} AMAFlags -   -  A  flag  that  informs  a  billing  system  how  to  treat  the  CDR.
+ * OMIT  -  This  CDR  should  be  ignored.
+ * BILLING  -  This  CDR  contains  valid  billing  data.
  * DOCUMENTATION  -  This  CDR  is  for  documentation  purposes.
  * @property {string} UniqueID - A unique identifier for the Party A channel.
  * @property {string} UserField - A user defined field set on the channels. If set on both the Party A and Party B channel, the userfields of both are concatenated and separated by a ;.
@@ -8792,7 +8802,7 @@ export interface IAstEventChallengeSent extends IAstEvent {
  * @property {string} PT -  * - * The * type * of * packet * for * this * RTCP * report. * 200(SR) * 201(RR)
  * @property {string} From - The address the report was received from.
  * @property {string} RTT - Calculated Round-Trip Time in seconds
- * @property {string} ReportCount -   -  The  number  of  reports  that  were  received.  The  report  count  determines  the  number  of  ReportX  headers  in  the  message. 
+ * @property {string} ReportCount -   -  The  number  of  reports  that  were  received.  The  report  count  determines  the  number  of  ReportX  headers  in  the  message.
  * The  X  for  each  set  of  report  headers  will  range  from  0  to  ReportCount  -  1.
  * @property {string} ReportXSourceSSRC - The SSRC for the source of this report block.
  * @property {string} ReportXFractionLost - The fraction of RTP data packets from ReportXSourceSSRC lost since the previous SR or RR report was sent.
@@ -8871,14 +8881,14 @@ export interface IAstEventMWIGet extends IAstEvent {
  * @property {string} CallsTaken - The number of calls this queue member has serviced.
  * @property {string} LastCall - The time this member last took a call, expressed in seconds since 00:00, Jan 1, 1970 UTC.
  * @property {string} InCall -  * - * Set * to * 1 * if * member * is * in * call. * Set * to * 0 * after * LastCall * time * is * updated. * 0 * 1
- * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  
- * 0  -  AST_DEVICE_UNKNOWN  
- * 1  -  AST_DEVICE_NOT_INUSE  
- * 2  -  AST_DEVICE_INUSE  
- * 3  -  AST_DEVICE_BUSY  
- * 4  -  AST_DEVICE_INVALID  
- * 5  -  AST_DEVICE_UNAVAILABLE  
- * 6  -  AST_DEVICE_RINGING  
+ * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.
+ * 0  -  AST_DEVICE_UNKNOWN
+ * 1  -  AST_DEVICE_NOT_INUSE
+ * 2  -  AST_DEVICE_INUSE
+ * 3  -  AST_DEVICE_BUSY
+ * 4  -  AST_DEVICE_INVALID
+ * 5  -  AST_DEVICE_UNAVAILABLE
+ * 6  -  AST_DEVICE_RINGING
  * 7  -  AST_DEVICE_RINGINUSE  8  -  AST_DEVICE_ONHOLD
  * @property {string} Paused -  * 0 * 1
  * @property {string} PausedReason - If set when paused, the reason the queue member was paused.
@@ -9655,7 +9665,7 @@ export interface IAstEventFailedACL extends IAstEvent {
  * @property {string} CallsTaken - The number of calls this queue member has serviced.
  * @property {string} LastCall - The time this member last took a call, expressed in seconds since 00:00, Jan 1, 1970 UTC.
  * @property {string} InCall -  * - * Set * to * 1 * if * member * is * in * call. * Set * to * 0 * after * LastCall * time * is * updated. * 0 * 1
- * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE  
+ * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE
  * 3  -  AST_DEVICE_BUSY  4  -  AST_DEVICE_INVALID  5  -  AST_DEVICE_UNAVAILABLE  6  -  AST_DEVICE_RINGING  7  -  AST_DEVICE_RINGINUSE  8  -  AST_DEVICE_ONHOLD
  * @property {string} Paused -  * 0 * 1
  * @property {string} PausedReason - If set when paused, the reason the queue member was paused.
@@ -10416,12 +10426,12 @@ export interface IAstEventAuthDetail extends IAstEvent {
  * @description Syntax
  * @see See {@link https://wiki.asterisk.org/wiki/display/AST/Asterisk+13+ManagerEvent_BlindTransfer }
  *
- * @property {string} Result -   -  Indicates  if  the  transfer  was  successful  or  if  it  failed.  
- * Fail  -  An  internal  error  occurred.  
- * Invalid  -  Invalid  configuration  for  transfer  (e.g.  Not  bridged)  
- * Not  Permitted  -  Bridge  does  not  permit  transfers  
- * Success  -  Transfer  completed  successfully  
- * Note    A  result  of  Success  does  not  necessarily  mean  that  a  target  was  succesfully  contacted.  
+ * @property {string} Result -   -  Indicates  if  the  transfer  was  successful  or  if  it  failed.
+ * Fail  -  An  internal  error  occurred.
+ * Invalid  -  Invalid  configuration  for  transfer  (e.g.  Not  bridged)
+ * Not  Permitted  -  Bridge  does  not  permit  transfers
+ * Success  -  Transfer  completed  successfully
+ * Note    A  result  of  Success  does  not  necessarily  mean  that  a  target  was  succesfully  contacted.
  * It  means  that  a  party  was  succesfully  placed  into  the  dialplan  at  the  expected  location.
  * @property {string} TransfererChannel
  * @property {string} TransfererChannelState - A numeric code for the channel's current state, related to TransfererChannelStateDesc
@@ -10455,7 +10465,7 @@ export interface IAstEventAuthDetail extends IAstEvent {
  * @property {string} BridgeCreator - Entity that created the bridge if applicable
  * @property {string} BridgeName - Name used to refer to the bridge by its BridgeCreator if applicable
  * @property {string} BridgeNumChannels - Number of channels in the bridge
- * @property {string} IsExternal -   -  Indicates  if  the  transfer  was  performed  outside  of  Asterisk.  
+ * @property {string} IsExternal -   -  Indicates  if  the  transfer  was  performed  outside  of  Asterisk.
  * For  instance,  a  channel  protocol  native  transfer  is  external.  A  DTMF  transfer  is  internal.  Yes  No
  * @property {string} Context - Destination context for the blind transfer.
  * @property {string} Extension - Destination extension for the blind transfer.
@@ -11099,7 +11109,7 @@ export interface IAstEventQueueCallerLeave extends IAstEvent {
  * @property {string} CallsTaken - The number of calls this queue member has serviced.
  * @property {string} LastCall - The time this member last took a call, expressed in seconds since 00:00, Jan 1, 1970 UTC.
  * @property {string} InCall -  * - * Set * to * 1 * if * member * is * in * call. * Set * to * 0 * after * LastCall * time * is * updated. * 0 * 1
- * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE  
+ * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE
  * 3  -  AST_DEVICE_BUSY  4  -  AST_DEVICE_INVALID  5  -  AST_DEVICE_UNAVAILABLE  6  -  AST_DEVICE_RINGING  7  -  AST_DEVICE_RINGINUSE  8  -  AST_DEVICE_ONHOLD
  * @property {string} Paused -  * 0 * 1
  * @property {string} PausedReason - If set when paused, the reason the queue member was paused.
@@ -11135,7 +11145,7 @@ export interface IAstEventQueueMemberAdded extends IAstEvent {
  * @property {string} CallsTaken - The number of calls this queue member has serviced.
  * @property {string} LastCall - The time this member last took a call, expressed in seconds since 00:00, Jan 1, 1970 UTC.
  * @property {string} InCall -  * - * Set * to * 1 * if * member * is * in * call. * Set * to * 0 * after * LastCall * time * is * updated. * 0 * 1
- * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE  
+ * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE
  * 3  -  AST_DEVICE_BUSY  4  -  AST_DEVICE_INVALID  5  -  AST_DEVICE_UNAVAILABLE  6  -  AST_DEVICE_RINGING  7  -  AST_DEVICE_RINGINUSE  8  -  AST_DEVICE_ONHOLD
  * @property {string} Paused -  * 0 * 1
  * @property {string} PausedReason - If set when paused, the reason the queue member was paused.
@@ -11173,7 +11183,7 @@ export interface IAstEventQueueMemberPause extends IAstEvent {
  * @property {string} CallsTaken - The number of calls this queue member has serviced.
  * @property {string} LastCall - The time this member last took a call, expressed in seconds since 00:00, Jan 1, 1970 UTC.
  * @property {string} InCall -  * - * Set * to * 1 * if * member * is * in * call. * Set * to * 0 * after * LastCall * time * is * updated. * 0 * 1
- * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE  
+ * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE
  * 3  -  AST_DEVICE_BUSY  4  -  AST_DEVICE_INVALID  5  -  AST_DEVICE_UNAVAILABLE  6  -  AST_DEVICE_RINGING  7  -  AST_DEVICE_RINGINUSE  8  -  AST_DEVICE_ONHOLD
  * @property {string} Paused -  * 0 * 1
  * @property {string} PausedReason - If set when paused, the reason the queue member was paused.
@@ -11209,7 +11219,7 @@ export interface IAstEventQueueMemberPenalty extends IAstEvent {
  * @property {string} CallsTaken - The number of calls this queue member has serviced.
  * @property {string} LastCall - The time this member last took a call, expressed in seconds since 00:00, Jan 1, 1970 UTC.
  * @property {string} InCall -  * - * Set * to * 1 * if * member * is * in * call. * Set * to * 0 * after * LastCall * time * is * updated. * 0 * 1
- * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE  
+ * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE
  * 3  -  AST_DEVICE_BUSY  4  -  AST_DEVICE_INVALID  5  -  AST_DEVICE_UNAVAILABLE  6  -  AST_DEVICE_RINGING  7  -  AST_DEVICE_RINGINUSE  8  -  AST_DEVICE_ONHOLD
  * @property {string} Paused -  * 0 * 1
  * @property {string} PausedReason - If set when paused, the reason the queue member was paused.
@@ -11245,7 +11255,7 @@ export interface IAstEventQueueMemberRemoved extends IAstEvent {
  * @property {string} CallsTaken - The number of calls this queue member has serviced.
  * @property {string} LastCall - The time this member last took a call, expressed in seconds since 00:00, Jan 1, 1970 UTC.
  * @property {string} InCall -  * - * Set * to * 1 * if * member * is * in * call. * Set * to * 0 * after * LastCall * time * is * updated. * 0 * 1
- * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE  
+ * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE
  * 3  -  AST_DEVICE_BUSY  4  -  AST_DEVICE_INVALID  5  -  AST_DEVICE_UNAVAILABLE  6  -  AST_DEVICE_RINGING  7  -  AST_DEVICE_RINGINUSE  8  -  AST_DEVICE_ONHOLD
  * @property {string} Paused -  * 0 * 1
  * @property {string} PausedReason - If set when paused, the reason the queue member was paused.
@@ -11281,7 +11291,7 @@ export interface IAstEventQueueMemberRinginuse extends IAstEvent {
  * @property {string} CallsTaken - The number of calls this queue member has serviced.
  * @property {string} LastCall - The time this member last took a call, expressed in seconds since 00:00, Jan 1, 1970 UTC.
  * @property {string} InCall -  * - * Set * to * 1 * if * member * is * in * call. * Set * to * 0 * after * LastCall * time * is * updated. * 0 * 1
- * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE  
+ * @property {string} Status -   -  The  numeric  device  state  status  of  the  queue  member.  0  -  AST_DEVICE_UNKNOWN  1  -  AST_DEVICE_NOT_INUSE  2  -  AST_DEVICE_INUSE
  * 3  -  AST_DEVICE_BUSY  4  -  AST_DEVICE_INVALID  5  -  AST_DEVICE_UNAVAILABLE  6  -  AST_DEVICE_RINGING  7  -  AST_DEVICE_RINGINUSE  8  -  AST_DEVICE_ONHOLD
  * @property {string} Paused -  * 0 * 1
  * @property {string} PausedReason - If set when paused, the reason the queue member was paused.
@@ -11418,8 +11428,8 @@ export interface IAstEventRegistry extends IAstEvent {
  * @see See {@link https://wiki.asterisk.org/wiki/display/AST/Asterisk+13+ManagerEvent_Reload }
  *
  * @property {string} Module - The name of the module that was reloaded, or All if all modules were reloaded
- * @property {string} Status -   -  The  numeric  status  code  denoting  the  success  or  failure  of  the  reload  request. 
- * 0  -  Success  1  -  Request  queued  2  -  Module  not  found  
+ * @property {string} Status -   -  The  numeric  status  code  denoting  the  success  or  failure  of  the  reload  request.
+ * 0  -  Success  1  -  Request  queued  2  -  Module  not  found
  * 3  -  Error  4  -  Reload  already  in  progress  5  -  Module  uninitialized  6  -  Reload  not  supported
  */
 export interface IAstEventReload extends IAstEvent {
@@ -11551,7 +11561,7 @@ export interface IAstEventRequestNotSupported extends IAstEvent {
  * @property {string} PT -  * - * The * type * of * packet * for * this * RTCP * report. * 200(SR) * 201(RR)
  * @property {string} From - The address the report was received from.
  * @property {string} RTT - Calculated Round-Trip Time in seconds
- * @property {string} ReportCount -   -  The  number  of  reports  that  were  received.  The  report  count  determines  the  number  of  ReportX  headers  in  the  message.  
+ * @property {string} ReportCount -   -  The  number  of  reports  that  were  received.  The  report  count  determines  the  number  of  ReportX  headers  in  the  message.
  * The  X  for  each  set  of  report  headers  will  range  from  0  to  ReportCount  -  1.
  * @property {string} ReportXSourceSSRC - The SSRC for the source of this report block.
  * @property {string} ReportXFractionLost - The fraction of RTP data packets from ReportXSourceSSRC lost since the previous SR or RR report was sent.
@@ -11620,7 +11630,7 @@ export interface IAstEventRTCPReceived extends IAstEvent {
  * @property {string} SSRC - The SSRC identifier for our stream
  * @property {string} PT -  * - * The * type * of * packet * for * this * RTCP * report. * 200(SR) * 201(RR)
  * @property {string} To - The address the report is sent to.
- * @property {string} ReportCount -   -  The  number  of  reports  that  were  sent.  The  report  count  determines  the  number  of  ReportX  headers  in  the  message.  
+ * @property {string} ReportCount -   -  The  number  of  reports  that  were  sent.  The  report  count  determines  the  number  of  ReportX  headers  in  the  message.
  * The  X  for  each  set  of  report  headers  will  range  from  0  to  ReportCount  -  1.
  * @property {string} ReportXSourceSSRC - The SSRC for the source of this report block.
  * @property {string} ReportXFractionLost - The fraction of RTP data packets from ReportXSourceSSRC lost since the previous SR or RR report was sent.

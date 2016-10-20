@@ -41,7 +41,7 @@ class PeerManager extends AsteriskManager {
                 return;
             }
             if (typeof response !== "undefined") {
-                response.getEvents().forEach((event) => {
+                response.events.forEach((event) => {
                     let peer;
                     if (event.Event === eventNames_1.AST_EVENT.ENDPOINT_LIST) {
                         let peer = new PJSIPPeer(event);
@@ -74,17 +74,17 @@ class PeerManager extends AsteriskManager {
         map[eventNames_1.AST_EVENT.PEER_STATUS] = this._handlePeerStatusEvent;
         this._mapEvents(map);
         let action1 = { Action: actionNames_1.AST_ACTION.IAX_PEERLIST };
-        if (this.server._allowedActions.has(action1.Action)) {
+        if (this.server.allowedActions.has(action1.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action1, handlePeers, this);
         }
         let action2 = { Action: actionNames_1.AST_ACTION.SIP_PEERS };
-        if (this.server._allowedActions.has(action2.Action)) {
+        if (this.server.allowedActions.has(action2.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action2, handlePeers, this);
         }
         let action3 = { Action: actionNames_1.AST_ACTION.PJSIP_SHOW_ENDPOINTS };
-        if (this.server._allowedActions.has(action3.Action)) {
+        if (this.server.allowedActions.has(action3.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action3, handlePeers, this);
         }
@@ -112,10 +112,10 @@ class PeerManager extends AsteriskManager {
                 port = parts[1];
             }
             else if (peer.technology === Peer.PEER_TECH.IAX) {
-                throw new Error();
+                this.logger.error("error");
             }
             else if (peer.technology === Peer.PEER_TECH.PJSIP) {
-                throw new Error();
+                this.logger.error("error");
             }
             let ip = new Ip({
                 ipAddress: address,

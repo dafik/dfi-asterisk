@@ -224,7 +224,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
             } else if (bridge.localTwoUniqueId === event.Uniqueid) {
                 bridge.isHangupSecond = true;
             } else {
-                throw new Error();
+                this.logger.error("error");
             }
             if (bridge.isHangupFirst && bridge.isHangupSecond) {
                 this.logger.info('remove local bridge: "' + bridge.id + '"');
@@ -247,7 +247,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
                 this.logger.error("Ignored HangupEvent for unknown channel " + event.Uniqueid + "@" + Moment.unix(parseFloat(event.Uniqueid)).format() + " - " + event.Channel);
                 return;
             } else {
-                throw new Error();
+                this.logger.error("error");
             }
         }
         // handle remove bridge for local bridge

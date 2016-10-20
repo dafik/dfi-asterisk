@@ -2,7 +2,7 @@ import AsteriskManager = require("../internal/server/Manager");
 import Queues = require("../collections/QueuesCollection");
 import {IDfiAstEventsQueueManager} from "../definitions/events";
 import {IAstActionQueueStatus} from "../internal/asterisk/actions";
-import {         AST_EVENT} from "../internal/asterisk/eventNames";
+import {AST_EVENT} from "../internal/asterisk/eventNames";
 import {
     IAstEventQueueCallerAbandon,
     IAstEventQueueCallerJoin,
@@ -16,13 +16,13 @@ import {
     IAstEventQueueMemberStatus,
     IAstEventQueueParams
 } from "../internal/asterisk/events";
+import {AST_ACTION} from "../internal/asterisk/actionNames";
 
 import ChannelManager = require("./channelManager");
 import Queue = require("../models/queues/QueueModel");
 import QueueMember = require("../models/queues/QueueMemberModel");
 import QueueMemberState = require("../states/queueMemberState");
 import AstUtil = require("../internal/astUtil");
-import {AST_ACTION} from "../internal/asterisk/actionNames";
 
 const PROP_CHANNEL_MANAGER = "channelManager";
 
@@ -58,25 +58,6 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
                 this.server.logger.info('manager "QueueManager" started');
                 callback.call(thisp, null, "queueManager");
             }
-        }
-
-        function onResponse(err, response) {
-
-            if (err) {
-                callback.call(thisp, err);
-                return;
-            }
-            response.getEvents().forEach((event) => {
-                if (event.Event === AST_EVENT.QUEUE_PARAMS) {
-                    handleQueueParamsEvent.call(this, event);
-                } else if (event.Event === AST_EVENT.QUEUE_MEMBER) {
-                    handleQueueMemberEvent.call(this, event);
-                } else if (event.Event === AST_EVENT.QUEUE_ENTRY) {
-                    handleQueueEntryEvent.call(this, event);
-                }
-            }, this);
-
-            finish.call(this);
         }
 
         /**
@@ -161,7 +142,24 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
         this._mapEvents(map);
 
         let action: IAstActionQueueStatus = {Action: AST_ACTION.QUEUE_STATUS};
-        this.server.sendEventGeneratingAction(action, onResponse, this);
+        this.server.sendEventGeneratingAction(action, (err, response) => {
+
+            if (err) {
+                callback.call(thisp, err);
+                return;
+            }
+            response.events.forEach((event) => {
+                if (event.Event === AST_EVENT.QUEUE_PARAMS) {
+                    handleQueueParamsEvent.call(this, event);
+                } else if (event.Event === AST_EVENT.QUEUE_MEMBER) {
+                    handleQueueMemberEvent.call(this, event);
+                } else if (event.Event === AST_EVENT.QUEUE_ENTRY) {
+                    handleQueueEntryEvent.call(this, event);
+                }
+            }, this);
+
+            finish.call(this);
+        }, this);
     }
 
     public disconnected() {

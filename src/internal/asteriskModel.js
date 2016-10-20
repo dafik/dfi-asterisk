@@ -33,7 +33,6 @@ class AsteriskModel extends DfiModel {
     }
     destroy() {
         super.destroy();
-        delete this.id;
     }
     toPlain() {
         let tmp = { attr: {}, id: this.id, prop: {} };

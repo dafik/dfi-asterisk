@@ -101,15 +101,15 @@ class OriginateServerAction extends BaseServerAction {
             if (this._server.logger.isDebugEnabled()) {
                 this._server.logger.debug("history: %j", {
                     chan: {
-                        hist: channel._stateHistory,
+                        hist: channel.getStateHistory(),
                         name: channel.name
                     },
                     dialed: {
-                        hist: channel._stateHistory,
+                        hist: channel.getStateHistory(),
                         name: channel.name
                     },
                     other: {
-                        hist: channel._stateHistory,
+                        hist: channel.getStateHistory(),
                         name: channel.name
                     }
                 });
@@ -217,7 +217,7 @@ class OriginateServerAction extends BaseServerAction {
                         let originateResponseEvent = responseEvent;
                         uniqueId = originateResponseEvent.getUniqueid();
                         this._server.logger.debug(originateResponseEvent.__proto__.constructor.name + " received with uniqueId " + uniqueId);
-                        this._server.getChannelById(uniqueId, onChannel);
+                        onChannel.call(null, this._server.managers.channel.getChannelById(uniqueId));
                     }
                 }
                 else {

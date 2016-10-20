@@ -1,21 +1,43 @@
 import {IAstActionOriginate} from "../internal/asterisk/actions";
-import {IAstEvent} from "../internal/asterisk/events";
+import {IAstEvent, IAstEventDBGetResponse} from "../internal/asterisk/events";
 import Channel = require("../models/ChannelModel");
+import AsteriskVersion = require("../internal/server/Version");
 
 export interface IDfiCallback extends Function {
     (error?, result?): void;
     fired?: boolean;
 }
-
-export interface IDfiAmiMultiCallback<E extends IAstEvent> extends Function {
+export interface IDfiActionCallback extends Function {
+    (error?, result?: IDfiAMIResponse): void;
+    fired?: boolean;
+}
+export interface IDfiAMIMultiCallback<E extends IAstEvent> extends Function {
     (error?, result?: IDfiAMIResponseMessageMulti<E>): void;
     fired?: boolean;
 }
+
+export interface IDfiGetAsteriskVersionCallback extends Function {
+    (error?, result?: AsteriskVersion): void;
+    fired?: boolean;
+}
+
+export interface IDfiDBGetCallback extends Function {
+    (error?, result?: IAstEventDBGetResponse): void;
+    fired?: boolean;
+}
+
+export interface IDfiGetFileVersionCallback extends Function {
+    (error?, result?: string[]): void;
+    fired?: boolean;
+}
+
+
 
 export interface IDfiVariableCallback extends Object {
     fn: IDfiCallback;
     context?;
 }
+
 
 export interface IEventHandle extends Function {
     (event: IAstEvent): void;
@@ -79,11 +101,20 @@ export interface IDfiAMIResponseMessageMulti<E extends IAstEvent> extends IAstEv
     EventList: string;
     Message: string;
     events: E[];
+    fn: IDfiCallback;
+    ctx?: any;
+}
+export interface IDfiAstResponseMessageMulti<E extends IAstEvent> {
+    events: E[];
+    fn: IDfiCallback;
+    ctx?: any;
 }
 
 export interface IDfiAMIResponse {
     Response: string; // Error, Follows
     ActionID: string;
+    Message?: string;
+    $content?: string;
     $time: number;
 }
 

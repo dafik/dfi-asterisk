@@ -2,11 +2,11 @@
 const AsteriskManager = require("../internal/server/Manager");
 const Queues = require("../collections/QueuesCollection");
 const eventNames_1 = require("../internal/asterisk/eventNames");
+const actionNames_1 = require("../internal/asterisk/actionNames");
 const Queue = require("../models/queues/QueueModel");
 const QueueMember = require("../models/queues/QueueMemberModel");
 const QueueMemberState = require("../states/queueMemberState");
 const AstUtil = require("../internal/astUtil");
-const actionNames_1 = require("../internal/asterisk/actionNames");
 const PROP_CHANNEL_MANAGER = "channelManager";
 /**
  * Manages queue events on behalf of an AsteriskServer.
@@ -33,24 +33,6 @@ class QueueManager extends AsteriskManager {
                 this.server.logger.info('manager "QueueManager" started');
                 callback.call(thisp, null, "queueManager");
             }
-        }
-        function onResponse(err, response) {
-            if (err) {
-                callback.call(thisp, err);
-                return;
-            }
-            response.getEvents().forEach((event) => {
-                if (event.Event === eventNames_1.AST_EVENT.QUEUE_PARAMS) {
-                    handleQueueParamsEvent.call(this, event);
-                }
-                else if (event.Event === eventNames_1.AST_EVENT.QUEUE_MEMBER) {
-                    handleQueueMemberEvent.call(this, event);
-                }
-                else if (event.Event === eventNames_1.AST_EVENT.QUEUE_ENTRY) {
-                    handleQueueEntryEvent.call(this, event);
-                }
-            }, this);
-            finish.call(this);
         }
         /**
          * Called during initialization to populate the list of queues.
@@ -122,7 +104,24 @@ class QueueManager extends AsteriskManager {
         }
         this._mapEvents(map);
         let action = { Action: actionNames_1.AST_ACTION.QUEUE_STATUS };
-        this.server.sendEventGeneratingAction(action, onResponse, this);
+        this.server.sendEventGeneratingAction(action, (err, response) => {
+            if (err) {
+                callback.call(thisp, err);
+                return;
+            }
+            response.events.forEach((event) => {
+                if (event.Event === eventNames_1.AST_EVENT.QUEUE_PARAMS) {
+                    handleQueueParamsEvent.call(this, event);
+                }
+                else if (event.Event === eventNames_1.AST_EVENT.QUEUE_MEMBER) {
+                    handleQueueMemberEvent.call(this, event);
+                }
+                else if (event.Event === eventNames_1.AST_EVENT.QUEUE_ENTRY) {
+                    handleQueueEntryEvent.call(this, event);
+                }
+            }, this);
+            finish.call(this);
+        }, this);
     }
     disconnected() {
         this.queues.forEach(onForeach);

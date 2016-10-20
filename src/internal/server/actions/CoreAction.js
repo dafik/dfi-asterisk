@@ -28,7 +28,7 @@ class CoreServerAction extends BaseServerAction {
                     found.push(line.trim().split(" ")[0]);
                 }
             }
-            found.forEach(value => this._server._allowedActions.add(value));
+            found.forEach(value => this._server.allowedActions.add(value));
             callbackFn.call(context, null);
         }, this);
     }
@@ -41,12 +41,12 @@ class CoreServerAction extends BaseServerAction {
         };
         this._server.sendAction(action, callbackFn, context);
     }
-    getVersion(callbackFn, context) {
+    getAsteriskVersion(callbackFn, context) {
         this._server.logger.debug("on getVersion");
         if (this._server.version) {
             AstUtil.maybeCallback(callbackFn, context, null, this._server.version);
         }
-        if (!this._server.isConnected()) {
+        if (!this._server.isConnected) {
             AstUtil.maybeCallbackOnce(callbackFn, context, new ManagerCommunication("not connected"));
             return;
         }
@@ -54,12 +54,12 @@ class CoreServerAction extends BaseServerAction {
             Action: actionNames_1.AST_ACTION.COMMAND,
             Command: SHOW_VERSION_COMMAND
         };
-        this._server.sendEventGeneratingAction(action, (err, response) => {
+        this._server.sendAction(action, (err, response) => {
             this._server.logger.debug("on onVersion");
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
             }
-            let tmp = response.getResults()[0].replace(/built by.+/, "").replace("Asterisk", "").trim();
+            let tmp = response.$content.replace(/built by.+/, "").replace("Asterisk", "").trim();
             if (-1 !== tmp.indexOf("SVN")) {
                 tmp = tmp.replace("SVN-branch-", "").replace(/-r.*/, "").trim() + ".-1.-1";
             }

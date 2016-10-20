@@ -1,5 +1,5 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiAMIResponseCommand, IDfiCallback} from "../../../definitions/interfaces";
+import {IDfiAMIResponseCommand, IDfiCallback, IDfiActionCallback, IDfiGetAsteriskVersionCallback, IDfiGetFileVersionCallback} from "../../../definitions/interfaces";
 import {AST_ACTION} from "../../asterisk/actionNames";
 import {IAstActionCommand, IAstActionFilter} from "../../asterisk/actions";
 import AsteriskVersion = require("../Version");
@@ -37,13 +37,13 @@ class CoreServerAction extends BaseServerAction {
                 }
             }
 
-            found.forEach(value => this._server._allowedActions.add(value));
+            found.forEach(value => this._server.allowedActions.add(value));
 
             callbackFn.call(context, null);
         }, this);
     }
 
-    public filterRTCP(callbackFn: IDfiCallback, context?) {
+    public filterRTCP(callbackFn: IDfiActionCallback, context?) {
         this._server.logger.debug("on onAvailableActions");
         let action: IAstActionFilter = {
             Action: AST_ACTION.FILTER,
@@ -53,14 +53,14 @@ class CoreServerAction extends BaseServerAction {
         this._server.sendAction(action, callbackFn, context);
     }
 
-    public getVersion(callbackFn: IDfiCallback, context?) {
+    public getAsteriskVersion(callbackFn: IDfiGetAsteriskVersionCallback, context?) {
         this._server.logger.debug("on getVersion");
 
         if (this._server.version) {
             AstUtil.maybeCallback(callbackFn, context, null, this._server.version);
         }
 
-        if (!this._server.isConnected()) {
+        if (!this._server.isConnected) {
             AstUtil.maybeCallbackOnce(callbackFn, context, new ManagerCommunication("not connected"));
             return;
         }
@@ -70,13 +70,13 @@ class CoreServerAction extends BaseServerAction {
             Command: SHOW_VERSION_COMMAND
         };
 
-        this._server.sendEventGeneratingAction(action, (err, response) => {
+        this._server.sendAction(action, (err, response: IDfiAMIResponseCommand) => {
             this._server.logger.debug("on onVersion");
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
             }
 
-            let tmp = response.getResults()[0].replace(/built by.+/, "").replace("Asterisk", "").trim();
+            let tmp = response.$content.replace(/built by.+/, "").replace("Asterisk", "").trim();
             if (-1 !== tmp.indexOf("SVN")) {
                 tmp = tmp.replace("SVN-branch-", "").replace(/-r.*/, "").trim() + ".-1.-1";
             }
@@ -85,7 +85,7 @@ class CoreServerAction extends BaseServerAction {
         }, this);
     }
 
-    public getFileVersion(file: string, callbackFn, context?) {
+    public getFileVersion(file: string, callbackFn: IDfiGetFileVersionCallback, context?) {
         function onFileVersion(fileVersion) {
             if (fileVersion == null) {
                 return null;

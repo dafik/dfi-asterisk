@@ -1,5 +1,5 @@
 "use strict";
-const DfiModel = require("../../tmp/local-dfi-base/src/dfiModel");
+const DfiModel = require("local-dfi-base/src/dfiModel");
 const PROP_IP = "ipAddress";
 const PROP_MASK = "mask";
 const PROP_PORT = "port";
@@ -8,10 +8,10 @@ class Ip extends DfiModel {
         super(attributes, options);
         let ipReg = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
         if (!attributes.mask.match(ipReg)) {
-            throw new Error();
+            this.logger.error("error");
         }
         if (attributes.ipAddress && !attributes.ipAddress.match(ipReg)) {
-            throw new Error();
+            this.logger.error("error");
         }
     }
     get ipAddress() {

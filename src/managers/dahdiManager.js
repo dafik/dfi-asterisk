@@ -43,7 +43,7 @@ class DahdiManager extends AsteriskManager {
             Action: actionNames_1.AST_ACTION.DAHDI_SHOW_CHANNELS,
             DAHDIChannel: 0
         };
-        if (!this.server._allowedActions.has(action.Action)) {
+        if (!this.server.allowedActions.has(action.Action)) {
             this.server.logger.info('manager "DahdiManager" not started DAHDI command not allowed');
             AstUtil.maybeCallbackOnce(callbackFn, context, null, "DahdiManager");
             return;
@@ -104,7 +104,7 @@ class DahdiManager extends AsteriskManager {
                     };
                 }
                 if (dahdiChannel.channel && dahdiChannel.channel.name !== channel.name) {
-                    throw new Error();
+                    this.logger.error("error");
                 }
                 else {
                     dahdiChannel.channel = channel;

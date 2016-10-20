@@ -13,15 +13,12 @@ class DBServerAction extends BaseServerAction {
             };
             this._server.sendEventGeneratingAction(action, (err, response) => {
                 if (err) {
-                    callbackFn.call(context, err);
+                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
                     return;
                 }
                 let dbgre;
                 if (response.events.length > 0) {
                     dbgre = response.events[0];
-                }
-                else {
-                    dbgre = response;
                 }
                 AstUtil.maybeCallbackOnce(callbackFn, context, null, dbgre);
             });

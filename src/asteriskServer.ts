@@ -1,82 +1,105 @@
-import async = require("async");
-import * as _ from "lodash";
 import {IDfiAstConfigAstServer, IDfiAstConfigServer} from "./definitions/configs";
 import {IDfiAstEventsServer} from "./definitions/events";
-import {IDfiAMIResponse, IDfiAMIResponseGetvar, IDfiCallback, IDfiAMIResponseCommand, IDfiAMIResponseMessage, IDfiAmiMultiCallback} from "./definitions/interfaces";
+import {
+    IDfiAMIMultiCallback,
+    IDfiAMIResponse,
+    IDfiAMIResponseCommand,
+    IDfiAMIResponseGetvar,
+    IDfiAMIResponseMessage,
+    IDfiAMIResponseMessageMulti,
+    IDfiAstResponseMessageMulti,
+    IDfiCallback, IDfiActionCallback
+} from "./definitions/interfaces";
+import {AST_ACTION} from "./internal/asterisk/actionNames";
 import {IAstAction, IAstActionCommand, IAstActionGetvar} from "./internal/asterisk/actions";
-import { AST_EVENT} from "./internal/asterisk/eventNames";
+import {AST_EVENT} from "./internal/asterisk/eventNames";
 import {IAstEvent} from "./internal/asterisk/events";
+import * as _ from "lodash";
+import async = require("async");
+import AmiClient = require("asterisk-ami-client");
 
 import DfiEventObject = require("local-dfi-base/src/dfiEventObject");
-
 import EventDispatcher = require("./internal/server/EventDispatcher");
 import ServerActions = require("./internal/server/Actions");
 import ServerManagers = require("./internal/server/Managers");
-
-import AmiClient = require("asterisk-ami-client");
 
 import AstUtil = require("./internal/astUtil");
 import ManagerCommunication = require("./errors/ManagerCommunication");
 import AsteriskVersion = require("./internal/server/Version");
 import ManagerError = require("./errors/ManagerError");
 
+const PROP_AMI = "ami";
+const PROP_AMI_HANDLERS = "amiHandlers";
+const PROP_INITIALIZED = "initialized";
+const PROP_INITIALIZATION_STARTED = "initializationStarted";
+const PROP_PENDING_EVENTS = "pendingEvents";
+const PROP_MULTIPART_RESPONSES = "multipartResponses";
+const PROP_MULTIPART_RESPONSE_HANDLER = "multipartResponseHandler";
+const PROP_ALLOWED_ACTIONS = "allowedActions";
+const PROP_DISPATCHER = "dispatcher";
+const PROP_ACTIONS = "actions";
+const PROP_MANAGERS = "managers";
+const PROP_VERSION = "version";
+const PROP_OPTIONS = "options";
+
 class AsteriskServer extends DfiEventObject {
+
+    static get events(): IDfiAstEventsServer {
+        return EVENTS;
+    }
 
     constructor(options: IDfiAstConfigServer) {
 
         super({loggerName: "dfi:as:"});
 
-        this.setProp("initialized", false);
-        this.setProp("initializationStarted", false);
-        this.setProp("pendingEvents", []);
-        this.setProp("responses", new Map());
-        this.setProp("allowedActions", new Set());
+        this.setProp(PROP_INITIALIZED, false);
+        this.setProp(PROP_INITIALIZATION_STARTED, false);
+        this.setProp(PROP_PENDING_EVENTS, []);
+        this.setProp(PROP_MULTIPART_RESPONSES, new Map());
+        this.setProp(PROP_ALLOWED_ACTIONS, new Set());
 
         this._initializeOptions(options);
         this._initializeEventConnection();
         this._initializeAmiHandlers();
 
-        this.setProp("dispatcher", new EventDispatcher(this));
-        this.setProp("actions", new ServerActions(this));
-        this.setProp("managers", new ServerManagers(this));
+        this.setProp(PROP_DISPATCHER, new EventDispatcher(this));
+        this.setProp(PROP_ACTIONS, new ServerActions(this));
+        this.setProp(PROP_MANAGERS, new ServerManagers(this));
 
+        this.setProp(PROP_MULTIPART_RESPONSE_HANDLER, this._onMultipartResponse.bind(this));
     }
 
     get managers(): ServerManagers {
-        return this.getProp("managers");
+        return this.getProp(PROP_MANAGERS);
     }
 
     get actions(): ServerActions {
-        return this.getProp("actions");
+        return this.getProp(PROP_ACTIONS);
     }
 
     get dispatcher() {
-        return this.getProp("dispatcher");
+        return this.getProp(PROP_DISPATCHER);
     }
 
     get initialized() {
-        return this.getProp("initialized");
+        return this.getProp(PROP_INITIALIZED);
     }
 
     get version(): AsteriskVersion {
-        return this.getProp("version");
+        return this.getProp(PROP_VERSION);
     }
 
     set version(version: AsteriskVersion) {
-        this.setProp("version", version);
+        this.setProp(PROP_VERSION, version);
     }
 
-    static get events(): IDfiAstEventsServer {
-        return Events;
+    public get allowedActions(): Set<string> {
+        return this.getProp(PROP_ALLOWED_ACTIONS);
     }
 
     private get _ami(): AmiClient {
-        return this.getProp("ami");
+        return this.getProp(PROP_AMI);
     };
-
-    get _allowedActions(): Set<string> {
-        return this.getProp("allowedActions");
-    }
 
     public start(): Promise<AsteriskServer> {
         return new Promise((resolve, reject) => {
@@ -91,120 +114,20 @@ class AsteriskServer extends DfiEventObject {
         );
     }
 
-    public isConnected(): boolean {
+    public get isConnected(): boolean {
         return this._ami && this._ami.isConnected;
     }
 
-    public  sendEventGeneratingAction<E extends IAstEvent>(action: IAstAction | IAstActionCommand, callbackFn: IDfiAmiMultiCallback<E>, context?) {
-        if (!this._allowedActions.has(action.Action)) {
-            AstUtil.maybeCallback(callbackFn, context, "Not Allowed Action: " + action.Action);
-            return;
-        }
-        if (!Object.hasOwnProperty.call(action, "ActionID")) {
-            action.ActionID = "AN_" + AstUtil.uniqueActionID()
-        }
-
-        this.logger.debug('action eg: "%s" id: %s', action.Action, action.ActionID);
-        this.logger.trace("sending %s %j", action.Action, action);
-        this.logger.trace("\n\n %j \n", action);
-
-        let responses = this.getProp("responses");
-
-        function onResponse(response) {
-            if (response.ActionID) {
-                let resp = responses.get(response.ActionID);
-
-                if (response.EventList) {
-                    if (response.EventList === "start") {
-                        if (resp) {
-                            Object.assign(resp, response);
-                        } else {
-                            let x = 1;
-                        }
-                    } else if (response.EventList === "Complete") {
-                        responses.delete(response.ActionID);
-                        if (responses.size === 0) {
-                            this._ami.removeListener("event", handler);
-                        }
-                        if (resp) {
-                            let callb = resp.callback;
-                            let thisp1 = resp.thisp;
-                            delete resp["callback"];
-                            delete resp["thisp"];
-                            AstUtil.maybeCallback(callb, thisp1, null, resp);
-                        } else {
-                            let x = 1;
-                        }
-                    } else {
-                        let x = 1;
-                    }
-                } else if (resp) {
-                    resp.events.push(response);
-                } else {
-                    let x = 1;
-                }
-
-            }
-        }
-
-        let handler = onResponse.bind(this);
-
-        responses.set(action.ActionID, {
-            callback: callbackFn,
-            events: [],
-            getEvents: function () {
-                return this.events;
-            },
-            thisp: context,
-        });
-        if (responses.size === 1) {
-            this._ami.on("event", handler);
-        }
-        let actionToSend: IAstAction|string = action;
-        if (action.serialize) {
-            actionToSend = AstUtil.serializeMessage(action);
-        }
-
-        (this._ami.send(actionToSend, true) as Promise<IDfiAMIResponse>)
-            .then((response: IDfiAMIResponse) => {
-                if (response.Response && response.Response === "Error") {
-                    this.logger.error('ManagerCommunicationException %s ,  action: %j response %j', action.Action, action, response);
-
-                    responses.delete(response.ActionID);
-                    if (responses.size === 0) {
-                        this._ami.removeListener("event", handler);
-                    }
-                    AstUtil.maybeCallback(callbackFn, context, response);
-                    return;
-                }
-                if (action.Action === "Command") {
-                    this.logger.debug('response for ev: %s command: %s response: %s', action.Action, (action as IAstActionCommand).Command, response.Response);
-                } else {
-                    this.logger.debug('response for ev: %s response: %s ', action.Action, response.Response);
-                }
-                if (this.logger.isTraceEnabled()) {
-                    this.logger.trace('sendEventGeneratingResponse - %j', response);
-                }
-                onResponse.call(this, response);
-            })
-            .catch(error => error)
-            .then(error => {
-                if (error instanceof Error) {
-                    AstUtil.maybeCallback(callbackFn, context, error);
-                }
-            });
-    }
-
-    public sendAction(action: IAstAction | IAstActionGetvar | IAstActionCommand, callbackFn?: IDfiCallback, context?: any) {
-        if (!this._allowedActions.has(action.Action)) {
-            AstUtil.maybeCallbackOnce(callbackFn, context, 'Not Allowed Action: ' + action.Action);
+    public sendAction(action: IAstAction | IAstActionGetvar | IAstActionCommand, callbackFn?: IDfiActionCallback, context?: any) {
+        if (!this.allowedActions.has(action.Action)) {
+            AstUtil.maybeCallbackOnce(callbackFn, context, "Not Allowed Action: " + action.Action);
             return;
         }
 
-        if (action.Action == "Getvar") {
+        if (action.Action === AST_ACTION.GET_VAR) {
             this.logger.debug('action: "' + action.Action + '" var: "' + (action as IAstActionGetvar).Variable + '" channel: "' + (action as IAstActionGetvar).Channel + '"');
         } else {
-            if (action.Action == "Command") {
+            if (action.Action === AST_ACTION.COMMAND) {
                 this.logger.debug('action: "' + action.Action + '" comm: ' + (action as IAstActionCommand).Command);
             } else {
                 this.logger.debug('action: "' + action.Action + '"');
@@ -259,71 +182,157 @@ class AsteriskServer extends DfiEventObject {
             });
     }
 
+    public  sendEventGeneratingAction<E extends IAstEvent>(action: IAstAction | IAstActionCommand, callbackFn: IDfiAMIMultiCallback<E>, context?) {
+        if (!this.allowedActions.has(action.Action)) {
+            AstUtil.maybeCallback(callbackFn, context, "Not Allowed Action: " + action.Action);
+            return;
+        }
+        if (!Object.hasOwnProperty.call(action, "ActionID")) {
+            action.ActionID = "AN_" + AstUtil.uniqueActionID();
+        }
+
+        this.logger.debug('action eg: "%s" id: %s', action.Action, action.ActionID);
+        this.logger.trace("sending %s %j", action.Action, action);
+        this.logger.trace("\n\n %j \n", action);
+
+        let responses = this._getResponses<E>();
+
+        let responseMulti: IDfiAstResponseMessageMulti<E> = {
+            ctx: context,
+            events: [],
+            fn: callbackFn
+        };
+
+        responses.set(action.ActionID, responseMulti);
+        if (responses.size === 1) {
+            this._ami.on("event", this.getProp(PROP_MULTIPART_RESPONSE_HANDLER));
+        }
+        let actionToSend: IAstAction|string = action;
+        if (action.serialize) {
+            actionToSend = AstUtil.serializeMessage(action);
+        }
+
+        (this._ami.send(actionToSend, true) as Promise<IDfiAMIResponse>)
+            .then((response: IDfiAMIResponse) => {
+                if (response.Response && response.Response === "Error") {
+                    this.logger.error("ManagerCommunicationException %s ,  action: %j response %j", action.Action, action, response);
+
+                    responses.delete(response.ActionID);
+                    if (responses.size === 0) {
+                        this._ami.removeListener("event", this.getProp(PROP_MULTIPART_RESPONSE_HANDLER));
+                    }
+                    AstUtil.maybeCallback(callbackFn, context, response);
+                    return;
+                }
+                if (action.Action === "Command") {
+                    this.logger.debug("response for ev: %s command: %s response: %s", action.Action, (action as IAstActionCommand).Command, response.Response);
+                } else {
+                    this.logger.debug("response for ev: %s response: %s ", action.Action, response.Response);
+                }
+                if (this.logger.isTraceEnabled()) {
+                    this.logger.trace("sendEventGeneratingResponse - %j", response);
+                }
+                this.getProp(PROP_MULTIPART_RESPONSE_HANDLER)(response);
+            })
+            .catch(error => error)
+            .then(error => {
+                if (error instanceof Error) {
+                    AstUtil.maybeCallback(callbackFn, context, error);
+                }
+            });
+    }
+
+    private _getResponses<E extends IAstEvent>(): Map<string, IDfiAstResponseMessageMulti<E>> {
+        return this.getProp(PROP_MULTIPART_RESPONSES);
+    }
+
+    private _finishMultipartResponse<E extends IAstEvent>(response, resp: IDfiAMIResponseMessageMulti<E>) {
+        let responses = this._getResponses();
+        responses.delete(response.ActionID);
+        if (responses.size === 0) {
+            this._ami.removeListener("event", this.getProp(PROP_MULTIPART_RESPONSE_HANDLER));
+        }
+
+        let fn = resp.fn;
+        let ctx = resp.ctx;
+        delete resp.fn;
+        delete resp.ctx;
+
+        AstUtil.maybeCallback(fn, ctx, null, resp);
+    }
+
+    private _onMultipartResponse(response) {
+        if (response.ActionID) {
+            let resp = this._getResponses().get(response.ActionID);
+            if (resp) {
+                if (response.EventList) {
+                    if (response.EventList === "start") {
+                        Object.assign(resp, response);
+                    } else if (response.EventList === "Complete") {
+                        this._finishMultipartResponse.call(this, response, resp);
+                    }
+                } else if (response.Response === "Follows") {
+                    Object.assign(resp, response);
+                    this._finishMultipartResponse.call(this, response, resp);
+                } else {
+                    resp.events.push(response);
+                }
+            }
+
+        }
+    }
+
     private _initializeOptions(options: IDfiAstConfigServer) {
 
         let defaultState = {
-            channel: true,
-            peer: true,
-            device: true,
-            bridge: true,
-            dahdi: true,
-            queue: true,
             agent: true,
-            meetMe: true
+            bridge: true,
+            channel: true,
+            dahdi: true,
+            device: true,
+            meetMe: true,
+            peer: true,
+            queue: true
         };
-        let currentState = _.has(options, "managers") ? options.managers : {};
 
-        this._allowedActions.add("Command");
-        options["managers"] = Object.assign(defaultState, currentState);
+        this.allowedActions.add("Command");
+        options.managers = Object.assign(defaultState, options.managers);
 
-        this.setProp("options", options);
+        this.setProp(PROP_OPTIONS, options);
     }
 
     private _initializeEventConnection() {
+        let eventConnection = new AmiClient({
+            addTime: true,
+            attemptsDelay: 1000,
+            emitEventsByTypes: false,
+            emitResponsesById: true,
+            eventFilter: null,  // filter disabled
+            eventTypeToLowerCase: false,
+            keepAlive: false,
+            keepAliveDelay: 1000,
+            maxAttemptsCount: 30,
+            reconnect: true
+        });
 
-        let opts = _.has(this.getProp("options"), "server") ? this.getProp("options").server : null;
-
-        if (_.has(opts, "port") && _.has(opts, "host") && _.has(opts, "username") && _.has(opts, "secret")) {
-            //let eventConnection = new DAmi(opts);
-
-            let eventConnection = new AmiClient({
-                reconnect: true,
-                maxAttemptsCount: 30,
-                attemptsDelay: 1000,
-                keepAlive: true,
-                keepAliveDelay: 1000,
-                emitEventsByTypes: true,
-                eventTypeToLowerCase: false,
-                emitResponsesById: true,
-                addTime: true,
-                eventFilter: null  // filter disabled
-            });
-
-            this.setProp("ami", eventConnection);
-            //AsteriskServer.registerResponseClasses(eventConnection);
-
-        } else {
-            throw new Error("improper configuration");
-            //improper configuration
-        }
-
-
+        this.setProp(PROP_AMI, eventConnection);
+        // AsteriskServer.registerResponseClasses(eventConnection);
     }
 
-    _initializeAmiHandlers() {
+    private _initializeAmiHandlers() {
         let handlers = {};
         for (let eventName in amiHandlers) {
             if (_.has(amiHandlers, eventName)) {
                 handlers[eventName] = amiHandlers[eventName].bind(this);
             }
         }
-        this.setProp("amiHandlers", handlers);
+        this.setProp(PROP_AMI_HANDLERS, handlers);
 
     }
 
-    _initializeIfNeeded(callbackFn: IDfiCallback, context?) {
+    private _initializeIfNeeded(callbackFn: IDfiCallback, context?) {
 
-        function initialize() {
+        let initialize = () => {
             let ami = this._ami;
 
             this.emit(AsteriskServer.events.BEFORE_INIT);
@@ -338,7 +347,7 @@ class AsteriskServer extends DfiEventObject {
                     ami.removeListener("amiConnectionError", errorFn);
 
                     onInitialized.call(this);
-                }, this)
+                }, this);
             }
             if (this.getProp("initializationStarted")) {
                 return;
@@ -348,15 +357,15 @@ class AsteriskServer extends DfiEventObject {
             ami.once("amiConnectionTimeout", errorFn);
             ami.once("amiConnectionError", errorFn);
 
-            if (!ami._connection) {
+            if (!ami.isConnected) {
                 let opts: IDfiAstConfigAstServer = _.has(this.getProp("options"), "server") ? this.getProp("options").server : null;
 
-                this.setProp("initializationStarted", true);
+                this.setProp(PROP_INITIALIZATION_STARTED, true);
                 this._bindAmiEvents();
-                ami.connect(opts.username, opts.secret, {host: opts.host, port: opts.port})
+                ami.connect(opts.username, opts.secret, {host: opts.host, port: parseInt(opts.port, 10)})
                     .catch((onInitializedError.bind(this)));
             }
-        }
+        };
 
         function onConnectionError(event) {
             // TODO reconnect
@@ -371,7 +380,7 @@ class AsteriskServer extends DfiEventObject {
                 self.actions.core.getAvailableActions.bind(self.actions.core),
                 self.actions.core.filterRTCP.bind(self.actions.core),
                 self.managers.start.bind(self.managers),
-                onAll.bind(self),
+                onAll.bind(self)
             ], (err) => {
                 if (err) {
                     AstUtil.maybeCallback(callbackFn, context, err);
@@ -387,8 +396,8 @@ class AsteriskServer extends DfiEventObject {
         function onAll(callback) {
             this.logger.debug("on onAll");
             this.logger.info("Initializing done");
-            this.setProp("initialized", true);
-            this.setProp("initializationStarted", false);
+            this.setProp(PROP_INITIALIZED, true);
+            this.setProp(PROP_INITIALIZATION_STARTED, false);
 
             this.emit(AsteriskServer.events.INIT);
             AstUtil.maybeCallback(callback, context);
@@ -400,12 +409,11 @@ class AsteriskServer extends DfiEventObject {
         }
 
         function onInitializedError(err) {
-            this.logger.debug('on onInitializedError %j', err);
+            this.logger.debug("on onInitializedError %j", err);
             AstUtil.maybeCallback(callbackFn, context, err);
         }
 
         let errorFn = onConnectionError.bind(this);
-
 
         if (this.initialized) {
             onInitialized.call(this);
@@ -414,7 +422,7 @@ class AsteriskServer extends DfiEventObject {
         }
     }
 
-    _bindAmiEvents() {
+    private _bindAmiEvents() {
         /**
          * @this AsteriskServer
          */
@@ -427,7 +435,7 @@ class AsteriskServer extends DfiEventObject {
              */
             function run() {
                 let wEvent;
-                let pendingEvents = this.getProp("pendingEvents");
+                let pendingEvents = this.getProp(PROP_PENDING_EVENTS);
 
                 if (pendingEvents.length > 0) {
                     this.logger.info("begin issuing pending events");
@@ -437,17 +445,17 @@ class AsteriskServer extends DfiEventObject {
                     }
                     this.logger.info("end issuing pending events");
                 }
-                this._ami.removeListener("event", handlers.waitHandler);  //remove tmp handler
-                this._ami.on("event", handlers.event);  //restore original handler
+                this._ami.removeListener("event", handlers.waitHandler);  // remove tmp handler
+                this._ami.on("event", handlers.event);  // restore original handler
             }
         }
 
-        let handlers = this.getProp("amiHandlers");
+        let handlers = this.getProp(PROP_AMI_HANDLERS);
 
         for (let eventName in handlers) {
             if (handlers.hasOwnProperty(eventName)) {
-                if (eventName != "event") {
-                    if (eventName == "waitHandler") {
+                if (eventName !== "event") {
+                    if (eventName === "waitHandler") {
                         this._ami.on("event", handlers[eventName]);
                     } else {
                         this._ami.on(eventName, handlers[eventName]);
@@ -470,27 +478,27 @@ const amiHandlers = {
     },
 
     event (event) {
-        this.logger.trace('on amiEvent: %j', event);
+        this.logger.trace("on amiEvent: %j", event);
         this.dispatcher.dispatch(event);
     },
     response (response) {
-        this.logger.trace('on amiResponse: %j', response);
+        this.logger.trace("on amiResponse: %j", response);
 
     },
-    internalError (had_error) {
-        //let e = arguments[0].error;
+    internalError (hadError) {
+        // let e = arguments[0].error;
         this.logger.error("on amiConnectionError" + JSON.stringify(arguments));
 
-        //throw new Error('ManagerCommunicationException("' + e.message + "  -  " + JSON.stringify(e));
-        //TODO reconnect
-        throw had_error;
+        // throw new Error('ManagerCommunicationException("' + e.message + "  -  " + JSON.stringify(e));
+        // TODO reconnect
+        throw hadError;
 
     },
     amiConnectionClose () {
         this.logger.warn("on amiConnectionClose" + JSON.stringify(arguments));
-        console.log("restart");
+        this.logger.fatal("restart");
 
-        //TODO
+        // TODO
         this._reInitialize();
     },
     amiConnectionTimeout () {
@@ -500,7 +508,7 @@ const amiHandlers = {
         this.logger.warn("on amiConnectionEnd" + JSON.stringify(arguments));
     },
     waitHandler(event) {
-        if (event.Event == AST_EVENT.FULLY_BOOTED) {
+        if (event.Event === AST_EVENT.FULLY_BOOTED) {
             amiHandlers.event.call(this, event);
         } else {
             if (!event.ActionID) {
@@ -509,16 +517,16 @@ const amiHandlers = {
         }
     }
 };
-const Events: IDfiAstEventsServer = Object.assign(
+
+const EVENTS: IDfiAstEventsServer = Object.assign(
     Object.assign({}, DfiEventObject.events),
     {
-        CONNECTED: Symbol("astConnected"),
         BEFORE_INIT: Symbol("astBeforeInitialized"),
-        INIT: Symbol("astInitialized"),
-        REINIT: Symbol("astReInitialized"),
         BEFORE_REINIT: Symbol("astBeforeReInitialized"),
+        CONNECTED: Symbol("astConnected"),
+        INIT: Symbol("astInitialized"),
+        REINIT: Symbol("astReInitialized")
     }
 );
-
 
 export = AsteriskServer;

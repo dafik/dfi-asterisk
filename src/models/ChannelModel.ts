@@ -254,6 +254,10 @@ class Channel extends AsteriskModel {
         this.setProp(P_PROP_HANGUP_REQUEST_METHOD, val);
     }
 
+    public getStateHistory(): ChannelStateHistoryEntry[] {
+        return [...this.getProp(P_PROP_STATE_HISTORY)];
+    }
+
     private get _varsCallbacks(): Map<string, IDfiVariableCallback[]> {
         return this.getProp(P_PROP_VARS_CALLBACKS);
     }
