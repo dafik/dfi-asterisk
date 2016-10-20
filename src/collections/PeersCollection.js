@@ -27,6 +27,9 @@ class Peers extends AsteriskCollection {
         if (this.peerTechs.has(tech)) {
             return new Map([...this.getProp(P_PROP_PEERS_BY_TECH).get(tech).entries()]);
         }
+        else {
+            return new Map();
+        }
     }
     add(element) {
         return super.add(element);
