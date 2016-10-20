@@ -20,23 +20,25 @@ const PROP_DESCRIPTION = "description";
 
 class SIPPeer extends Peer {
 
-    protected static map = new Map([
-        ["Channeltype", PROP_CHANNEL_TYPE],
-        ["ObjectName", PROP_OBJECT_NAME],
-        ["ChanObjectType", PROP_CHAN_OBJECT_TYPE],
-        ["Dynamic", PROP_DYNAMIC],
-        ["Status", PROP_STATE],
+    protected static map = new Map(
+        [...Peer.map.entries()].concat([
+            ["Channeltype", PROP_CHANNEL_TYPE],
+            ["ObjectName", PROP_OBJECT_NAME],
+            ["ChanObjectType", PROP_CHAN_OBJECT_TYPE],
+            ["Dynamic", PROP_DYNAMIC],
+            ["Status", PROP_STATE],
 
-        ["AutoForcerport", PROP_AUTO_FORCE_R_PORT],
-        ["Forcerport", PROP_FORCE_R_PORT],
-        ["AutoComedia", PROP_AUTO_COMEDIA],
-        ["Comedia", PROP_COMEDIA],
-        ["VideoSupport", PROP_VIDEO_SUPPORT],
-        ["TextSupport", PROP_TEXT_SUPPORT],
-        ["ACL", PROP_ACL],
-        ["RealtimeDevice", PROP_REAL_TIME_DEVICE],
-        ["Description", PROP_DESCRIPTION]
-    ]);
+            ["AutoForcerport", PROP_AUTO_FORCE_R_PORT],
+            ["Forcerport", PROP_FORCE_R_PORT],
+            ["AutoComedia", PROP_AUTO_COMEDIA],
+            ["Comedia", PROP_COMEDIA],
+            ["VideoSupport", PROP_VIDEO_SUPPORT],
+            ["TextSupport", PROP_TEXT_SUPPORT],
+            ["ACL", PROP_ACL],
+            ["RealtimeDevice", PROP_REAL_TIME_DEVICE],
+            ["Description", PROP_DESCRIPTION]
+        ])
+    );
 
     constructor(attributes: IDfiAstModelAttribsSipPeer, options?: IDfiAstModelOptions) {
 

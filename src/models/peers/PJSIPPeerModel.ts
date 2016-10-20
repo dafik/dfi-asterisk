@@ -10,9 +10,11 @@ const PROP_STATE = "state";
 
 class PJSIPPeer extends Peer {
 
-    protected static map = new Map([
-        ["x", "x"] // TODO add mapings
-    ]);
+    protected static map = new Map(
+        [...Peer.map.entries()].concat([
+            ["x", "x"] // TODO add mapings
+        ])
+    );
 
     constructor(attributes: IDfiAstModelAttribsPJSIPPeer, options?: IDfiAstModelOptions) {
         // TODO define interface

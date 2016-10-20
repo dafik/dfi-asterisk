@@ -25,7 +25,7 @@ class IAXPeer extends Peer {
         super(attr, options);
     }
 }
-IAXPeer.map = new Map([
+IAXPeer.map = new Map([...Peer.map.entries()].concat([
     ["Channeltype", PROP_CHANNEL_TYPE],
     ["ObjectName", PROP_OBJECT_NAME],
     ["ObjectUsername", PROP_OBJECT_USER_NAME],
@@ -34,6 +34,6 @@ IAXPeer.map = new Map([
     ["Trunk", PROP_TRUNK],
     ["Encryption", PROP_ENCRYPTION],
     ["Status", PROP_STATE]
-]);
+]));
 module.exports = IAXPeer;
 //# sourceMappingURL=IAXPeerModel.js.map

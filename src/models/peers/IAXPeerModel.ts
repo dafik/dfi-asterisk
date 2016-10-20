@@ -14,16 +14,18 @@ const PROP_ENCRYPTION = "encryption";
 
 class IAXPeer extends Peer {
 
-    protected static map = new Map([
-        ["Channeltype", PROP_CHANNEL_TYPE],
-        ["ObjectName", PROP_OBJECT_NAME],
-        ["ObjectUsername", PROP_OBJECT_USER_NAME],
-        ["ChanObjectType", PROP_CHAN_OBJECT_TYPE],
-        ["Dynamic", PROP_DYNAMIC],
-        ["Trunk", PROP_TRUNK],
-        ["Encryption", PROP_ENCRYPTION],
-        ["Status", PROP_STATE]
-    ]);
+    protected static map = new Map(
+        [...Peer.map.entries()].concat([
+            ["Channeltype", PROP_CHANNEL_TYPE],
+            ["ObjectName", PROP_OBJECT_NAME],
+            ["ObjectUsername", PROP_OBJECT_USER_NAME],
+            ["ChanObjectType", PROP_CHAN_OBJECT_TYPE],
+            ["Dynamic", PROP_DYNAMIC],
+            ["Trunk", PROP_TRUNK],
+            ["Encryption", PROP_ENCRYPTION],
+            ["Status", PROP_STATE]
+        ])
+    );
 
     constructor(attributes: IDfiAstModelAttribsIAXPeer, options?: IDfiAstModelOptions) {
 

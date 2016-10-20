@@ -37,7 +37,7 @@ class SIPPeer extends Peer {
         super(attr, options);
     }
 }
-SIPPeer.map = new Map([
+SIPPeer.map = new Map([...Peer.map.entries()].concat([
     ["Channeltype", PROP_CHANNEL_TYPE],
     ["ObjectName", PROP_OBJECT_NAME],
     ["ChanObjectType", PROP_CHAN_OBJECT_TYPE],
@@ -52,6 +52,6 @@ SIPPeer.map = new Map([
     ["ACL", PROP_ACL],
     ["RealtimeDevice", PROP_REAL_TIME_DEVICE],
     ["Description", PROP_DESCRIPTION]
-]);
+]));
 module.exports = SIPPeer;
 //# sourceMappingURL=SIPPeerModel.js.map

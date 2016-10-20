@@ -25,8 +25,8 @@ class PJSIPPeer extends Peer {
         super(attr, options);
     }
 }
-PJSIPPeer.map = new Map([
+PJSIPPeer.map = new Map([...Peer.map.entries()].concat([
     ["x", "x"] // TODO add mapings
-]);
+]));
 module.exports = PJSIPPeer;
 //# sourceMappingURL=PJSIPPeerModel.js.map
