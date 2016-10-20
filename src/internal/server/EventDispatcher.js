@@ -3,7 +3,7 @@ const DfiObject = require("local-dfi-base/src/dfiObject");
 const eventNames_1 = require("../asterisk/eventNames");
 class EventDispatcher extends DfiObject {
     constructor(server) {
-        super();
+        super({ loggerName: "dfi:as:" });
         this.setProp("server", server);
         this.setProp("subscriptions", new Map());
     }

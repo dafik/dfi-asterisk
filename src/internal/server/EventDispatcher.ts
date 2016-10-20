@@ -8,7 +8,7 @@ import {AST_EVENT} from "../asterisk/eventNames";
 class EventDispatcher extends DfiObject {
 
     constructor(server: AsteriskServer) {
-        super();
+        super({loggerName: "dfi:as:"});
 
         this.setProp("server", server);
         this.setProp("subscriptions", new Map());
