@@ -28,6 +28,16 @@ class Peers extends AsteriskCollection<Peer> {
         super.forEach(fn, context);
     }
 
+    public get peerTechs() {
+        return new Map([...this.getProp(P_PROP_PEERS_BY_TECH).keys()]);
+    }
+
+    public getPeersByTech(tech) {
+        if (this.peerTechs.has(tech)) {
+            return new Map([...this.getProp(P_PROP_PEERS_BY_TECH).get(tech).entries()]);
+        }
+    }
+
     public add(element: Peer): Map<any, Peer> {
         return super.add(element);
     }
