@@ -52,7 +52,7 @@ class ModuleServerAction extends BaseServerAction {
             };
             this._server.sendAction(action, (err, response) => {
                 if (err) {
-                    AstUtil.maybeCallback(callbackFn, context, new ManagerCommunication(response));
+                    AstUtil.maybeCallback(callbackFn, context, new ManagerCommunication(response.Message ? response.Message : response.Response));
                 }
             });
         })

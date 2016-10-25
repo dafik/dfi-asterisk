@@ -1,43 +1,72 @@
-import {IAstActionOriginate} from "../internal/asterisk/actions";
-import {IAstEvent, IAstEventDBGetResponse} from "../internal/asterisk/events";
+import QueueEntry = require("../models/queues/QueueEntryModel");
+import QueueMember = require("../models/queues/QueueMemberModel");
+
+import {IAstAction, IAstActionOriginate} from "../internal/asterisk/actions";
+import {IAstEvent} from "../internal/asterisk/events";
 import Channel = require("../models/ChannelModel");
 import AsteriskVersion = require("../internal/server/Version");
+import DialplanContext = require("../models/dialans/DialplanContextModel");
 
-export interface IDfiCallback extends Function {
-    (error?, result?): void;
+export interface IDfiCallbackError extends Function {
+    (error?: Error): void;
     fired?: boolean;
 }
-export interface IDfiActionCallback extends Function {
-    (error?, result?: IDfiAMIResponse): void;
+
+export interface IDfiAMIResponseError extends Error {
+    action: IAstAction;
+}
+
+export interface IDfiAMICallbackError extends Function {
+    (error?: IDfiAMIResponseError): void;
+    fired?: boolean;
+}
+
+export interface IDfiCallbackResult extends IDfiCallbackError {
+    (error?: Error, result?): void;
+    fired?: boolean;
+}
+
+export interface IDfiAMICallbackResult extends IDfiCallbackError {
+    (error?: IDfiAMIResponseError, result?): void;
+    fired?: boolean;
+}
+
+export interface IDfiActionCallback<R extends IDfiAMIResponse> extends Function {
+    (error?: IDfiAMIResponseError, result?: R): void;
     fired?: boolean;
 }
 export interface IDfiAMIMultiCallback<E extends IAstEvent> extends Function {
-    (error?, result?: IDfiAMIResponseMessageMulti<E>): void;
+    (error?: IDfiAMIResponseError, result?: IDfiAMIResponseMessageMulti<E>): void;
     fired?: boolean;
 }
 
 export interface IDfiGetAsteriskVersionCallback extends Function {
-    (error?, result?: AsteriskVersion): void;
+    (error?: IDfiAMIResponseError, result?: AsteriskVersion): void;
     fired?: boolean;
 }
 
 export interface IDfiDBGetCallback extends Function {
-    (error?, result?: IAstEventDBGetResponse): void;
+    (error?: IDfiAMIResponseError, result?: {Family: string; Key: string; Val: string; }): void;
+    fired?: boolean;
+}
+export interface IDfiGetDialplansCallback extends Function {
+    (error?: IDfiAMIResponseError, result?: DialplanContext[]): void;
+    fired?: boolean;
+}
+export interface IDfiGetDialplanCallback extends Function {
+    (error?: IDfiAMIResponseError, result?: DialplanContext): void;
     fired?: boolean;
 }
 
 export interface IDfiGetFileVersionCallback extends Function {
-    (error?, result?: string[]): void;
+    (error?: IDfiAMIResponseError, result?: string[]): void;
     fired?: boolean;
 }
 
-
-
 export interface IDfiVariableCallback extends Object {
-    fn: IDfiCallback;
+    fn: IDfiCallbackResult;
     context?;
 }
-
 
 export interface IEventHandle extends Function {
     (event: IAstEvent): void;
@@ -90,10 +119,37 @@ export interface IDfiAsOriginateCallback {
     onSuccess(channel: Channel): void;
 }
 
-export interface IDfiAstResponse extends IAstEvent {
-    Response: string;
-    EventList: string;
-    Message: string;
+interface IDfiAstQueueListener {
+    /**
+     * Called whenever an entry appears in the queue.
+     *
+     * @param entry the new entry.
+     */
+    onNewEntry (entry: QueueEntry);
+    /**
+     * Called whenever an entry leaves the queue.
+     * @param entry the entry that leaves the queue.
+     */
+    onEntryLeave (entry: QueueEntry) ;
+    /**
+     * Called whenever a member changes his state.
+     * @param member the member that changes his state.
+     */
+    onMemberStateChange(member: QueueMember) ;
+    /**
+     * @param entry
+     */
+    onEntryServiceLevelExceeded(entry: QueueMember) ;
+    /**
+     * Called whenever a new member is added to the queue.
+     * @param member the new member.
+     */
+    onMemberAdded(member: QueueMember) ;
+    /**
+     * Called whenever a member is removed from this queue.
+     * @param member the member that has been removed from the queue.
+     */
+    onMemberRemoved(member: QueueMember) ;
 }
 
 export interface IDfiAMIResponseMessageMulti<E extends IAstEvent> extends IAstEvent {
@@ -101,18 +157,18 @@ export interface IDfiAMIResponseMessageMulti<E extends IAstEvent> extends IAstEv
     EventList: string;
     Message: string;
     events: E[];
-    fn: IDfiCallback;
+    fn: IDfiCallbackResult;
     ctx?: any;
 }
 export interface IDfiAstResponseMessageMulti<E extends IAstEvent> {
     events: E[];
-    fn: IDfiCallback;
+    fn: IDfiCallbackResult;
     ctx?: any;
 }
 
 export interface IDfiAMIResponse {
     Response: string; // Error, Follows
-    ActionID: string;
+    ActionID?: string;
     Message?: string;
     $content?: string;
     $time: number;
@@ -130,9 +186,7 @@ export interface IDfiAMIResponseSuccess extends IDfiAMIResponseMessage {
 export interface IDfiAMIResponseCommand extends IDfiAMIResponseSuccess {
     $content: string;
 }
-export interface IDfiAMIResponseError extends IDfiAMIResponseMessage {
 
-}
 export interface IDfiAMIResponseMailboxCount extends IDfiAMIResponseSuccess {
     Mailbox: string;
     UrgMessages: string;

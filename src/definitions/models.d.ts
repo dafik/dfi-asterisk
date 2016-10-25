@@ -13,6 +13,8 @@ import AgentState = require("../states/agentState");
 import Device = require("../models/DeviceModel");
 import Queue = require("../models/queues/QueueModel");
 import QueueEntryState = require("../states/queueEntryState");
+import DialplanContext = require("../models/dialans/DialplanContextModel");
+import DialplanExtension = require("../models/dialans/DialplanExtensionModel");
 
 export interface IDfiAstModelOptions extends IDfiBaseModelConfig {
     sourceEvent?: string;
@@ -27,6 +29,29 @@ export interface IDfiAstModelAttribsDevice extends IDfiAstModelAttribs {
     Device: string;
     State: string | DeviceState;
 }
+
+export interface IDfiAstModelAttribsDialplanPriority extends IDfiAstModelAttribs {
+    Priority: string;
+    Application: string;
+    AppData: string;
+}
+export interface IDfiAstModelOptionsDialplanPriority extends IDfiAstModelOptions {
+    context?: DialplanContext;
+    extension?: DialplanExtension;
+}
+
+export interface IDfiAstModelAttribsDialplanExtension extends IDfiAstModelAttribs {
+    Extension: string;
+}
+export interface IDfiAstModelOptionsDialplanExtension extends IDfiAstModelOptions {
+    context?: DialplanContext;
+
+}
+export interface IDfiAstModelAttribsDialplanContext extends IDfiAstModelAttribs {
+    Context: string;
+    Registrar: string;
+}
+
 export interface IDfiAstModelAttribsVariable extends IDfiAstModelAttribs {
     name: string;
     value: string;

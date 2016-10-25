@@ -1,5 +1,5 @@
 import AsteriskManager = require("../internal/server/Manager");
-import {IDfiCallback} from "../definitions/interfaces";
+import {IDfiCallbackResult} from "../definitions/interfaces";
 import {IDfiAstDAHDIOnChannel} from "../definitions/models";
 import {AST_ACTION} from "../internal/asterisk/actionNames";
 import {IAstActionDAHDIShowChannels} from "../internal/asterisk/actions";
@@ -36,7 +36,7 @@ class DahdiManager extends AsteriskManager<Dahdi, DAHDIChannels> {
         return this.getProp(P_PROP_CHANNELS_BY_DAHDI_ID);
     }
 
-    public start(callbackFn: IDfiCallback, context?) {
+    public start(callbackFn: IDfiCallbackResult, context?) {
 
         function finish() {
             this.server.logger.info('manager "DahdiManager" started');

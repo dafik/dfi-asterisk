@@ -1,14 +1,15 @@
 import getServerInstance = require("../../src/asteriskServerInstance");
+import AsteriskServer = require("../../src/asteriskServer");
 
-export = getServerInstance({
+let asterisk: AsteriskServer = getServerInstance({
     managers: {
-        agent: true,
-        bridge: true,
+        agent: false,
+        bridge: false,
         channel: true,
-        dahdi: true,
+        dahdi: false,
         device: true,
         peer: true,
-        queue: true
+        queue: false
     },
     server: {
         // host: "localhost",
@@ -18,3 +19,5 @@ export = getServerInstance({
         username: "node"
     }
 });
+
+export =  asterisk;

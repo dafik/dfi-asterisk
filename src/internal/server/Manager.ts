@@ -1,6 +1,6 @@
 import DfiEventObject = require("local-dfi-base/src/dfiEventObject");
 import {IDfiAstEventsManager, IDfiAstEventsServer} from "../../definitions/events";
-import {IDfiCallback, IEventHandle} from "../../definitions/interfaces";
+import {IDfiCallbackResult, IEventHandle} from "../../definitions/interfaces";
 import {IAstEvent} from "../asterisk/events";
 import {IDfiBaseObjectConfig} from "local-dfi-base/src/dfiInterfaces";
 import AsteriskServer = require("../../asteriskServer");
@@ -50,7 +50,7 @@ abstract class AsteriskManager<M extends AsteriskModel, C extends AsteriskCollec
         return this.getProp(P_PROP_COLLECTION);
     }
 
-    public restart(callbackFn: IDfiCallback, context?): void {
+    public restart(callbackFn: IDfiCallbackResult, context?): void {
         this.server.logger.info("manager %s restarted", this.constructor.name);
         AstUtil.maybeCallbackOnce(callbackFn, context, null, this.constructor.name);
     }

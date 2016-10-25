@@ -2,12 +2,12 @@ import DebugLogger = require("local-dfi-debug-logger");
 
 abstract class AsteriskState {
 
-    public static byValue<T extends AsteriskState>(status): T {
+    public static byValue(status, stateClass): typeof stateClass {
         let tmp;
         let states = this.STATES;
         for (let key  in  states) {
             if (states.hasOwnProperty(key) && states[key] === status) {
-                tmp = new this(states[key], key);
+                tmp = new stateClass(states[key], key);
                 return tmp;
             }
         }
@@ -18,15 +18,15 @@ abstract class AsteriskState {
         }
 
         AsteriskState.logger.warn("unknown state %j ,%j", this.constructor.name, status);
-        return new this("UNKNOWN", status);
+        return new stateClass("UNKNOWN", status);
     }
 
-    public static byName<T extends AsteriskState>(status): T {
+    public static byName(status, stateClass): typeof stateClass {
         status = status.toUpperCase();
 
         let tmp;
         if (this.STATES.hasOwnProperty(status)) {
-            tmp = new this(this.STATES[status], status);
+            tmp = new stateClass(this.STATES[status], status);
             return tmp;
         }
 
@@ -34,19 +34,19 @@ abstract class AsteriskState {
             AsteriskState.unknown.push(status);
             AsteriskState.logger.warn("unknown state %j ,%j", this.constructor.name === "Function" ? this.name : this.constructor.name, status);
             AsteriskState.logger.error("all: %j", AsteriskState.unknown);
-            return new this("UNKNOWN", status);
+            return new stateClass("UNKNOWN", status);
         }
 
         return null;
     }
 
-    public static byNameOrValue(status) {
+    public static byNameOrValue(status, stateClass): typeof stateClass {
 
-        let tmp = this.byName(status);
+        let tmp = this.byName(status, stateClass);
         if (tmp) {
             return tmp;
         }
-        tmp = this.byValue(status);
+        tmp = this.byValue(status, stateClass);
         if (tmp) {
             return tmp;
         }

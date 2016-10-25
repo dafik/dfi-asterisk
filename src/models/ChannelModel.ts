@@ -1,4 +1,4 @@
-import {IDfiAMIResponseGetvar, IDfiCallback, IDfiVariableCallback} from "../definitions/interfaces";
+import {IDfiAMIResponseGetvar, IDfiCallbackResult, IDfiVariableCallback} from "../definitions/interfaces";
 import {IDfiAstModelAttribsChannel, IDfiAstModelOptions} from "../definitions/models";
 import {AST_ACTION} from "../internal/asterisk/actionNames";
 import {
@@ -633,7 +633,7 @@ class Channel extends AsteriskModel {
         }
     }
 
-    public getVariable(name: string, callbackFn: IDfiCallback, context?): void {
+    public getVariable(name: string, callbackFn: IDfiCallbackResult, context?): void {
 
         let value = this._variables.get(name);
         if (value !== undefined) {
@@ -667,7 +667,7 @@ class Channel extends AsteriskModel {
                         });
                         return;
                     }
-                    response = err;
+                    response = {$time: Date.now(), Response: err.message, Value: null, Variable: err.action.Variable};
                     this.logger.debug("discarding varGet error because channel was hangup earlier with ", this.hangupCause);
                 } else {
                     this.updateVariable(name, response.Value, "ActionGetvar");

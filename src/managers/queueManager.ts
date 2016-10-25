@@ -1,6 +1,7 @@
 import AsteriskManager = require("../internal/server/Manager");
 import Queues = require("../collections/QueuesCollection");
 import {IDfiAstEventsQueueManager} from "../definitions/events";
+import {AST_ACTION} from "../internal/asterisk/actionNames";
 import {IAstActionQueueStatus} from "../internal/asterisk/actions";
 import {AST_EVENT} from "../internal/asterisk/eventNames";
 import {
@@ -16,7 +17,6 @@ import {
     IAstEventQueueMemberStatus,
     IAstEventQueueParams
 } from "../internal/asterisk/events";
-import {AST_ACTION} from "../internal/asterisk/actionNames";
 
 import ChannelManager = require("./channelManager");
 import Queue = require("../models/queues/QueueModel");

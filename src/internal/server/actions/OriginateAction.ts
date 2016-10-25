@@ -1,6 +1,6 @@
 ///<reference path="../../../../node_modules/@types/node/index.d.ts"/>
 import BaseServerAction = require("./BaseAction");
-import {IDfiAsOriginateCallback, IDfiAstOriginateCallbackData, IDfiCallback} from "../../../definitions/interfaces";
+import {IDfiAsOriginateCallback, IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../../../definitions/interfaces";
 import {AST_ACTION} from "../../asterisk/actionNames";
 import {IAstActionOriginate} from "../../asterisk/actions";
 import {IAstEventOriginateResponse} from "../../asterisk/events";
@@ -173,7 +173,7 @@ class OriginateServerAction extends BaseServerAction {
                 } else {
                     originateAction.Variable = [];
                 }
-                originateAction.serialize = true;
+                // originateAction.serialize = true;
 
                 // prefix variable name by "__" to enable variable inheritance across channels
                 originateAction.Variable.push("__" + VARIABLE_TRACE_ID + "=" + traceId);
@@ -193,7 +193,9 @@ class OriginateServerAction extends BaseServerAction {
                 }
                 this._server.sendEventGeneratingAction(originateAction, (err) => {
                     if (err) {
+                        err.action = originateAction;
                         this._server.logger.error(err);
+                        AstUtil.maybeCallbackOnce(callbackFn.onFailure, callbackFn, err);
                     }
                 });
             })
@@ -211,7 +213,7 @@ class OriginateServerAction extends BaseServerAction {
      * @param callbackFn
      * @param context
      */
-    public originate(originateAction: IAstActionOriginate, callbackFn: IDfiCallback, context?) {
+    public originate(originateAction: IAstActionOriginate, callbackFn: IDfiCallbackResult, context?) {
 
         function onChannel(err, channel) {
             if (err || channel == null) {
@@ -226,34 +228,20 @@ class OriginateServerAction extends BaseServerAction {
                 // TODO check
                 // must set async to true to receive OriginateEvents.
                 // originateAction.Async = false.toString(); ?
-                this._server.sendEventGeneratingAction(originateAction, (err, response) => {
+                this._server.sendAction(originateAction, (err, response) => {
                     if (err) {
                         AstUtil.maybeCallback(callbackFn, context, err);
                         return;
                     }
 
-                    let responseEvents;
-                    let responseEventIterator;
-                    let uniqueId;
-                    let channel = null;
+                    if (response.Response === "Success") {
 
-                    responseEvents = response;
+                        let uniqueId = response.Uniqueid;
+                        this._server.logger.debug(response.Event + " received with uniqueId " + uniqueId);
+                        onChannel.call(null, this._server.managers.channel.getChannelById(uniqueId));
 
-                    responseEventIterator = responseEvents.events;
-                    if (responseEventIterator.length > 0) {
-
-                        let responseEvent;
-
-                        responseEvent = responseEventIterator[0];
-                        if (responseEvent instanceof originateresponse) {
-
-                            let originateResponseEvent = responseEvent;
-                            uniqueId = originateResponseEvent.getUniqueid();
-                            this._server.logger.debug(originateResponseEvent.__proto__.constructor.name + " received with uniqueId " + uniqueId);
-                            onChannel.call(null, this._server.managers.channel.getChannelById(uniqueId);
-                        }
                     } else {
-                        onChannel(err, channel);
+                        onChannel.call(response);
                     }
 
                 }, this);
@@ -277,7 +265,7 @@ class OriginateServerAction extends BaseServerAction {
      * @param callbackFn
      * @param context
      */
-    public toApplication(channel: string, application: string, data: string, timeout: string, callerId: CallerId, variables: string[], callbackFn?: IDfiCallback, context?) {
+    public toApplication(channel: string, application: string, data: string, timeout: string, callerId: CallerId, variables: string[], callbackFn?: IDfiCallbackResult, context?) {
         callerId = callerId || null;
         variables = variables || null;
 
@@ -342,7 +330,7 @@ class OriginateServerAction extends BaseServerAction {
      * @param callbackFn
      * @param context
      */
-    public toExtension(channel: string, ctx: string, exten: string, priority: string, timeout: string, callerId: string, variables: string[], callbackFn?: IDfiCallback, context?) {
+    public toExtension(channel: string, ctx: string, exten: string, priority: string, timeout: string, callerId: string, variables: string[], callbackFn?: IDfiCallbackResult, context?) {
         callerId = callerId || null;
         variables = variables || null;
 

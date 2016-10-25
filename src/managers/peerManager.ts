@@ -1,7 +1,7 @@
 import AsteriskManager = require("../internal/server/Manager");
 import Peers = require("../collections/PeersCollection");
 import Peer = require("../models/peers/PeerModel");
-import {IDfiCallback} from "../definitions/interfaces";
+import {IDfiAMIMultiCallback, IDfiCallbackResult} from "../definitions/interfaces";
 import {AST_ACTION} from "../internal/asterisk/actionNames";
 import {IAstActionIAXpeerlist, IAstActionPJSIPShowEndpoints, IAstActionSIPpeers} from "../internal/asterisk/actions";
 import {AST_EVENT} from "../internal/asterisk/eventNames";
@@ -35,7 +35,7 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
      * @param {function} [callbackFn]
      * @param {*} [context] callback this
      */
-    public start(callbackFn?: IDfiCallback, context?) {
+    public start(callbackFn?: IDfiCallbackResult, context?) {
         let waiting = 0;
 
         function finish() {
@@ -45,8 +45,8 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
             }
         }
 
-        let handlePeers = (err, response) => {
-            if (err && err.Message !== "No endpoints found") {
+        let handlePeers: IDfiAMIMultiCallback<IAstEventPeerEntry|IAstEventEndpointList> = (err, response) => {
+            if (err && err.message !== "No endpoints found") {
                 AstUtil.maybeCallback(callbackFn, context, err);
                 return;
             }

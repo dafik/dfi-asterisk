@@ -1,5 +1,5 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiAMIResponseCommand, IDfiCallback, IDfiActionCallback, IDfiGetAsteriskVersionCallback, IDfiGetFileVersionCallback} from "../../../definitions/interfaces";
+import {IDfiAMIResponse, IDfiAMIResponseCommand, IDfiActionCallback, IDfiCallbackError, IDfiGetAsteriskVersionCallback, IDfiGetFileVersionCallback} from "../../../definitions/interfaces";
 import {AST_ACTION} from "../../asterisk/actionNames";
 import {IAstActionCommand, IAstActionFilter} from "../../asterisk/actions";
 import AsteriskVersion = require("../Version");
@@ -8,13 +8,13 @@ import ManagerCommunication = require("../../../errors/ManagerCommunication");
 import ManagerError = require("../../../errors/ManagerError");
 
 const SHOW_VERSION_FILES_COMMAND = "core show file version";
-const SHOW_VERSION_FILES_PATTERN = /^([\S]+)\s+([0-9\.]+)/;
+const SHOW_VERSION_FILES_PATTERN = /^([\S]+)\s+([0-9.]+)/;
 const SHOW_VERSION_COMMAND = "core show version";
 
 class CoreServerAction extends BaseServerAction {
     private versions;
 
-    public getAvailableActions(callbackFn: IDfiCallback, context?) {
+    public getAvailableActions(callbackFn: IDfiCallbackError, context?) {
 
         this._server.logger.debug("on getAvailableActions");
         let action: IAstActionCommand = {
@@ -43,7 +43,7 @@ class CoreServerAction extends BaseServerAction {
         }, this);
     }
 
-    public filterRTCP(callbackFn: IDfiActionCallback, context?) {
+    public filterRTCP(callbackFn: IDfiActionCallback<IDfiAMIResponse>, context?) {
         this._server.logger.debug("on onAvailableActions");
         let action: IAstActionFilter = {
             Action: AST_ACTION.FILTER,
@@ -130,12 +130,10 @@ class CoreServerAction extends BaseServerAction {
                                     map.set(matcher[1], matcher[2]);
                                 }
                             });
-
                             this.versions = map;
                             onFileVersion(map.get(file));
                         }
                     }, this);
-
                 }
             )
             .catch(error => error)
@@ -146,7 +144,7 @@ class CoreServerAction extends BaseServerAction {
             });
     }
 
-    public executeCliCommand(command, callbackFn: IDfiCallback, context?) {
+    public executeCliCommand(command, callbackFn: IDfiActionCallback<IDfiAMIResponseCommand>, context?) {
         this._server.start()
             .then(
                 () => {
@@ -154,7 +152,6 @@ class CoreServerAction extends BaseServerAction {
                         Action: AST_ACTION.COMMAND,
                         Command: command
                     };
-
                     this._server.sendAction(action, (err, response: IDfiAMIResponseCommand) => {
                         if (err) {
                             let error = new ManagerError("Response to CommandAction(\"" + command + "\") was not a CommandResponse but " + response.Message, response);
@@ -171,6 +168,5 @@ class CoreServerAction extends BaseServerAction {
                 }
             );
     }
-
 }
 export = CoreServerAction;

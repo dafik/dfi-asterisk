@@ -1,6 +1,7 @@
 "use strict";
 const BaseServerAction = require("./BaseAction");
 const actionNames_1 = require("../../asterisk/actionNames");
+const util_1 = require("util");
 const AstUtil = require("../../astUtil");
 class VariableServerAction extends BaseServerAction {
     getGlobalVariable(variable, callbackFn, context) {
@@ -14,11 +15,7 @@ class VariableServerAction extends BaseServerAction {
                 if (err) {
                     AstUtil.maybeCallback(callbackFn, context, err);
                 }
-                let value = response.getAttribute("Value");
-                if (value == null) {
-                    value = response.getAttribute(variable); // for Asterisk 1.0.x
-                }
-                AstUtil.maybeCallback(callbackFn, context, null, value);
+                AstUtil.maybeCallback(callbackFn, context, null, response.Value);
             });
         })
             .catch(error => error)
@@ -38,10 +35,16 @@ class VariableServerAction extends BaseServerAction {
             };
             this._server.sendAction(action, (err, response) => {
                 if (err) {
-                    this._server.logger.error("Unable to set global variable %s to %s ", variable, value, response.getMessage());
+                    this._server.logger.error("Unable to set global variable %s to %s %j", variable, value, err);
                     AstUtil.maybeCallback(callbackFn, context, err);
+                    return;
                 }
-                AstUtil.maybeCallback(callbackFn, context, null, response);
+                if (response.Response !== "Success") {
+                    this._server.logger.error("Unable to set global variable %s to %s response %s", variable, value, response.Response);
+                    AstUtil.maybeCallback(callbackFn, context, new Error(util_1.format("Unable to set global variable %s to %s response %s", variable, value, response.Response)));
+                    return;
+                }
+                AstUtil.maybeCallback(callbackFn, context);
             });
         })
             .catch(error => error)

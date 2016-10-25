@@ -6,7 +6,7 @@ const AstUtil = require("../../astUtil");
 const ManagerCommunication = require("../../../errors/ManagerCommunication");
 const ManagerError = require("../../../errors/ManagerError");
 const SHOW_VERSION_FILES_COMMAND = "core show file version";
-const SHOW_VERSION_FILES_PATTERN = /^([\S]+)\s+([0-9\.]+)/;
+const SHOW_VERSION_FILES_PATTERN = /^([\S]+)\s+([0-9.]+)/;
 const SHOW_VERSION_COMMAND = "core show version";
 class CoreServerAction extends BaseServerAction {
     getAvailableActions(callbackFn, context) {

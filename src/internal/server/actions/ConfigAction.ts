@@ -1,5 +1,5 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiCallback} from "../../../definitions/interfaces";
+import {IDfiCallbackResult} from "../../../definitions/interfaces";
 import {AST_ACTION} from "../../asterisk/actionNames";
 import {IAstActionGetConfig} from "../../asterisk/actions";
 import AstUtil = require("../../astUtil");
@@ -7,7 +7,7 @@ import ManagerError = require("../../../errors/ManagerError");
 import ConfigFile = require("../ConfigFile");
 class ConfigServerAction extends BaseServerAction {
 
-    public getConfig(filename, callbackFn: IDfiCallback, context?) {
+    public getConfig(filename, callbackFn: IDfiCallbackResult, context?) {
 
         // TODO check OCB
         this._server.start()

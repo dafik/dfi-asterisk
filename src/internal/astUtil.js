@@ -130,12 +130,7 @@ class AstUtil {
     static maybeCallbackOnce(fn, context, err, response) {
         if (_.isFunction(fn)) {
             if (fn.fired) {
-                try {
-                    AstUtil.logger.error("callback was fired before fn : \n%s", ((fn.prototype && fn.prototype.constructor) ? fn.prototype.constructor : fn.toString()));
-                }
-                catch (err) {
-                    throw err;
-                }
+                AstUtil.logger.error("callback was fired before fn : \n%s", ((fn.prototype && fn.prototype.constructor) ? fn.prototype.constructor : fn.toString()));
                 throw err ? err : response;
             }
             else {
@@ -171,7 +166,7 @@ class AstUtil {
     }
 }
 const CRLF = "\r\n";
-const logger = new DebugLogger("Dfi:as:AstUtil");
+const logger = new DebugLogger("dfi:as:AstUtil");
 const uniqueActionID = (() => {
     let nextId = 1;
     return () => {

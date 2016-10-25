@@ -2,11 +2,11 @@ import Peer = require("./PeerModel");
 import {IDfiAstModelAttribsPJSIPPeer, IDfiAstModelAttribsPeer, IDfiAstModelOptions} from "../../definitions/models";
 import Ip = require("../IpAddress");
 
-const PROP_CHANNEL_TYPE = "channelType";
+/*const PROP_CHANNEL_TYPE = "channelType";
 const PROP_OBJECT_NAME = "objectName";
 const PROP_CHAN_OBJECT_TYPE = "chanObjectType";
 const PROP_DYNAMIC = "dynamic";
-const PROP_STATE = "state";
+const PROP_STATE = "state";*/
 
 class PJSIPPeer extends Peer {
 

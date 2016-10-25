@@ -1,5 +1,5 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiCallback} from "../../../definitions/interfaces";
+import {IDfiCallbackResult} from "../../../definitions/interfaces";
 import {AST_ACTION} from "../../asterisk/actionNames";
 import {IAstActionModuleCheck, IAstActionModuleLoad} from "../../asterisk/actions";
 import AstUtil = require("../../astUtil");
@@ -7,7 +7,7 @@ import ManagerCommunication = require("../../../errors/ManagerCommunication");
 
 class ModuleServerAction extends BaseServerAction {
 
-    public isModuleLoaded(module: string, callbackFn: IDfiCallback, context?) {
+    public isModuleLoaded(module: string, callbackFn: IDfiCallbackResult, context?) {
         this._server.start()
             .then(() => {
                 let action: IAstActionModuleCheck = {
@@ -50,7 +50,7 @@ class ModuleServerAction extends BaseServerAction {
         this._sendModuleLoadAction(null, MODULE_LOAD_TYPES.LOAD_TYPE_RELOAD);
     }
 
-    private _sendModuleLoadAction(module: string, loadType: string, callbackFn?: IDfiCallback, context?) {
+    private _sendModuleLoadAction(module: string, loadType: string, callbackFn?: IDfiCallbackResult, context?) {
 
         this._server.start()
             .then(() => {
@@ -61,7 +61,7 @@ class ModuleServerAction extends BaseServerAction {
                 };
                 this._server.sendAction(action, (err, response) => {
                     if (err) {
-                        AstUtil.maybeCallback(callbackFn, context, new ManagerCommunication(response));
+                        AstUtil.maybeCallback(callbackFn, context, new ManagerCommunication(response.Message ? response.Message : response.Response));
                     }
                 });
             })

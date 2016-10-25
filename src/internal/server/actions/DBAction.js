@@ -1,6 +1,7 @@
 "use strict";
 const BaseServerAction = require("./BaseAction");
 const actionNames_1 = require("../../asterisk/actionNames");
+const util_1 = require("util");
 const AstUtil = require("../../astUtil");
 class DBServerAction extends BaseServerAction {
     dbGet(family, key, callbackFn, context) {
@@ -16,11 +17,12 @@ class DBServerAction extends BaseServerAction {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
                     return;
                 }
-                let dbgre;
-                if (response.events.length > 0) {
-                    dbgre = response.events[0];
-                }
-                AstUtil.maybeCallbackOnce(callbackFn, context, null, dbgre);
+                let dbgre = response.events.shift();
+                AstUtil.maybeCallbackOnce(callbackFn, context, null, {
+                    Family: dbgre.Family,
+                    Key: dbgre.Key,
+                    Val: dbgre.Val
+                });
             });
         })
             .catch(error => error)
@@ -30,15 +32,27 @@ class DBServerAction extends BaseServerAction {
             }
         });
     }
-    dbDel(family, key, callbackFn, context) {
+    dbDel(family, variable, callbackFn, context) {
         this._server.start()
             .then(() => {
             let action = {
                 Action: actionNames_1.AST_ACTION.DB_DEL,
                 Family: family,
-                Key: key
+                Key: variable
             };
-            this._server.sendAction(action, callbackFn, context);
+            this._server.sendAction(action, (err, response) => {
+                if (err) {
+                    this._server.logger.error("Unable to delete database variable %s  %s", variable, err.message);
+                    AstUtil.maybeCallback(callbackFn, context, err);
+                    return;
+                }
+                if (response.Response !== "Success") {
+                    this._server.logger.error("Unable to delete database variable %s  response %s", variable, response.Response);
+                    AstUtil.maybeCallback(callbackFn, context, new Error(util_1.format("Unable to set global variable %s response %s", variable, response.Response)));
+                    return;
+                }
+                AstUtil.maybeCallback(callbackFn, context);
+            });
         })
             .catch(error => error)
             .then((err) => {
@@ -47,32 +61,26 @@ class DBServerAction extends BaseServerAction {
             }
         });
     }
-    dbDelTree(family, key, callbackFn, context) {
+    dbDelTree(family, variable, callbackFn, context) {
         this._server.start()
             .then(() => {
             let action = {
                 Action: actionNames_1.AST_ACTION.DB_DEL_TREE,
                 Family: family,
-                Key: key
+                Key: variable
             };
             this._server.sendAction(action, (err, response) => {
                 if (err) {
-                    if (err.message === "Database entry not found") {
-                        response = err;
-                    }
-                    else {
-                        AstUtil.maybeCallback(callbackFn, context, err);
-                        return;
-                    }
+                    this._server.logger.error("Unable to delete database variable %s  %s", variable, err.message);
+                    AstUtil.maybeCallback(callbackFn, context, err);
+                    return;
                 }
-                let dbgre;
-                if (response.events.length > 0) {
-                    dbgre = response.events[0];
+                if (response.Response !== "Success") {
+                    this._server.logger.error("Unable to delete database variable %s  response %s", variable, response.Response);
+                    AstUtil.maybeCallback(callbackFn, context, new Error(util_1.format("Unable to set global variable %s response %s", variable, response.Response)));
+                    return;
                 }
-                else {
-                    dbgre = response;
-                }
-                AstUtil.maybeCallback(callbackFn, context, null, dbgre);
+                AstUtil.maybeCallback(callbackFn, context);
             }, context);
         })
             .catch(error => error)
@@ -82,16 +90,28 @@ class DBServerAction extends BaseServerAction {
             }
         });
     }
-    dbPut(family, key, value, callbackFn, context) {
+    dbPut(family, variable, value, callbackFn, context) {
         this._server.start()
             .then(() => {
             let action = {
                 Action: actionNames_1.AST_ACTION.DB_PUT,
                 Family: family,
-                Key: key,
+                Key: variable,
                 Val: value
             };
-            this._server.sendAction(action, callbackFn, context);
+            this._server.sendAction(action, (err, response) => {
+                if (err) {
+                    this._server.logger.error("Unable to set database variable %s to %s %s", variable, value, err.message);
+                    AstUtil.maybeCallback(callbackFn, context, err);
+                    return;
+                }
+                if (response.Response !== "Success") {
+                    this._server.logger.error("Unable to set database variable %s to %s response %s", variable, value, response.Response);
+                    AstUtil.maybeCallback(callbackFn, context, new Error(util_1.format("Unable to set global variable %s to %s response %s", variable, value, response.Response)));
+                    return;
+                }
+                AstUtil.maybeCallback(callbackFn, context);
+            });
         })
             .catch(error => error)
             .then((err) => {

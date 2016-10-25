@@ -1,8 +1,8 @@
 "use strict";
 const AsteriskManager = require("../internal/server/Manager");
 const Queues = require("../collections/QueuesCollection");
-const eventNames_1 = require("../internal/asterisk/eventNames");
 const actionNames_1 = require("../internal/asterisk/actionNames");
+const eventNames_1 = require("../internal/asterisk/eventNames");
 const Queue = require("../models/queues/QueueModel");
 const QueueMember = require("../models/queues/QueueMemberModel");
 const QueueMemberState = require("../states/queueMemberState");

@@ -85,6 +85,7 @@ exports.AST_EVENT = {
     INVALID_ACCOUNT_ID: "InvalidAccountID",
     INVALID_PASSWORD: "InvalidPassword",
     INVALID_TRANSPORT: "InvalidTransport",
+    LIST_DIALPLAN: "ListDialplan",
     LOAD_AVERAGE_LIMIT: "LoadAverageLimit",
     LOCAL_BRIDGE: "LocalBridge",
     LOCAL_OPTIMIZATION_BEGIN: "LocalOptimizationBegin",

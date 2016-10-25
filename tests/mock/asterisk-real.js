@@ -1,14 +1,14 @@
 "use strict";
 const getServerInstance = require("../../src/asteriskServerInstance");
-module.exports = getServerInstance({
+let asterisk = getServerInstance({
     managers: {
-        agent: true,
-        bridge: true,
+        agent: false,
+        bridge: false,
         channel: true,
-        dahdi: true,
+        dahdi: false,
         device: true,
         peer: true,
-        queue: true
+        queue: false
     },
     server: {
         // host: "localhost",
@@ -18,4 +18,5 @@ module.exports = getServerInstance({
         username: "node"
     }
 });
+module.exports = asterisk;
 //# sourceMappingURL=asterisk-real.js.map

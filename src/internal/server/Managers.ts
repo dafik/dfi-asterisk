@@ -9,7 +9,7 @@ import QueueManager = require("../../managers/queueManager");
 import AgentManager = require("../../managers/agentManager");
 import AstUtil = require("../astUtil");
 import {IDfiAstConfigAstManager} from "../../definitions/configs";
-import {IDfiCallback} from "../../definitions/interfaces";
+import {IDfiCallbackResult} from "../../definitions/interfaces";
 import AsteriskManager = require("./Manager");
 import AsteriskModel = require("../asteriskModel");
 import AsteriskCollection = require("../asteriskCollection");
@@ -72,7 +72,7 @@ class ServerManagers extends DfiObject {
         return this.getProp(MANAGERS).get(AGENT);
     }
 
-    public restart(callbackFn: IDfiCallback, context?) {
+    public restart(callbackFn: IDfiCallbackResult, context?) {
         let self = this;
         async.series([
             self.device.restart.bind(self.device),
@@ -87,7 +87,7 @@ class ServerManagers extends DfiObject {
         });
     }
 
-    public start(callbackFn: IDfiCallback, context?) {
+    public start(callbackFn: IDfiCallbackResult, context?) {
         let self = this;
         try {
 

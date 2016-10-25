@@ -17,9 +17,8 @@ describe("Core actions", () => {
     }
     before(onBefore);
     it("getAvailableActions", (done) => {
-        asterisk.actions.core.getAvailableActions((err, response) => {
+        asterisk.actions.core.getAvailableActions((err) => {
             assert.ifError(err);
-            assert.equal(undefined, response);
             done();
         });
     });

@@ -1,5 +1,5 @@
 import {IDfiAstEventsChannelManager} from "../definitions/events";
-import {IDfiAstOriginateCallbackData, IDfiCallback} from "../definitions/interfaces";
+import {IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../definitions/interfaces";
 import {AST_ACTION} from "../internal/asterisk/actionNames";
 import {IAstActionCommand} from "../internal/asterisk/actions";
 import {AST_EVENT} from "../internal/asterisk/eventNames";
@@ -738,7 +738,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         }
     }
 
-    private _getTraceId(channel: Channel, callbackFn: IDfiCallback, context?) {
+    private _getTraceId(channel: Channel, callbackFn: IDfiCallbackResult, context?) {
         channel.getVariable(VARIABLE_TRACE_ID, onResponse, this);
 
         function onResponse(traceId) {

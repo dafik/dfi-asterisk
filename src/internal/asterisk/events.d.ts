@@ -9275,6 +9275,15 @@ export interface IAstEventMusicOnHoldStop extends IAstEvent {
     Uniqueid: string;
     Linkedid: string;
 }
+
+export interface IAstEventListDialplan extends IAstEvent {
+    Context: string;
+    Extension: string;
+    Priority: string;
+    Application: string;
+    AppData: string;
+    Registrar: string;
+}
 /**
  * LocalOptimizationBegin Event - Raised when two halves of a Local Channel begin to optimize themselves out of the media path.
  *

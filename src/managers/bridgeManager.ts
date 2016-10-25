@@ -2,7 +2,7 @@ import AsteriskManager = require("../internal/server/Manager");
 import Bridges = require("../collections/BridgesCollection");
 import Bridge = require("../models/BridgeModel");
 import ChannelManager = require("./channelManager");
-import {IDfiAMIResponseMessageMulti, IDfiCallback} from "../definitions/interfaces";
+import {IDfiAMIResponseMessageMulti, IDfiCallbackResult} from "../definitions/interfaces";
 import {IDfiAstModelAttribsBridge} from "../definitions/models";
 import {AST_ACTION} from "../internal/asterisk/actionNames";
 import {AST_EVENT} from "../internal/asterisk/eventNames";
@@ -60,7 +60,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
     /**
      * Retrieves all bridges registered at Asterisk server by sending an BridgesAction.
      */
-    public start(callbackFn: IDfiCallback, context?) {
+    public start(callbackFn: IDfiCallbackResult, context?) {
 
         function finish() {
             this.server.logger.info('manager "BridgeManager" started');

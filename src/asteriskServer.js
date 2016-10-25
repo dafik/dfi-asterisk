@@ -10,7 +10,6 @@ const ServerActions = require("./internal/server/Actions");
 const ServerManagers = require("./internal/server/Managers");
 const AstUtil = require("./internal/astUtil");
 const ManagerCommunication = require("./errors/ManagerCommunication");
-const ManagerError = require("./errors/ManagerError");
 const PROP_AMI = "ami";
 const PROP_AMI_HANDLERS = "amiHandlers";
 const PROP_INITIALIZED = "initialized";
@@ -102,22 +101,11 @@ class AsteriskServer extends DfiEventObject {
             this.logger.trace("sending %s %j", action.Action, action);
             this.logger.trace("\n\n %j \n", action);
         }
-        let actionToSend = action;
-        if (action.serialize) {
-            actionToSend = AstUtil.serializeMessage(action);
-        }
-        this._ami.send(actionToSend, true)
+        this._ami.send(action, true)
             .then((response) => {
             if (response.Response === "Error") {
                 throw response;
             }
-            /*       if (response instanceof ManagerError) {
-             if (action.Action != "Getvar" && response.message != "No such channel") {
-             this.logger.error('ManagerCommunicationException %s ,  action: %j response %j', action.Action, action, response.message);
-             AstUtil.maybeCallback(callbackFn, context, response);
-             return;
-             }
-             }*/
             if (action.Action === "Getvar") {
                 this.logger.debug('response for: "' + action.Action + '" var: "' + response.Variable +
                     '" value: "' + response.Value + '" channel: "' + action.Channel + '"');
@@ -138,12 +126,37 @@ class AsteriskServer extends DfiEventObject {
             .catch(error => error)
             .then((response) => {
             if (response instanceof Error || response.Response === "Error") {
-                let error = response;
+                let error;
+                let message;
                 if (response.Response === "Error") {
-                    error = new ManagerError(response.Message);
+                    message = response.Message;
                 }
+                else {
+                    message = response.message;
+                }
+                error = Object.assign(new Error(message), { action });
                 AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
+        });
+    }
+    sendActions(actions, callbackFn, context) {
+        let wait = actions.length;
+        let errors = [];
+        let responses = [];
+        if (wait === 0) {
+            AstUtil.maybeCallbackOnce(callbackFn, context, errors.length > 0 ? errors : null, responses);
+        }
+        actions.forEach(action => {
+            this.sendAction(action, (err, resp) => {
+                wait--;
+                if (err) {
+                    errors.push(err);
+                }
+                responses.push(resp);
+                if (wait === 0) {
+                    AstUtil.maybeCallbackOnce(callbackFn, context, errors.length > 0 ? errors : null, responses);
+                }
+            });
         });
     }
     sendEventGeneratingAction(action, callbackFn, context) {
@@ -167,11 +180,7 @@ class AsteriskServer extends DfiEventObject {
         if (responses.size === 1) {
             this._ami.on("event", this.getProp(PROP_MULTIPART_RESPONSE_HANDLER));
         }
-        let actionToSend = action;
-        if (action.serialize) {
-            actionToSend = AstUtil.serializeMessage(action);
-        }
-        this._ami.send(actionToSend, true)
+        this._ami.send(action, true)
             .then((response) => {
             if (response.Response && response.Response === "Error") {
                 this.logger.error("ManagerCommunicationException %s ,  action: %j response %j", action.Action, action, response);
@@ -179,7 +188,8 @@ class AsteriskServer extends DfiEventObject {
                 if (responses.size === 0) {
                     this._ami.removeListener("event", this.getProp(PROP_MULTIPART_RESPONSE_HANDLER));
                 }
-                AstUtil.maybeCallback(callbackFn, context, response);
+                let error = Object.assign(new Error(response.Message), { action });
+                AstUtil.maybeCallback(callbackFn, context, error);
                 return;
             }
             if (action.Action === "Command") {
@@ -257,7 +267,7 @@ class AsteriskServer extends DfiEventObject {
             addTime: true,
             attemptsDelay: 1000,
             emitEventsByTypes: false,
-            emitResponsesById: true,
+            emitResponsesById: false,
             eventFilter: null,
             eventTypeToLowerCase: false,
             keepAlive: false,

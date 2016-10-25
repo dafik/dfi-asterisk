@@ -102,8 +102,9 @@ export interface IAstActionOriginate extends IAstAction {
     OtherChannelId?: string;
 }
 export interface IAstActionShowDialPlan extends IAstAction {
-    Extension: string;
-    Context: string;
+    Context?: string;
+    Extension?: string;
+
 }
 export interface IAstActionSKINNYlines extends IAstAction {
 }
@@ -170,8 +171,8 @@ export interface IAstActionDialplanExtensionAdd extends IAstAction {
     Extension: string;
     Priority: string;
     Application: string;
-    ApplicationData: string;
-    Replace: string;
+    ApplicationData?: string;
+    Replace?: string;
 }
 export interface IAstActionPJSIPUnregister extends IAstAction {
     Registration: string;

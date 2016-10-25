@@ -1,8 +1,9 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiActionCallback, IDfiDBGetCallback} from "../../../definitions/interfaces";
+import {IDfiAMICallbackError, IDfiDBGetCallback} from "../../../definitions/interfaces";
 import {AST_ACTION} from "../../asterisk/actionNames";
 import {IAstActionDBDel, IAstActionDBDelTree, IAstActionDBGet, IAstActionDBPut} from "../../asterisk/actions";
 import {IAstEventDBGetResponse} from "../../asterisk/events";
+import {format} from "util";
 import AstUtil = require("../../astUtil");
 
 class DBServerAction extends BaseServerAction {
@@ -20,11 +21,14 @@ class DBServerAction extends BaseServerAction {
                         AstUtil.maybeCallbackOnce(callbackFn, context, err);
                         return;
                     }
-                    let dbgre;
-                    if (response.events.length > 0) {
-                        dbgre = response.events[0];
-                    }
-                    AstUtil.maybeCallbackOnce(callbackFn, context, null, dbgre);
+                    let dbgre = response.events.shift();
+
+                    AstUtil.maybeCallbackOnce(callbackFn, context, null, {
+                        Family: dbgre.Family,
+                        Key: dbgre.Key,
+                        Val: dbgre.Val
+
+                    });
 
                 });
             })
@@ -36,15 +40,29 @@ class DBServerAction extends BaseServerAction {
             });
     }
 
-    public dbDel(family: string, key: string, callbackFn: IDfiActionCallback, context?) {
+    public dbDel(family: string, variable: string, callbackFn: IDfiAMICallbackError, context?) {
         this._server.start()
             .then(() => {
                 let action: IAstActionDBDel = {
                     Action: AST_ACTION.DB_DEL,
                     Family: family,
-                    Key: key
+                    Key: variable
                 };
-                this._server.sendAction(action, callbackFn, context);
+                this._server.sendAction(action, (err, response) => {
+                    if (err) {
+                        this._server.logger.error("Unable to delete database variable %s  %s", variable, err.message);
+                        AstUtil.maybeCallback(callbackFn, context, err);
+                        return;
+                    }
+                    if (response.Response !== "Success") {
+                        this._server.logger.error("Unable to delete database variable %s  response %s", variable, response.Response);
+                        AstUtil.maybeCallback(callbackFn, context, new Error(format("Unable to set global variable %s response %s", variable, response.Response)));
+                        return;
+                    }
+
+                    AstUtil.maybeCallback(callbackFn, context);
+
+                });
             })
             .catch(error => error)
             .then((err) => {
@@ -54,31 +72,28 @@ class DBServerAction extends BaseServerAction {
             });
     }
 
-    public dbDelTree(family: string, key: string, callbackFn: IDfiActionCallback, context?) {
+    public dbDelTree(family: string, variable: string, callbackFn: IDfiAMICallbackError, context?) {
         this._server.start()
             .then(() => {
                 let action: IAstActionDBDelTree = {
                     Action: AST_ACTION.DB_DEL_TREE,
                     Family: family,
-                    Key: key
+                    Key: variable
 
                 };
                 this._server.sendAction(action, (err, response) => {
                     if (err) {
-                        if (err.message === "Database entry not found") {
-                            response = err;
-                        } else {
-                            AstUtil.maybeCallback(callbackFn, context, err);
-                            return;
-                        }
+                        this._server.logger.error("Unable to delete database variable %s  %s", variable, err.message);
+                        AstUtil.maybeCallback(callbackFn, context, err);
+                        return;
                     }
-                    let dbgre;
-                    if (response.events.length > 0) {
-                        dbgre = response.events[0];
-                    } else {
-                        dbgre = response;
+                    if (response.Response !== "Success") {
+                        this._server.logger.error("Unable to delete database variable %s  response %s", variable, response.Response);
+                        AstUtil.maybeCallback(callbackFn, context, new Error(format("Unable to set global variable %s response %s", variable, response.Response)));
+                        return;
                     }
-                    AstUtil.maybeCallback(callbackFn, context, null, dbgre);
+
+                    AstUtil.maybeCallback(callbackFn, context);
 
                 }, context);
             })
@@ -90,16 +105,30 @@ class DBServerAction extends BaseServerAction {
             });
     }
 
-    public dbPut(family: string, key: string, value: string, callbackFn: IDfiActionCallback, context?) {
+    public dbPut(family: string, variable: string, value: string, callbackFn: IDfiAMICallbackError, context?) {
         this._server.start()
             .then(() => {
                 let action: IAstActionDBPut = {
                     Action: AST_ACTION.DB_PUT,
                     Family: family,
-                    Key: key,
+                    Key: variable,
                     Val: value
                 };
-                this._server.sendAction(action, callbackFn, context);
+                this._server.sendAction(action, (err, response) => {
+                    if (err) {
+                        this._server.logger.error("Unable to set database variable %s to %s %s", variable, value, err.message);
+                        AstUtil.maybeCallback(callbackFn, context, err);
+                        return;
+                    }
+                    if (response.Response !== "Success") {
+                        this._server.logger.error("Unable to set database variable %s to %s response %s", variable, value, response.Response);
+                        AstUtil.maybeCallback(callbackFn, context, new Error(format("Unable to set global variable %s to %s response %s", variable, value, response.Response)));
+                        return;
+                    }
+
+                    AstUtil.maybeCallback(callbackFn, context);
+
+                });
             })
             .catch(error => error)
             .then((err) => {

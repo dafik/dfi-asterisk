@@ -151,7 +151,7 @@ class OriginateServerAction extends BaseServerAction {
             else {
                 originateAction.Variable = [];
             }
-            originateAction.serialize = true;
+            // originateAction.serialize = true;
             // prefix variable name by "__" to enable variable inheritance across channels
             originateAction.Variable.push("__" + VARIABLE_TRACE_ID + "=" + traceId);
             // async must be set to true to receive OriginateEvents.
@@ -169,7 +169,9 @@ class OriginateServerAction extends BaseServerAction {
             }
             this._server.sendEventGeneratingAction(originateAction, (err) => {
                 if (err) {
+                    err.action = originateAction;
                     this._server.logger.error(err);
+                    AstUtil.maybeCallbackOnce(callbackFn.onFailure, callbackFn, err);
                 }
             });
         })
@@ -199,29 +201,18 @@ class OriginateServerAction extends BaseServerAction {
             // TODO check
             // must set async to true to receive OriginateEvents.
             // originateAction.Async = false.toString(); ?
-            this._server.sendEventGeneratingAction(originateAction, (err, response) => {
+            this._server.sendAction(originateAction, (err, response) => {
                 if (err) {
                     AstUtil.maybeCallback(callbackFn, context, err);
                     return;
                 }
-                let responseEvents;
-                let responseEventIterator;
-                let uniqueId;
-                let channel = null;
-                responseEvents = response;
-                responseEventIterator = responseEvents.events;
-                if (responseEventIterator.length > 0) {
-                    let responseEvent;
-                    responseEvent = responseEventIterator[0];
-                    if (responseEvent instanceof originateresponse) {
-                        let originateResponseEvent = responseEvent;
-                        uniqueId = originateResponseEvent.getUniqueid();
-                        this._server.logger.debug(originateResponseEvent.__proto__.constructor.name + " received with uniqueId " + uniqueId);
-                        onChannel.call(null, this._server.managers.channel.getChannelById(uniqueId));
-                    }
+                if (response.Response === "Success") {
+                    let uniqueId = response.Uniqueid;
+                    this._server.logger.debug(response.Event + " received with uniqueId " + uniqueId);
+                    onChannel.call(null, this._server.managers.channel.getChannelById(uniqueId));
                 }
                 else {
-                    onChannel(err, channel);
+                    onChannel.call(response);
                 }
             }, this);
         })

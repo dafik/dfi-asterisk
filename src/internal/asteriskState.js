@@ -5,12 +5,12 @@ class AsteriskState {
         this.status = status;
         this.name = name;
     }
-    static byValue(status) {
+    static byValue(status, stateClass) {
         let tmp;
         let states = this.STATES;
         for (let key in states) {
             if (states.hasOwnProperty(key) && states[key] === status) {
-                tmp = new this(states[key], key);
+                tmp = new stateClass(states[key], key);
                 return tmp;
             }
         }
@@ -19,29 +19,29 @@ class AsteriskState {
             AsteriskState.logger.error("all: %j", AsteriskState.unknown);
         }
         AsteriskState.logger.warn("unknown state %j ,%j", this.constructor.name, status);
-        return new this("UNKNOWN", status);
+        return new stateClass("UNKNOWN", status);
     }
-    static byName(status) {
+    static byName(status, stateClass) {
         status = status.toUpperCase();
         let tmp;
         if (this.STATES.hasOwnProperty(status)) {
-            tmp = new this(this.STATES[status], status);
+            tmp = new stateClass(this.STATES[status], status);
             return tmp;
         }
         if (-1 === AsteriskState.unknown.indexOf(status)) {
             AsteriskState.unknown.push(status);
             AsteriskState.logger.warn("unknown state %j ,%j", this.constructor.name === "Function" ? this.name : this.constructor.name, status);
             AsteriskState.logger.error("all: %j", AsteriskState.unknown);
-            return new this("UNKNOWN", status);
+            return new stateClass("UNKNOWN", status);
         }
         return null;
     }
-    static byNameOrValue(status) {
-        let tmp = this.byName(status);
+    static byNameOrValue(status, stateClass) {
+        let tmp = this.byName(status, stateClass);
         if (tmp) {
             return tmp;
         }
-        tmp = this.byValue(status);
+        tmp = this.byValue(status, stateClass);
         if (tmp) {
             return tmp;
         }

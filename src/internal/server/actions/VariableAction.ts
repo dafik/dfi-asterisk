@@ -1,12 +1,13 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiCallback} from "../../../definitions/interfaces";
+import {IDfiAMIResponseGetvar, IDfiCallbackError, IDfiCallbackResult} from "../../../definitions/interfaces";
 import {AST_ACTION} from "../../asterisk/actionNames";
 import {IAstActionGetvar, IAstActionSetvar} from "../../asterisk/actions";
+import {format} from "util";
 import AstUtil = require("../../astUtil");
 
 class VariableServerAction extends BaseServerAction {
 
-    public getGlobalVariable(variable: string, callbackFn: IDfiCallback, context?) {
+    public getGlobalVariable(variable: string, callbackFn: IDfiCallbackResult, context?) {
 
         this._server.start()
             .then(() => {
@@ -15,15 +16,11 @@ class VariableServerAction extends BaseServerAction {
                     Variable: variable
                 };
 
-                this._server.sendAction(action, (err, response) => {
+                this._server.sendAction<IDfiAMIResponseGetvar>(action, (err, response) => {
                     if (err) {
                         AstUtil.maybeCallback(callbackFn, context, err);
                     }
-                    let value = response.getAttribute("Value");
-                    if (value == null) {
-                        value = response.getAttribute(variable); // for Asterisk 1.0.x
-                    }
-                    AstUtil.maybeCallback(callbackFn, context, null, value);
+                    AstUtil.maybeCallback(callbackFn, context, null, response.Value);
                 });
             })
             .catch(error => error)
@@ -34,7 +31,7 @@ class VariableServerAction extends BaseServerAction {
             });
     }
 
-    public setGlobalVariable(variable: string, value: string, callbackFn: IDfiCallback, context?) {
+    public setGlobalVariable(variable: string, value: string, callbackFn: IDfiCallbackError, context?) {
 
         this._server.start()
             .then(() => {
@@ -46,10 +43,17 @@ class VariableServerAction extends BaseServerAction {
 
                 this._server.sendAction(action, (err, response) => {
                     if (err) {
-                        this._server.logger.error("Unable to set global variable %s to %s ", variable, value, response.getMessage());
+                        this._server.logger.error("Unable to set global variable %s to %s %j", variable, value, err);
                         AstUtil.maybeCallback(callbackFn, context, err);
+                        return;
                     }
-                    AstUtil.maybeCallback(callbackFn, context, null, response);
+                    if (response.Response !== "Success") {
+                        this._server.logger.error("Unable to set global variable %s to %s response %s", variable, value, response.Response);
+                        AstUtil.maybeCallback(callbackFn, context, new Error(format("Unable to set global variable %s to %s response %s", variable, value, response.Response)));
+                        return;
+                    }
+
+                    AstUtil.maybeCallback(callbackFn, context);
                 });
             })
             .catch(error => error)

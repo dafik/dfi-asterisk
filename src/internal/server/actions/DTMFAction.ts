@@ -1,13 +1,13 @@
 import BaseServerAction = require("./BaseAction");
 import Channel = require("../../../models/ChannelModel");
-import {IDfiCallback} from "../../../definitions/interfaces";
-import {IAstActionPlayDTMF} from "../../asterisk/actions";
+import {IDfiCallbackResult} from "../../../definitions/interfaces";
 import {AST_ACTION} from "../../asterisk/actionNames";
+import {IAstActionPlayDTMF} from "../../asterisk/actions";
 import AstUtil = require("../../astUtil");
 
 class DTMFServerAction extends BaseServerAction {
 
-    public send(channel: Channel|string | string, digit, callbackFn?: IDfiCallback, context?) {
+    public send(channel: Channel|string | string, digit, callbackFn?: IDfiCallbackResult, context?) {
 
         this._server.start()
             .then(() => {

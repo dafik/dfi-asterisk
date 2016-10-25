@@ -1,34 +1,54 @@
 import assert = require("assert");
 import asterisk = require("./mock/asterisk-real");
-import EndpointManger = require('local-dfi-linphone-endpoint-manager');
+import Linphone = require("local-dfi-linphone/src/linphone");
 
+import EndpointManger = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
+import manager = require("local-dfi-linphone-endpoint-manager");
+import PeerStates = require("../src/enums/peerStates");
+import DeviceStates = require("../src/enums/deviceStates");
 
-let endpointManger = EndpointManger.getInstance(asterisk);
+let endpointManger = manager.getInstance(asterisk);
 
 describe("peers", () => {
-    before(function (done) {
+    function onAfter(done) {
+        this.timeout(1000000);
+        endpointManger.clear(() => {
+            done();
+        });
+    }
+
+    function onBefore(done) {
         this.timeout(0);
 
-        assert.doesNotThrow(init, 'asterisk init failed');
+        assert.doesNotThrow(init, "asterisk init failed");
 
         function init() {
             asterisk.start()
                 .then(() => {
-                    endpointManger.on(endpointManger.events.error, error);
-                    endpointManger.on(endpointManger.events.endpointsSet, finish);
+                    if (!asterisk.managers.peer.enabled) {
+                        done(new Error("peer manager is not enabled but required for originate async"));
+                        return;
+                    }
+                    if (!asterisk.managers.device.enabled) {
+                        done(new Error("device manager is not enabled but required for originate async"));
+                        return;
+                    }
 
-                    endpointManger.setupEndpoints(1, 'udp', 'pjsip', 'wszystkie-test');
+                    endpointManger.on(EndpointManger.events.ERROR, error);
+                    endpointManger.on(EndpointManger.events.ENDPOINTS_SET, finish);
+
+                    endpointManger.setupEndpoints(1, "udp", "sip", "wszystkie-test");
 
                     function error(err) {
-                        endpointManger.removeListener(endpointManger.events.endpointsSet, error);
-                        endpointManger.removeListener(endpointManger.events.endpointsSet, finish);
+                        endpointManger.removeListener(EndpointManger.events.ERROR, error);
+                        endpointManger.removeListener(EndpointManger.events.ENDPOINTS_SET, finish);
                         done();
                         throw err;
                     }
 
                     function finish() {
-                        endpointManger.removeListener(endpointManger.events.endpointsSet, error);
-                        endpointManger.removeListener(endpointManger.events.endpointsSet, finish);
+                        endpointManger.removeListener(EndpointManger.events.ERROR, error);
+                        endpointManger.removeListener(EndpointManger.events.ENDPOINTS_SET, finish);
                         done();
                     }
                 })
@@ -40,33 +60,39 @@ describe("peers", () => {
                 });
         }
 
-    });
-    it('check presense', function (done) {
-        this.timeout(0);
-        let linPhones = endpointManger.endpoints;
-        let out = {};
-        linPhones.forEach(function (entry, key) {
-            out[key] = entry;
-        });
+    }
 
-        let keys = Object.keys(out);
+    function onCheckPresence(done) {
+        this.timeout(0);
+
+        let linPhones: Map<number, Linphone> = endpointManger.endpoints;
+        let keys = [...linPhones.keys()];
 
         let endpoint1 = linPhones.get(keys[0]);
         let id = endpoint1.getInterface();
 
-        let p = asterisk.getManager('peer').peers.get(id);
-        assert.notEqual(p, undefined);
-        assert.equal(p.get('state').status, PeerStates.REGISTERED);
-        let d = asterisk.getManager('device').devices.get(id);
-        assert.notEqual(d, undefined);
-        assert.equal(d.get('state').status, DeviceStates.NOT_INUSE);
-        done();
+        let peer = asterisk.managers.peer.peers.get(id);
+        assert.notEqual(peer, undefined);
+        if (peer.state.status !== PeerStates.REGISTERED) {
+            let x = peer.stateHistory;
+            console.log("%j", x);
+        }
 
-    });
-    after(function (done) {
-        this.timeout(1000000);
-        endpointManger.clear(function () {
-            done()
-        });
-    })
+        let device = asterisk.managers.device.devices.get(id);
+        assert.notEqual(device, undefined);
+        if (device.state.status !== DeviceStates.NOT_INUSE) {
+            setTimeout(() => {
+                assert.equal(device.state.status, DeviceStates.NOT_INUSE);
+                done();
+            }, 1000);
+        } else {
+            assert.equal(device.state.status, DeviceStates.NOT_INUSE);
+            done();
+        }
+
+    }
+
+    before(onBefore);
+    it("check presense", onCheckPresence);
+    after(onAfter);
 });

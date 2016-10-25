@@ -36,7 +36,7 @@ class PeerManager extends AsteriskManager {
             }
         }
         let handlePeers = (err, response) => {
-            if (err && err.Message !== "No endpoints found") {
+            if (err && err.message !== "No endpoints found") {
                 AstUtil.maybeCallback(callbackFn, context, err);
                 return;
             }

@@ -1,5 +1,5 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiCallback} from "../../../definitions/interfaces";
+import {IDfiCallbackResult} from "../../../definitions/interfaces";
 import {AST_ACTION} from "../../asterisk/actionNames";
 import {IAstActionSIPpeers} from "../../asterisk/actions";
 import {AST_EVENT} from "../../asterisk/eventNames";
@@ -8,7 +8,7 @@ import AstUtil = require("../../astUtil");
 
 class PeersServerAction extends BaseServerAction {
 
-    public getEntries(callbackFn: IDfiCallback, context?) {
+    public getEntries(callbackFn: IDfiCallbackResult, context?) {
 
         this._server.start()
             .then(() => {

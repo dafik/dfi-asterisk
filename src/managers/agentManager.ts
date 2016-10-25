@@ -4,7 +4,7 @@ import Agent = require("../models/AgentModel");
 import QueueManager = require("./queueManager");
 import AstUtil = require("../internal/astUtil");
 
-import {IDfiCallback} from "../definitions/interfaces";
+import {IDfiCallbackResult} from "../definitions/interfaces";
 import {IDfiAstModelAttribsAgent} from "../definitions/models";
 import {TIAgent, TIInterface} from "../definitions/types";
 import {AST_ACTION} from "../internal/asterisk/actionNames";
@@ -52,7 +52,7 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
         return this.agents.toArray();
     }
 
-    public start(callbackFn: IDfiCallback, context?) {
+    public start(callbackFn: IDfiCallbackResult, context?) {
 
         function finish() {
             this.server.logger.info('manager "AgentManager" started');

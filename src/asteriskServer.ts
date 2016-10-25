@@ -1,14 +1,17 @@
 import {IDfiAstConfigAstServer, IDfiAstConfigServer} from "./definitions/configs";
 import {IDfiAstEventsServer} from "./definitions/events";
 import {
+    IDfiAMICallbackError,
     IDfiAMIMultiCallback,
     IDfiAMIResponse,
     IDfiAMIResponseCommand,
+    IDfiAMIResponseError,
     IDfiAMIResponseGetvar,
     IDfiAMIResponseMessage,
     IDfiAMIResponseMessageMulti,
+    IDfiActionCallback,
     IDfiAstResponseMessageMulti,
-    IDfiCallback, IDfiActionCallback
+    IDfiCallbackResult
 } from "./definitions/interfaces";
 import {AST_ACTION} from "./internal/asterisk/actionNames";
 import {IAstAction, IAstActionCommand, IAstActionGetvar} from "./internal/asterisk/actions";
@@ -26,7 +29,6 @@ import ServerManagers = require("./internal/server/Managers");
 import AstUtil = require("./internal/astUtil");
 import ManagerCommunication = require("./errors/ManagerCommunication");
 import AsteriskVersion = require("./internal/server/Version");
-import ManagerError = require("./errors/ManagerError");
 
 const PROP_AMI = "ami";
 const PROP_AMI_HANDLERS = "amiHandlers";
@@ -118,7 +120,7 @@ class AsteriskServer extends DfiEventObject {
         return this._ami && this._ami.isConnected;
     }
 
-    public sendAction(action: IAstAction | IAstActionGetvar | IAstActionCommand, callbackFn?: IDfiActionCallback, context?: any) {
+    public sendAction<R extends IDfiAMIResponse>(action: IAstAction | IAstActionGetvar |IAstActionCommand, callbackFn?: IDfiActionCallback<R>|IDfiAMICallbackError, context?: any) {
         if (!this.allowedActions.has(action.Action)) {
             AstUtil.maybeCallbackOnce(callbackFn, context, "Not Allowed Action: " + action.Action);
             return;
@@ -138,23 +140,11 @@ class AsteriskServer extends DfiEventObject {
             this.logger.trace("\n\n %j \n", action);
         }
 
-        let actionToSend: IAstAction|string = action;
-        if (action.serialize) {
-            actionToSend = AstUtil.serializeMessage(action);
-        }
-
-        (this._ami.send(actionToSend, true) as Promise<IDfiAMIResponse>)
+        (this._ami.send(action, true) as Promise<IDfiAMIResponse>)
             .then((response: IDfiAMIResponse) => {
                 if (response.Response === "Error") {
                     throw response;
                 }
-                /*       if (response instanceof ManagerError) {
-                 if (action.Action != "Getvar" && response.message != "No such channel") {
-                 this.logger.error('ManagerCommunicationException %s ,  action: %j response %j', action.Action, action, response.message);
-                 AstUtil.maybeCallback(callbackFn, context, response);
-                 return;
-                 }
-                 }*/
                 if (action.Action === "Getvar") {
                     this.logger.debug('response for: "' + action.Action + '" var: "' + (response as IDfiAMIResponseGetvar).Variable +
                         '" value: "' + (response as IDfiAMIResponseGetvar).Value + '" channel: "' + (action as IAstActionGetvar).Channel + '"');
@@ -173,13 +163,38 @@ class AsteriskServer extends DfiEventObject {
             .catch(error => error)
             .then((response: IDfiAMIResponseMessage|Error) => {
                 if (response instanceof Error || response.Response === "Error") {
-                    let error = (response as Error);
+                    let error: IDfiAMIResponseError;
+                    let message: string;
                     if ((response as IDfiAMIResponse).Response === "Error") {
-                        error = new ManagerError((response as IDfiAMIResponseMessage).Message);
+                        message = (response as IDfiAMIResponseMessage).Message;
+                    } else {
+                        message = (response as Error).message;
                     }
+                    error = Object.assign(new Error(message), {action});
                     AstUtil.maybeCallbackOnce(callbackFn, context, error);
                 }
             });
+    }
+
+    public sendActions<R extends IDfiAMIResponse>(actions: IAstAction[], callbackFn?: IDfiActionCallback<R>, context?: any) {
+        let wait = actions.length;
+        let errors = [];
+        let responses = [];
+        if (wait === 0) {
+            AstUtil.maybeCallbackOnce(callbackFn, context, errors.length > 0 ? errors : null, responses);
+        }
+        actions.forEach(action => {
+            this.sendAction(action, (err, resp) => {
+                wait--;
+                if (err) {
+                    errors.push(err);
+                }
+                responses.push(resp);
+                if (wait === 0) {
+                    AstUtil.maybeCallbackOnce(callbackFn, context, errors.length > 0 ? errors : null, responses);
+                }
+            });
+        });
     }
 
     public  sendEventGeneratingAction<E extends IAstEvent>(action: IAstAction | IAstActionCommand, callbackFn: IDfiAMIMultiCallback<E>, context?) {
@@ -207,12 +222,8 @@ class AsteriskServer extends DfiEventObject {
         if (responses.size === 1) {
             this._ami.on("event", this.getProp(PROP_MULTIPART_RESPONSE_HANDLER));
         }
-        let actionToSend: IAstAction|string = action;
-        if (action.serialize) {
-            actionToSend = AstUtil.serializeMessage(action);
-        }
 
-        (this._ami.send(actionToSend, true) as Promise<IDfiAMIResponse>)
+        (this._ami.send(action, true) as Promise<IDfiAMIResponse>)
             .then((response: IDfiAMIResponse) => {
                 if (response.Response && response.Response === "Error") {
                     this.logger.error("ManagerCommunicationException %s ,  action: %j response %j", action.Action, action, response);
@@ -221,7 +232,8 @@ class AsteriskServer extends DfiEventObject {
                     if (responses.size === 0) {
                         this._ami.removeListener("event", this.getProp(PROP_MULTIPART_RESPONSE_HANDLER));
                     }
-                    AstUtil.maybeCallback(callbackFn, context, response);
+                    let error: IDfiAMIResponseError = Object.assign(new Error(response.Message), {action});
+                    AstUtil.maybeCallback(callbackFn, context, error);
                     return;
                 }
                 if (action.Action === "Command") {
@@ -306,7 +318,7 @@ class AsteriskServer extends DfiEventObject {
             addTime: true,
             attemptsDelay: 1000,
             emitEventsByTypes: false,
-            emitResponsesById: true,
+            emitResponsesById: false,
             eventFilter: null,  // filter disabled
             eventTypeToLowerCase: false,
             keepAlive: false,
@@ -330,7 +342,7 @@ class AsteriskServer extends DfiEventObject {
 
     }
 
-    private _initializeIfNeeded(callbackFn: IDfiCallback, context?) {
+    private _initializeIfNeeded(callbackFn: IDfiCallbackResult, context?) {
 
         let initialize = () => {
             let ami = this._ami;

@@ -1,6 +1,6 @@
 import AsteriskManager = require("../internal/server/Manager");
 import Devices = require("../collections/DevicesCollection");
-import {IDfiAMIResponseMessageMulti, IDfiCallback} from "../definitions/interfaces";
+import {IDfiAMIResponseMessageMulti, IDfiCallbackResult} from "../definitions/interfaces";
 import {AST_ACTION} from "../internal/asterisk/actionNames";
 import {AST_EVENT} from "../internal/asterisk/eventNames";
 import {IAstEventDeviceStateChange} from "../internal/asterisk/events";
@@ -18,7 +18,7 @@ class DeviceManager extends AsteriskManager<Device, Devices> {
         return this._collection;
     }
 
-    public start(callbackFn: IDfiCallback, context?) {
+    public start(callbackFn: IDfiCallbackResult, context?) {
 
         function finish() {
             this.server.logger.info('manager "DeviceManager" started');

@@ -7,7 +7,7 @@ function getServerInstance(options?): AsteriskServer {
         if (options) {
             instance = new AsteriskServer(options);
         } else {
-            throw new Error("server start options missing")
+            throw new Error("server start options missing");
         }
     }
     return instance;
