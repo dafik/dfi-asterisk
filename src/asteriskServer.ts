@@ -226,13 +226,15 @@ class AsteriskServer extends DfiEventObject {
         (this._ami.send(action, true) as Promise<IDfiAMIResponse>)
             .then((response: IDfiAMIResponse) => {
                 if (response.Response && response.Response === "Error") {
-                    this.logger.error("ManagerCommunicationException %s ,  action: %j response %j", action.Action, action, response);
+                    let error: IDfiAMIResponseError = Object.assign(new Error(response.Message), {action});
+
+                    this.logger.warn("sendEventGeneratingAction error:%j %j ", error.message, error.action);
 
                     responses.delete(response.ActionID);
                     if (responses.size === 0) {
                         this._ami.removeListener("event", this.getProp(PROP_MULTIPART_RESPONSE_HANDLER));
                     }
-                    let error: IDfiAMIResponseError = Object.assign(new Error(response.Message), {action});
+
                     AstUtil.maybeCallback(callbackFn, context, error);
                     return;
                 }
@@ -321,8 +323,8 @@ class AsteriskServer extends DfiEventObject {
             emitResponsesById: false,
             eventFilter: null,  // filter disabled
             eventTypeToLowerCase: false,
-            keepAlive: false,
-            keepAliveDelay: 1000,
+            keepAlive: true,
+            keepAliveDelay: 10000,
             maxAttemptsCount: 30,
             reconnect: true
         });

@@ -2,6 +2,7 @@
 const DfiEventObject = require("local-dfi-base/src/dfiEventObject");
 const AstUtil = require("../astUtil");
 const P_PROP_COLLECTION = "collection";
+const P_PROP_MANAGERS = "managers";
 const P_PROP_EVENTSMAP = "eventsMap";
 const P_PROP_ENABLED = "enabled";
 const P_PROP_SERVER = "server";
@@ -30,6 +31,9 @@ class AsteriskManager extends DfiEventObject {
     }
     get _collection() {
         return this.getProp(P_PROP_COLLECTION);
+    }
+    get _managers() {
+        return this.getProp(P_PROP_MANAGERS);
     }
     restart(callbackFn, context) {
         this.server.logger.info("manager %s restarted", this.constructor.name);

@@ -18,6 +18,12 @@ const Ip = require("../models/IpAddress");
 class PeerManager extends AsteriskManager {
     constructor(options, state) {
         super(options, state, new Peers());
+        if (!this.enabled) {
+            return;
+        }
+        let map = {};
+        map[eventNames_1.AST_EVENT.PEER_STATUS] = this._handlePeerStatusEvent;
+        this._mapEvents(map);
     }
     get peers() {
         return this._collection;
@@ -70,9 +76,6 @@ class PeerManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        let map = {};
-        map[eventNames_1.AST_EVENT.PEER_STATUS] = this._handlePeerStatusEvent;
-        this._mapEvents(map);
         let action1 = { Action: actionNames_1.AST_ACTION.IAX_PEERLIST };
         if (this.server.allowedActions.has(action1.Action)) {
             waiting++;

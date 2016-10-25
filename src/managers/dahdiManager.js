@@ -15,6 +15,13 @@ class DahdiManager extends AsteriskManager {
         super(options, state, new DAHDIChannels());
         this.setProp(P_PROP_CHANNELS_BY_DAHDI_ID, new Map());
         this.setProp(P_PROP_ACTIVE_COUNT, 0);
+        if (!this.enabled) {
+            return;
+        }
+        let map = {};
+        map[eventNames_1.AST_EVENT.DAHDI_CHANNEL] = this._handleDahdiChannelEvent;
+        map[eventNames_1.AST_EVENT.HANGUP] = this._handleHangupEvent;
+        this._mapEvents(map);
     }
     get channels() {
         return this._collection;
@@ -35,10 +42,6 @@ class DahdiManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        let map = {};
-        map[eventNames_1.AST_EVENT.DAHDI_CHANNEL] = this._handleDahdiChannelEvent;
-        map[eventNames_1.AST_EVENT.HANGUP] = this._handleHangupEvent;
-        this._mapEvents(map);
         let action = {
             Action: actionNames_1.AST_ACTION.DAHDI_SHOW_CHANNELS,
             DAHDIChannel: 0
@@ -59,7 +62,13 @@ class DahdiManager extends AsteriskManager {
                         if (event.Channel) {
                             let channel;
                             if (this.server.managers.channel.enabled) {
-                                channel = this.server.managers.channel.channels.get(event.Channel);
+                                channel = this.server.managers.channel.channels.get(event.Uniqueid);
+                                if (!channel) {
+                                    channel = {
+                                        id: event.Uniqueid,
+                                        name: event.Channel
+                                    };
+                                }
                             }
                             else {
                                 channel = {
@@ -139,7 +148,7 @@ class DahdiManager extends AsteriskManager {
                 this._activeChanged(-1);
             }
             else {
-                this.logger.warn("Unable to remove dahdi by channel name not found");
+                this.logger.warn("Unable to remove dahdi by channel name not found: %s", event.Channel);
             }
         }
     }

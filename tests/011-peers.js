@@ -60,7 +60,6 @@ describe("peers", () => {
         assert.notEqual(peer, undefined);
         if (peer.state.status !== PeerStates.REGISTERED) {
             let x = peer.stateHistory;
-            console.log("%j", x);
         }
         let device = asterisk.managers.device.devices.get(id);
         assert.notEqual(device, undefined);

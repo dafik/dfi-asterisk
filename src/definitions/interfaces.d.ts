@@ -197,3 +197,10 @@ export interface IDfiAMIResponseGetvar extends IDfiAMIResponse {
     Variable: string;
     Value: string;
 }
+
+export interface IEventHandle {
+    (event: IAstEvent): void;
+}
+export interface IEventHandlersMap {
+    [key: string]: IEventHandle;
+}

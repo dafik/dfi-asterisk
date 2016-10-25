@@ -1,21 +1,24 @@
 import DfiEventObject = require("local-dfi-base/src/dfiEventObject");
+import {IDfiAstManagerOptions} from "../../definitions/configs";
 import {IDfiAstEventsManager, IDfiAstEventsServer} from "../../definitions/events";
-import {IDfiCallbackResult, IEventHandle} from "../../definitions/interfaces";
+import {IDfiCallbackResult, IEventHandle, IEventHandlersMap} from "../../definitions/interfaces";
 import {IAstEvent} from "../asterisk/events";
-import {IDfiBaseObjectConfig} from "local-dfi-base/src/dfiInterfaces";
+
 import AsteriskServer = require("../../asteriskServer");
 import AsteriskCollection = require("../asteriskCollection");
 import AsteriskModel = require("../asteriskModel");
 import AstUtil = require("../astUtil");
+import ServerManagers = require("./Managers");
 
 const P_PROP_COLLECTION = "collection";
+const P_PROP_MANAGERS = "managers";
 const P_PROP_EVENTSMAP = "eventsMap";
 const P_PROP_ENABLED = "enabled";
 const P_PROP_SERVER = "server";
 
 abstract class AsteriskManager<M extends AsteriskModel, C extends AsteriskCollection<M>> extends DfiEventObject {
 
-    constructor(options: IDfiBaseObjectConfig, enabled: boolean, collection: C) {
+    constructor(options: IDfiAstManagerOptions, enabled: boolean, collection: C) {
         options.loggerName = "dfi:as:";
 
         super(options);
@@ -50,6 +53,10 @@ abstract class AsteriskManager<M extends AsteriskModel, C extends AsteriskCollec
         return this.getProp(P_PROP_COLLECTION);
     }
 
+    protected get _managers(): ServerManagers {
+        return this.getProp(P_PROP_MANAGERS);
+    }
+
     public restart(callbackFn: IDfiCallbackResult, context?): void {
         this.server.logger.info("manager %s restarted", this.constructor.name);
         AstUtil.maybeCallbackOnce(callbackFn, context, null, this.constructor.name);
@@ -74,7 +81,7 @@ abstract class AsteriskManager<M extends AsteriskModel, C extends AsteriskCollec
         };
     }
 
-    protected _mapEvents(eventsMap: Object): void {
+    protected _mapEvents(eventsMap: IEventHandlersMap): void {
         let events = Object.keys(eventsMap);
         events.forEach((event) => {
             this.eventsMap.set(event, eventsMap[event]);

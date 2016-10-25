@@ -17,6 +17,22 @@ class QueueManager extends AsteriskManager {
         this.server.once(this.serverEvents.BEFORE_INIT, () => {
             this.setProp(PROP_CHANNEL_MANAGER, this.server.managers.channel);
         }, this);
+        if (!this.enabled) {
+            return;
+        }
+        let map = {};
+        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_ADDED] = this._handleMemberAddedEvent;
+        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
+        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
+        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_PENALTY] = this._handleMemberPenaltyEvent;
+        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_REMOVED] = this._handleMemberRemovedEvent;
+        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_STATUS] = this._handleMemberStatusEvent;
+        if (this._managers.channel.enabled) {
+            map[eventNames_1.AST_EVENT.QUEUE_CALLER_ABANDON] = this._handleAbandonEvent;
+            map[eventNames_1.AST_EVENT.QUEUE_CALLER_JOIN] = this._handleCallerJoinEvent;
+            map[eventNames_1.AST_EVENT.QUEUE_CALLER_LEAVE] = this._handleLeaveEvent;
+        }
+        this._mapEvents(map);
     }
     get queues() {
         return this._collection;
@@ -34,18 +50,11 @@ class QueueManager extends AsteriskManager {
                 callback.call(thisp, null, "queueManager");
             }
         }
-        /**
-         * Called during initialization to populate the list of queues.
-         */
         function handleQueueParamsEvent(event) {
             let queue = new Queue(event);
             this.logger.debug("Adding new queue: %s", queue.id);
             this.queues.add(queue);
         }
-        /**
-         * Called during initialization to populate the members of the queues.
-         * @param event the QueueMemberEvent received
-         */
         function handleQueueMemberEvent(event) {
             let queue = this.queues.get(event.Queue);
             if (queue == null) {
@@ -59,10 +68,6 @@ class QueueManager extends AsteriskManager {
             queue.addMember(member);
             this.emit(QueueManager.events.MEMBER_ADD, member, queue);
         }
-        /**
-         * Called during initialization to populate entries of the queues.
-         * Currently does the same as handleJoinEvent()
-         */
         function handleQueueEntryEvent(event) {
             let queue = this.getQueueByName(event.Queue);
             let channel = this._channelManager.getChannelByName(event.Channel);
@@ -90,19 +95,6 @@ class QueueManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        let map = {};
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_ADDED] = this._handleMemberAddedEvent;
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_PENALTY] = this._handleMemberPenaltyEvent;
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_REMOVED] = this._handleMemberRemovedEvent;
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_STATUS] = this._handleMemberStatusEvent;
-        if (this.server.managers.channel.enabled) {
-            map[eventNames_1.AST_EVENT.QUEUE_CALLER_ABANDON] = this._handleAbandonEvent;
-            map[eventNames_1.AST_EVENT.QUEUE_CALLER_JOIN] = this._handleCallerJoinEvent;
-            map[eventNames_1.AST_EVENT.QUEUE_CALLER_LEAVE] = this._handleLeaveEvent;
-        }
-        this._mapEvents(map);
         let action = { Action: actionNames_1.AST_ACTION.QUEUE_STATUS };
         this.server.sendEventGeneratingAction(action, (err, response) => {
             if (err) {

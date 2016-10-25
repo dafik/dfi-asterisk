@@ -1,4 +1,7 @@
 import {IDfiBaseObjectConfig} from "local-dfi-base/src/dfiInterfaces";
+import AsteriskManager = require("../internal/server/Manager");
+import AsteriskServer = require("../asteriskServer");
+import ServerManagers = require("../internal/server/Managers");
 
 export interface IDfiAstConfigCollection extends IDfiBaseObjectConfig {
     idField?: string;
@@ -23,4 +26,8 @@ export interface IDfiAstConfigAstManager extends Object {
     dahdi: boolean;
     queue: boolean;
     agent: boolean;
+}
+export interface IDfiAstManagerOptions extends IDfiBaseObjectConfig {
+    managers: ServerManagers;
+    server: AsteriskServer;
 }

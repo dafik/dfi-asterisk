@@ -9,6 +9,12 @@ const DeviceState = require("../states/deviceState");
 class DeviceManager extends AsteriskManager {
     constructor(options, state) {
         super(options, state, new Devices());
+        if (!this.enabled) {
+            return;
+        }
+        let map = {};
+        map[eventNames_1.AST_EVENT.DEVICE_STATE_CHANGE] = this._handleDeviceStateChangeEvent;
+        this._mapEvents(map);
     }
     get devices() {
         return this._collection;
@@ -23,9 +29,6 @@ class DeviceManager extends AsteriskManager {
             finish.call(this);
         }
         else {
-            let map = {};
-            map[eventNames_1.AST_EVENT.DEVICE_STATE_CHANGE] = this._handleDeviceStateChangeEvent;
-            this._mapEvents(map);
             this.server.sendEventGeneratingAction({ Action: actionNames_1.AST_ACTION.DEVICE_STATE_LIST }, (err, re) => {
                 if (err) {
                     if (!err.message.match("Not Allowed Action")) {

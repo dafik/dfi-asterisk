@@ -24,6 +24,15 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
     constructor(options, state) {
         super(options, state, new Peers());
 
+
+        if (!this.enabled) {
+            return;
+        }
+
+        let map = {};
+        map[AST_EVENT.PEER_STATUS] = this._handlePeerStatusEvent;
+        this._mapEvents(map);
+
     }
 
     get peers(): Peers {
@@ -84,9 +93,6 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
             return;
         }
 
-        let map = {};
-        map[AST_EVENT.PEER_STATUS] = this._handlePeerStatusEvent;
-        this._mapEvents(map);
 
         let action1: IAstActionIAXpeerlist = {Action: AST_ACTION.IAX_PEERLIST};
         if (this.server.allowedActions.has(action1.Action)) {

@@ -12,6 +12,14 @@ class DeviceManager extends AsteriskManager<Device, Devices> {
 
     constructor(options, state) {
         super(options, state, new Devices());
+
+        if (!this.enabled) {
+            return;
+        }
+
+        let map = {};
+        map[AST_EVENT.DEVICE_STATE_CHANGE] = this._handleDeviceStateChangeEvent;
+        this._mapEvents(map);
     }
 
     get devices(): Devices {
@@ -30,10 +38,6 @@ class DeviceManager extends AsteriskManager<Device, Devices> {
         if (!this.enabled) {
             finish.call(this);
         } else {
-            let map = {};
-            map[AST_EVENT.DEVICE_STATE_CHANGE] = this._handleDeviceStateChangeEvent;
-            this._mapEvents(map);
-
             this.server.sendEventGeneratingAction({Action: AST_ACTION.DEVICE_STATE_LIST}, (err: Error|null, re: IDfiAMIResponseMessageMulti<IAstEventDeviceStateChange>) => {
                 if (err) {
                     if (!err.message.match("Not Allowed Action")) {

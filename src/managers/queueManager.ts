@@ -37,6 +37,27 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
         this.server.once(this.serverEvents.BEFORE_INIT, () => {
             this.setProp(PROP_CHANNEL_MANAGER, this.server.managers.channel);
         }, this);
+
+        if (!this.enabled) {
+            return;
+        }
+
+        let map = {};
+        map[AST_EVENT.QUEUE_MEMBER_ADDED] = this._handleMemberAddedEvent;
+        map[AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
+        map[AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
+        map[AST_EVENT.QUEUE_MEMBER_PENALTY] = this._handleMemberPenaltyEvent;
+        map[AST_EVENT.QUEUE_MEMBER_REMOVED] = this._handleMemberRemovedEvent;
+        map[AST_EVENT.QUEUE_MEMBER_STATUS] = this._handleMemberStatusEvent;
+
+        if (this._managers.channel.enabled) {
+
+            map[AST_EVENT.QUEUE_CALLER_ABANDON] = this._handleAbandonEvent;
+            map[AST_EVENT.QUEUE_CALLER_JOIN] = this._handleCallerJoinEvent;
+            map[AST_EVENT.QUEUE_CALLER_LEAVE] = this._handleLeaveEvent;
+        }
+
+        this._mapEvents(map);
     }
 
     get queues(): Queues {
@@ -60,9 +81,6 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
             }
         }
 
-        /**
-         * Called during initialization to populate the list of queues.
-         */
         function handleQueueParamsEvent(event: IAstEventQueueParams) {
 
             let queue = new Queue(event);
@@ -71,10 +89,6 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
 
         }
 
-        /**
-         * Called during initialization to populate the members of the queues.
-         * @param event the QueueMemberEvent received
-         */
         function handleQueueMemberEvent(event: IAstEventQueueMember) {
 
             let queue = this.queues.get(event.Queue);
@@ -90,10 +104,6 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
             this.emit(QueueManager.events.MEMBER_ADD, member, queue);
         }
 
-        /**
-         * Called during initialization to populate entries of the queues.
-         * Currently does the same as handleJoinEvent()
-         */
         function handleQueueEntryEvent(event: IAstEventQueueEntry) {
             let queue = this.getQueueByName(event.Queue);
             let channel = this._channelManager.getChannelByName(event.Channel);
@@ -123,23 +133,6 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
             finish.call(this);
             return;
         }
-
-        let map = {};
-        map[AST_EVENT.QUEUE_MEMBER_ADDED] = this._handleMemberAddedEvent;
-        map[AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
-        map[AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
-        map[AST_EVENT.QUEUE_MEMBER_PENALTY] = this._handleMemberPenaltyEvent;
-        map[AST_EVENT.QUEUE_MEMBER_REMOVED] = this._handleMemberRemovedEvent;
-        map[AST_EVENT.QUEUE_MEMBER_STATUS] = this._handleMemberStatusEvent;
-
-        if (this.server.managers.channel.enabled) {
-
-            map[AST_EVENT.QUEUE_CALLER_ABANDON] = this._handleAbandonEvent;
-            map[AST_EVENT.QUEUE_CALLER_JOIN] = this._handleCallerJoinEvent;
-            map[AST_EVENT.QUEUE_CALLER_LEAVE] = this._handleLeaveEvent;
-        }
-
-        this._mapEvents(map);
 
         let action: IAstActionQueueStatus = {Action: AST_ACTION.QUEUE_STATUS};
         this.server.sendEventGeneratingAction(action, (err, response) => {

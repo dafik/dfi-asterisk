@@ -20,6 +20,21 @@ class AgentManager extends AsteriskManager {
                 queueManager.on(QueueManager.events.MEMBER_REMOVE, this._handleQueueRemoveMember, this);
             }
         }, this);
+        if (!this.enabled) {
+            return;
+        }
+        function onUnhandledEvent(event) {
+            this.logger.error("unhandled event %s", event.Event);
+        }
+        let map = {};
+        map[eventNames_1.AST_EVENT.AGENT_CALLED] = this._handleAgentCalledEvent;
+        map[eventNames_1.AST_EVENT.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
+        map[eventNames_1.AST_EVENT.AGENT_CONNECT] = this._handleAgentConnectEvent;
+        map[eventNames_1.AST_EVENT.AGENT_DUMP] = onUnhandledEvent.bind(this);
+        map[eventNames_1.AST_EVENT.AGENT_LOGIN] = this._handleAgentLoginEvent;
+        map[eventNames_1.AST_EVENT.AGENT_LOGOFF] = this._handleAgentLogoffEvent;
+        map[eventNames_1.AST_EVENT.AGENT_RING_NO_ANSWER] = onUnhandledEvent.bind(this);
+        this._mapEvents(map);
     }
     get agents() {
         return this._collection;
@@ -38,23 +53,11 @@ class AgentManager extends AsteriskManager {
             this.server.logger.info('manager "AgentManager" started');
             AstUtil.maybeCallbackOnce(callbackFn, context, null, "agentManager");
         }
-        function onUnhandledEvent(event) {
-            this.logger.error("unhandled event");
-        }
         this.server.logger.info('starting manager "AgentManager"');
         if (!this.enabled) {
             finish.call(this);
             return;
         }
-        let map = {};
-        map[eventNames_1.AST_EVENT.AGENT_CALLED] = this._handleAgentCalledEvent;
-        map[eventNames_1.AST_EVENT.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
-        map[eventNames_1.AST_EVENT.AGENT_CONNECT] = this._handleAgentConnectEvent;
-        map[eventNames_1.AST_EVENT.AGENT_DUMP] = onUnhandledEvent.bind(this);
-        map[eventNames_1.AST_EVENT.AGENT_LOGIN] = this._handleAgentLoginEvent;
-        map[eventNames_1.AST_EVENT.AGENT_LOGOFF] = this._handleAgentLogoffEvent;
-        map[eventNames_1.AST_EVENT.AGENT_RING_NO_ANSWER] = onUnhandledEvent.bind(this);
-        this._mapEvents(map);
         let action = { Action: actionNames_1.AST_ACTION.AGENTS };
         this.server.sendEventGeneratingAction(action, (err, re) => {
             if (err) {

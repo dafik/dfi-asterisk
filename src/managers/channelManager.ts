@@ -53,6 +53,35 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         super(options, state, new Channels());
 
         this.setProp("technologyCount", {});
+
+        if (!this.enabled) {
+            return;
+        }
+
+        let map = {};
+        map[AST_EVENT.NEW_CHANNEL] = this._handleNewChannelEvent;
+        map[AST_EVENT.NEW_EXTEN] = this._handleNewExtenEvent;
+        map[AST_EVENT.NEW_STATE] = this._handleNewStateEvent;
+        map[AST_EVENT.NEW_CALLERID] = this._handleNewCallerIdEvent;
+        map[AST_EVENT.DIAL_BEGIN] = this._handleDialEvent;
+        map[AST_EVENT.DIAL_END] = this._handleDialEvent;
+        map[AST_EVENT.RENAME] = this._handleRenameEvent;
+        map[AST_EVENT.HANGUP] = this._handleHangupEvent;
+        map[AST_EVENT.CDR] = this._handleCdrEvent;
+        map[AST_EVENT.VAR_SET] = this._handleVarSetEvent;
+        map[AST_EVENT.SOFT_HANGUP_REQUEST] = this._handleHangupRequest;
+        map[AST_EVENT.HANGUP_REQUEST] = this._handleHangupRequest;
+        map[AST_EVENT.NEW_CONNECTED_LINE] = this._handleNewConnectedLine;
+        map[AST_EVENT.MUSIC_ON_HOLD_START] = this._handleMusicOnHold;
+        map[AST_EVENT.MUSIC_ON_HOLD_STOP] = this._handleMusicOnHold;
+        map[AST_EVENT.DTMF_END] = this._handleDtmfEvent;
+
+        map[AST_EVENT.PARKED_CALL] = this._handleParkedCallEvent;
+        map[AST_EVENT.PARKED_CALL_GIVE_UP] = this._handleParkedCallGiveUpEvent;
+        map[AST_EVENT.PARKED_CALL_TIME_OUT] = this._handleParkedCallTimeOutEvent;
+        map[AST_EVENT.UN_PARKED_CALL] = this._handleUnparkedCallEvent;
+
+        this._mapEvents(map);
     }
 
     get channels(): Channels {
@@ -128,7 +157,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
                 }
 
                 if (isNew) {
-                    this.logger.info("Adding new channel %j (%j)", channel.get("channel"), channel.id);
+                    this.logger.info("Adding new channel %j (%j)", channel.name, channel.id);
                     this._addChannel(channel);
                 }
             }
@@ -141,30 +170,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             return;
         }
 
-        let map = {};
-        map[AST_EVENT.NEW_CHANNEL] = this._handleNewChannelEvent;
-        map[AST_EVENT.NEW_EXTEN] = this._handleNewExtenEvent;
-        map[AST_EVENT.NEW_STATE] = this._handleNewStateEvent;
-        map[AST_EVENT.NEW_CALLERID] = this._handleNewCallerIdEvent;
-        map[AST_EVENT.DIAL_BEGIN] = this._handleDialEvent;
-        map[AST_EVENT.DIAL_END] = this._handleDialEvent;
-        map[AST_EVENT.RENAME] = this._handleRenameEvent;
-        map[AST_EVENT.HANGUP] = this._handleHangupEvent;
-        map[AST_EVENT.CDR] = this._handleCdrEvent;
-        map[AST_EVENT.VAR_SET] = this._handleVarSetEvent;
-        map[AST_EVENT.SOFT_HANGUP_REQUEST] = this._handleHangupRequest;
-        map[AST_EVENT.HANGUP_REQUEST] = this._handleHangupRequest;
-        map[AST_EVENT.NEW_CONNECTED_LINE] = this._handleNewConnectedLine;
-        map[AST_EVENT.MUSIC_ON_HOLD_START] = this._handleMusicOnHold;
-        map[AST_EVENT.MUSIC_ON_HOLD_STOP] = this._handleMusicOnHold;
-        map[AST_EVENT.DTMF_END] = this._handleDtmfEvent;
 
-        map[AST_EVENT.PARKED_CALL] = this._handleParkedCallEvent;
-        map[AST_EVENT.PARKED_CALL_GIVE_UP] = this._handleParkedCallGiveUpEvent;
-        map[AST_EVENT.PARKED_CALL_TIME_OUT] = this._handleParkedCallTimeOutEvent;
-        map[AST_EVENT.UN_PARKED_CALL] = this._handleUnparkedCallEvent;
-
-        this._mapEvents(map);
 
         let action: IAstActionCommand = {Action: AST_ACTION.COMMAND, Command: "core show channeltypes"};
         this.server.sendAction(action, (err, response) => {

@@ -4,13 +4,13 @@ import Agent = require("../models/AgentModel");
 import QueueManager = require("./queueManager");
 import AstUtil = require("../internal/astUtil");
 
-import {IDfiCallbackResult} from "../definitions/interfaces";
+import {IDfiCallbackResult, IEventHandlersMap} from "../definitions/interfaces";
 import {IDfiAstModelAttribsAgent} from "../definitions/models";
 import {TIAgent, TIInterface} from "../definitions/types";
 import {AST_ACTION} from "../internal/asterisk/actionNames";
 import {IAstActionAgents} from "../internal/asterisk/actions";
 import {AST_EVENT} from "../internal/asterisk/eventNames";
-import {IAstEventAgentCalled, IAstEventAgentComplete, IAstEventAgentConnect, IAstEventAgentLogin, IAstEventAgentLogoff, IAstEventAgents} from "../internal/asterisk/events";
+import {IAstEvent, IAstEventAgentCalled, IAstEventAgentComplete, IAstEventAgentConnect, IAstEventAgentLogin, IAstEventAgentLogoff, IAstEventAgents} from "../internal/asterisk/events";
 
 import AgentState = require("../states/agentState");
 import AgentStates = require("../enums/agentStates");
@@ -34,6 +34,26 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
                 queueManager.on(QueueManager.events.MEMBER_REMOVE, this._handleQueueRemoveMember, this);
             }
         }, this);
+
+        if (!this.enabled) {
+            return;
+        }
+
+        function onUnhandledEvent(event: IAstEvent) {
+            this.logger.error("unhandled event %s", event.Event);
+        }
+
+        let map: IEventHandlersMap = {};
+
+        map[AST_EVENT.AGENT_CALLED] = this._handleAgentCalledEvent;
+        map[AST_EVENT.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
+        map[AST_EVENT.AGENT_CONNECT] = this._handleAgentConnectEvent;
+        map[AST_EVENT.AGENT_DUMP] = onUnhandledEvent.bind(this);
+        map[AST_EVENT.AGENT_LOGIN] = this._handleAgentLoginEvent;
+        map[AST_EVENT.AGENT_LOGOFF] = this._handleAgentLogoffEvent;
+        map[AST_EVENT.AGENT_RING_NO_ANSWER] = onUnhandledEvent.bind(this);
+
+        this._mapEvents(map);
     }
 
     private get agents(): Agents {
@@ -59,9 +79,6 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
             AstUtil.maybeCallbackOnce(callbackFn, context, null, "agentManager");
         }
 
-        function onUnhandledEvent(event) {
-            this.logger.error("unhandled event");
-        }
 
         this.server.logger.info('starting manager "AgentManager"');
 
@@ -70,17 +87,6 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
             return;
         }
 
-        let map = {};
-
-        map[AST_EVENT.AGENT_CALLED] = this._handleAgentCalledEvent;
-        map[AST_EVENT.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
-        map[AST_EVENT.AGENT_CONNECT] = this._handleAgentConnectEvent;
-        map[AST_EVENT.AGENT_DUMP] = onUnhandledEvent.bind(this);
-        map[AST_EVENT.AGENT_LOGIN] = this._handleAgentLoginEvent;
-        map[AST_EVENT.AGENT_LOGOFF] = this._handleAgentLogoffEvent;
-        map[AST_EVENT.AGENT_RING_NO_ANSWER] = onUnhandledEvent.bind(this);
-
-        this._mapEvents(map);
 
         let action: IAstActionAgents = {Action: AST_ACTION.AGENTS};
         this.server.sendEventGeneratingAction(action, (err, re) => {

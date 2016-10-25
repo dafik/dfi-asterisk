@@ -15,6 +15,18 @@ class BridgeManager extends AsteriskManager {
         this.server.once(this.serverEvents.BEFORE_INIT, () => {
             this.setProp(PROP_CHANNEL_MANAGER, this.server.managers.channel);
         }, this);
+        if (!this.enabled) {
+            return;
+        }
+        let map = {};
+        map[eventNames_1.AST_EVENT.BRIDGE_CREATE] = this._handleBridgeCreateEvent;
+        map[eventNames_1.AST_EVENT.BRIDGE_DESTROY] = this._handleBridgeDestroyEvent;
+        map[eventNames_1.AST_EVENT.BRIDGE_ENTER] = this._handleBridgeEnterEvent;
+        map[eventNames_1.AST_EVENT.BRIDGE_LEAVE] = this._handleBridgeLeaveEvent;
+        map[eventNames_1.AST_EVENT.BRIDGE_MERGE] = this._handleBridgeMergeEvent;
+        map[eventNames_1.AST_EVENT.HANGUP] = this._handleHangupEvent; // maybe listen to event ?
+        map[eventNames_1.AST_EVENT.LOCAL_BRIDGE] = this._handleLocalBridgeEvent;
+        this._mapEvents(map);
     }
     get bridges() {
         return this._collection;
@@ -47,15 +59,6 @@ class BridgeManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        let map = {};
-        map[eventNames_1.AST_EVENT.BRIDGE_CREATE] = this._handleBridgeCreateEvent;
-        map[eventNames_1.AST_EVENT.BRIDGE_DESTROY] = this._handleBridgeDestroyEvent;
-        map[eventNames_1.AST_EVENT.BRIDGE_ENTER] = this._handleBridgeEnterEvent;
-        map[eventNames_1.AST_EVENT.BRIDGE_LEAVE] = this._handleBridgeLeaveEvent;
-        map[eventNames_1.AST_EVENT.BRIDGE_MERGE] = this._handleBridgeMergeEvent;
-        map[eventNames_1.AST_EVENT.HANGUP] = this._handleHangupEvent; // maybe listen to event ?
-        map[eventNames_1.AST_EVENT.LOCAL_BRIDGE] = this._handleLocalBridgeEvent;
-        this._mapEvents(map);
         this.server.sendEventGeneratingAction({ Action: actionNames_1.AST_ACTION.BRIDGE_LIST }, (err, re) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);

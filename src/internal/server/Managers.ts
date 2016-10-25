@@ -8,13 +8,16 @@ import DahdiManager = require("../../managers/dahdiManager");
 import QueueManager = require("../../managers/queueManager");
 import AgentManager = require("../../managers/agentManager");
 import AstUtil = require("../astUtil");
-import {IDfiAstConfigAstManager} from "../../definitions/configs";
+import {IDfiAstConfigAstManager, IDfiAstConfigServer} from "../../definitions/configs";
 import {IDfiCallbackResult} from "../../definitions/interfaces";
 import AsteriskManager = require("./Manager");
 import AsteriskModel = require("../asteriskModel");
 import AsteriskCollection = require("../asteriskCollection");
+import AsteriskServer = require("../../asteriskServer");
 
-const MANAGERS = "managers";
+const PROP_MANAGERS = "managers";
+const PROP_SERVER = "server";
+
 const DEVICE = "device";
 const PEER = "peer";
 const BRIDGE = "bridge";
@@ -25,51 +28,52 @@ const AGENT = "agent";
 
 class ServerManagers extends DfiObject {
 
-    constructor(server) {
+    constructor(server: AsteriskServer) {
         super();
 
-        let managerOptions = {server};
-        let state: IDfiAstConfigAstManager = server.options.managers;
+        this.setProp(PROP_MANAGERS, new Map());
+        this.setProp(PROP_SERVER, server);
 
-        this.setProp(MANAGERS, new Map());
+        let managers: Map<string, AsteriskManager<AsteriskModel, AsteriskCollection<AsteriskModel>>> = this.getProp(PROP_MANAGERS);
+        let managerOptions = {managers: this, server};
 
-        let managers: Map<string, AsteriskManager<AsteriskModel, AsteriskCollection<AsteriskModel>>> = this.getProp(MANAGERS);
+        let state: IDfiAstConfigAstManager = (server.options as IDfiAstConfigServer).managers;
 
         managers.set(DEVICE, new DeviceManager(managerOptions, state.device));
         managers.set(PEER, new PeerManager(managerOptions, state.peer));
         managers.set(BRIDGE, new BridgeManager(managerOptions, state.bridge));
-        managers.set(CHANNEL, new ChannelManager(managerOptions, state.channel));
         managers.set(DAHDI, new DahdiManager(managerOptions, state.dahdi));
+        managers.set(CHANNEL, new ChannelManager(managerOptions, state.channel));
         managers.set(QUEUE, new QueueManager(managerOptions, state.queue));
         managers.set(AGENT, new AgentManager(managerOptions, state.agent));
     }
 
     get channel(): ChannelManager {
-        return this.getProp(MANAGERS).get(CHANNEL);
+        return this.getProp(PROP_MANAGERS).get(CHANNEL);
     }
 
     get peer(): PeerManager {
-        return this.getProp(MANAGERS).get(PEER);
+        return this.getProp(PROP_MANAGERS).get(PEER);
     }
 
     get device(): DeviceManager {
-        return this.getProp(MANAGERS).get(DEVICE);
+        return this.getProp(PROP_MANAGERS).get(DEVICE);
     }
 
     get bridge(): BridgeManager {
-        return this.getProp(MANAGERS).get(BRIDGE);
+        return this.getProp(PROP_MANAGERS).get(BRIDGE);
     }
 
     get dahdi(): DahdiManager {
-        return this.getProp(MANAGERS).get(DAHDI);
+        return this.getProp(PROP_MANAGERS).get(DAHDI);
     }
 
     get queue(): QueueManager {
-        return this.getProp(MANAGERS).get(QUEUE);
+        return this.getProp(PROP_MANAGERS).get(QUEUE);
     }
 
     get agent(): AgentManager {
-        return this.getProp(MANAGERS).get(AGENT);
+        return this.getProp(PROP_MANAGERS).get(AGENT);
     }
 
     public restart(callbackFn: IDfiCallbackResult, context?) {
@@ -108,7 +112,7 @@ class ServerManagers extends DfiObject {
     }
 
     public  managers<T extends AsteriskManager<AsteriskModel, AsteriskCollection<AsteriskModel>>>(): Map<string, T> {
-        return new Map([...(this.getProp(MANAGERS) as Map<string, T>).entries()]);
+        return new Map([...(this.getProp(PROP_MANAGERS) as Map<string, T>).entries()]);
     }
 }
 
