@@ -1,6 +1,6 @@
 import Peer = require("./PeerModel");
 import {IDfiAstModelAttribsPJSIPPeer, IDfiAstModelAttribsPeer, IDfiAstModelOptions} from "../../definitions/models";
-import Ip = require("../IpAddress");
+import Ip = require("../IpAddressModel");
 
 /*const PROP_CHANNEL_TYPE = "channelType";
 const PROP_OBJECT_NAME = "objectName";

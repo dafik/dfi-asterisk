@@ -5,9 +5,9 @@ import {IAstActionShowDialPlan} from "../../asterisk/actions";
 import {IAstEventListDialplan} from "../../asterisk/events";
 
 import AstUtil = require("../../astUtil");
-import DialplanContext = require("../../../models/dialans/DialplanContextModel");
-import DialplanExtension = require("../../../models/dialans/DialplanExtensionModel");
-import DialplanPriority = require("../../../models/dialans/DialplanPriorityModel");
+import DialplanContext = require("../../../models/dialplans/DialplanContextModel");
+import DialplanExtension = require("../../../models/dialplans/DialplanExtensionModel");
+import DialplanPriority = require("../../../models/dialplans/DialplanPriorityModel");
 
 class DialPlanServerAction extends BaseServerAction {
 

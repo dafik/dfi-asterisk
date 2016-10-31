@@ -323,7 +323,7 @@ class AsteriskServer extends DfiEventObject {
             emitResponsesById: false,
             eventFilter: null,  // filter disabled
             eventTypeToLowerCase: false,
-            keepAlive: true,
+            keepAlive: false,
             keepAliveDelay: 10000,
             maxAttemptsCount: 30,
             reconnect: true

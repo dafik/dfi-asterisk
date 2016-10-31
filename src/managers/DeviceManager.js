@@ -82,4 +82,4 @@ class DeviceManager extends AsteriskManager {
     }
 }
 module.exports = DeviceManager;
-//# sourceMappingURL=deviceManager.js.map
+//# sourceMappingURL=DeviceManager.js.map

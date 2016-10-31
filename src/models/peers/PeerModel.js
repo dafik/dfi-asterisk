@@ -1,11 +1,11 @@
 "use strict";
 const AsteriskModel = require("../../internal/asteriskModel");
 const AstUtil = require("../../internal/astUtil");
-const PeerStateHistoryEntry = require("../histories/peerStateHistoryEntry");
+const PeerStateHistoryEntry = require("../histories/PeerStateHistoryEntry");
 const PeerStates = require("../../enums/peerStates");
 const PeerChannels = require("../../collections/channels/PeerChannelsCollection");
 const PeerState = require("../../states/peerState");
-const PeerAddressHistoryEntry = require("../histories/peerAddressHistoryEntry");
+const PeerAddressHistoryEntry = require("../histories/PeerAddressHistoryEntry");
 const PROP_TECHNOLOGY = "technology";
 const PROP_IP = "ip";
 const PROP_STATE = "state";

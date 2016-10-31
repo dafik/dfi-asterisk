@@ -32,7 +32,7 @@ import Channels = require("../collections/channels/ChannelsCollection");
 import Channel = require("../models/ChannelModel");
 import AstUtil = require("../internal/astUtil");
 import Extension = require("../models/ExtensionModel");
-import CallDetailRecord = require("../models/CallDetailRecord");
+import CallDetailRecord = require("../models/CallDetailRecordModel");
 import ChannelState = require("../states/channelState");
 import HangupCause = require("../states/hangupCause");
 import ChannelStates = require("../enums/channelStates");
@@ -169,7 +169,6 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             finish.call(this);
             return;
         }
-
 
 
         let action: IAstActionCommand = {Action: AST_ACTION.COMMAND, Command: "core show channeltypes"};
@@ -484,7 +483,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         if (channel == null) {
             channel = this.getChannelByName(event.Channel);
             if (channel == null) {
-                this.logger.error("Ignored HangupEvent for unknown channel " + event.Uniqueid + "@" + moment.unix(parseFloat(event.Uniqueid)).format() + " - " + event.Channel);
+                this.logger.error("Ignored HangupEvent for unknown channel %s(%s)", event.Channel, event.Uniqueid);
                 return;
             } else {
                 this.logger.error("error");

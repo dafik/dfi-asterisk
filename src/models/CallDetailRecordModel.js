@@ -39,4 +39,4 @@ const AMA_FLAGS_MAP = new Map([
     [CdrFlags.AMA_FLAG_UNKNOWN.toString(), AmaFlags.UNKNOWN]
 ]);
 module.exports = CallDetailRecord;
-//# sourceMappingURL=CallDetailRecord.js.map
+//# sourceMappingURL=CallDetailRecordModel.js.map

@@ -1,6 +1,6 @@
 "use strict";
 const Peer = require("./PeerModel");
-const Ip = require("../IpAddress");
+const Ip = require("../IpAddressModel");
 const AstUtil = require("../../internal/astUtil");
 const PROP_CHANNEL_TYPE = "channelType";
 const PROP_OBJECT_NAME = "objectName";

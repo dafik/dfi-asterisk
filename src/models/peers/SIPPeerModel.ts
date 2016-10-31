@@ -1,6 +1,6 @@
 import Peer = require("./PeerModel");
 import {IDfiAstModelAttribsPeer, IDfiAstModelAttribsSipPeer, IDfiAstModelOptions} from "../../definitions/models";
-import Ip = require("../IpAddress");
+import Ip = require("../IpAddressModel");
 import AstUtil = require("../../internal/astUtil");
 
 const PROP_CHANNEL_TYPE = "channelType";

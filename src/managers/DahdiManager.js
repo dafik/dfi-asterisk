@@ -161,4 +161,4 @@ class DahdiManager extends AsteriskManager {
     }
 }
 module.exports = DahdiManager;
-//# sourceMappingURL=dahdiManager.js.map
+//# sourceMappingURL=DahdiManager.js.map

@@ -4,7 +4,6 @@ const Bridges = require("../collections/BridgesCollection");
 const Bridge = require("../models/BridgeModel");
 const actionNames_1 = require("../internal/asterisk/actionNames");
 const eventNames_1 = require("../internal/asterisk/eventNames");
-const Moment = require("moment");
 const AstUtil = require("../internal/astUtil");
 const PROP_LOCAL_MAP = "localMap";
 const PROP_CHANNEL_MANAGER = "channelManager";
@@ -196,7 +195,7 @@ class BridgeManager extends AsteriskManager {
         if (channel == null) {
             channel = this.server.managers.channel.getChannelByName(event.Channel);
             if (channel == null) {
-                this.logger.error("Ignored HangupEvent for unknown channel " + event.Uniqueid + "@" + Moment.unix(parseFloat(event.Uniqueid)).format() + " - " + event.Channel);
+                this.logger.error("Ignored HangupEvent for unknown channel %s(%s)", event.Channel, event.Uniqueid);
                 return;
             }
             else {
@@ -231,4 +230,4 @@ class BridgeManager extends AsteriskManager {
     }
 }
 module.exports = BridgeManager;
-//# sourceMappingURL=bridgeManager.js.map
+//# sourceMappingURL=BridgeManager.js.map

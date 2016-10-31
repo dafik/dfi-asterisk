@@ -1,5 +1,5 @@
 import Peer = require("./PeerModel");
-import Ip = require("../IpAddress");
+import Ip = require("../IpAddressModel");
 import {IDfiAstModelAttribsIAXPeer, IDfiAstModelAttribsPeer, IDfiAstModelOptions} from "../../definitions/models";
 import AstUtil = require("../../internal/astUtil");
 

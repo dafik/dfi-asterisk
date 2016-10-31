@@ -33,5 +33,6 @@
     "local-dfi-linphone-endpoint-manager": "*",
     "mocha": "^2.5.3",
     "should": "^8.4.0"
-  }
+  },
+  "typings": "index.ts"
 }

@@ -2,9 +2,9 @@
 const BaseServerAction = require("./BaseAction");
 const actionNames_1 = require("../../asterisk/actionNames");
 const AstUtil = require("../../astUtil");
-const DialplanContext = require("../../../models/dialans/DialplanContextModel");
-const DialplanExtension = require("../../../models/dialans/DialplanExtensionModel");
-const DialplanPriority = require("../../../models/dialans/DialplanPriorityModel");
+const DialplanContext = require("../../../models/dialplans/DialplanContextModel");
+const DialplanExtension = require("../../../models/dialplans/DialplanExtensionModel");
+const DialplanPriority = require("../../../models/dialplans/DialplanPriorityModel");
 class DialPlanServerAction extends BaseServerAction {
     getDialplans(callbackFn, context) {
         this._server.start()

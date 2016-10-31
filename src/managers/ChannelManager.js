@@ -6,7 +6,7 @@ const Channels = require("../collections/channels/ChannelsCollection");
 const Channel = require("../models/ChannelModel");
 const AstUtil = require("../internal/astUtil");
 const Extension = require("../models/ExtensionModel");
-const CallDetailRecord = require("../models/CallDetailRecord");
+const CallDetailRecord = require("../models/CallDetailRecordModel");
 const ChannelState = require("../states/channelState");
 const HangupCause = require("../states/hangupCause");
 const ChannelStates = require("../enums/channelStates");
@@ -376,7 +376,7 @@ class ChannelManager extends AsteriskManager {
         if (channel == null) {
             channel = this.getChannelByName(event.Channel);
             if (channel == null) {
-                this.logger.error("Ignored HangupEvent for unknown channel " + event.Uniqueid + "@" + moment.unix(parseFloat(event.Uniqueid)).format() + " - " + event.Channel);
+                this.logger.error("Ignored HangupEvent for unknown channel %s(%s)", event.Channel, event.Uniqueid);
                 return;
             }
             else {
@@ -675,4 +675,4 @@ const EVENTS = Object.assign(Object.assign({}, AsteriskManager.events), {
     CHANNEL_ADD: Symbol("channelr:add")
 });
 module.exports = ChannelManager;
-//# sourceMappingURL=channelManager.js.map
+//# sourceMappingURL=ChannelManager.js.map

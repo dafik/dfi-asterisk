@@ -249,7 +249,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
         if (channel == null) {
             channel = this.server.managers.channel.getChannelByName(event.Channel);
             if (channel == null) {
-                this.logger.error("Ignored HangupEvent for unknown channel " + event.Uniqueid + "@" + Moment.unix(parseFloat(event.Uniqueid)).format() + " - " + event.Channel);
+                this.logger.error("Ignored HangupEvent for unknown channel %s(%s)", event.Channel, event.Uniqueid);
                 return;
             } else {
                 this.logger.error("error");

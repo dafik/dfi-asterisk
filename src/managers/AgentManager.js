@@ -1,102 +1,72 @@
-import AsteriskManager = require("../internal/server/Manager");
-import Agents = require("../collections/AgentsCollection");
-import Agent = require("../models/AgentModel");
-import QueueManager = require("./queueManager");
-import AstUtil = require("../internal/astUtil");
-
-import {IDfiCallbackResult, IEventHandlersMap} from "../definitions/interfaces";
-import {IDfiAstModelAttribsAgent} from "../definitions/models";
-import {TIAgent, TIInterface} from "../definitions/types";
-import {AST_ACTION} from "../internal/asterisk/actionNames";
-import {IAstActionAgents} from "../internal/asterisk/actions";
-import {AST_EVENT} from "../internal/asterisk/eventNames";
-import {IAstEvent, IAstEventAgentCalled, IAstEventAgentComplete, IAstEventAgentConnect, IAstEventAgentLogin, IAstEventAgentLogoff, IAstEventAgents} from "../internal/asterisk/events";
-
-import AgentState = require("../states/agentState");
-import AgentStates = require("../enums/agentStates");
-import QueueMember = require("../models/queues/QueueMemberModel");
-import Queue = require("../models/queues/QueueModel");
-
+"use strict";
+const AsteriskManager = require("../internal/server/Manager");
+const Agents = require("../collections/AgentsCollection");
+const Agent = require("../models/AgentModel");
+const QueueManager = require("./QueueManager");
+const AstUtil = require("../internal/astUtil");
+const actionNames_1 = require("../internal/asterisk/actionNames");
+const eventNames_1 = require("../internal/asterisk/eventNames");
+const AgentState = require("../states/agentState");
+const AgentStates = require("../enums/agentStates");
 const RINGING_AGENTS = "ringingAgents";
-
-class AgentManager extends AsteriskManager<Agent, Agents> {
-
+class AgentManager extends AsteriskManager {
     constructor(options, state) {
         super(options, state, new Agents());
-
         this.setProp(RINGING_AGENTS, new Map());
-
         this.server.once(this.serverEvents.BEFORE_INIT, () => {
             if (this.server.managers.queue.enabled) {
                 let queueManager = this.server.managers.queue;
-
                 queueManager.on(QueueManager.events.MEMBER_ADD, this._handleQueueAddMember, this);
                 queueManager.on(QueueManager.events.MEMBER_REMOVE, this._handleQueueRemoveMember, this);
             }
         }, this);
-
         if (!this.enabled) {
             return;
         }
-
-        function onUnhandledEvent(event: IAstEvent) {
+        function onUnhandledEvent(event) {
             this.logger.error("unhandled event %s", event.Event);
         }
-
-        let map: IEventHandlersMap = {};
-
-        map[AST_EVENT.AGENT_CALLED] = this._handleAgentCalledEvent;
-        map[AST_EVENT.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
-        map[AST_EVENT.AGENT_CONNECT] = this._handleAgentConnectEvent;
-        map[AST_EVENT.AGENT_DUMP] = onUnhandledEvent.bind(this);
-        map[AST_EVENT.AGENT_LOGIN] = this._handleAgentLoginEvent;
-        map[AST_EVENT.AGENT_LOGOFF] = this._handleAgentLogoffEvent;
-        map[AST_EVENT.AGENT_RING_NO_ANSWER] = onUnhandledEvent.bind(this);
-
+        let map = {};
+        map[eventNames_1.AST_EVENT.AGENT_CALLED] = this._handleAgentCalledEvent;
+        map[eventNames_1.AST_EVENT.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
+        map[eventNames_1.AST_EVENT.AGENT_CONNECT] = this._handleAgentConnectEvent;
+        map[eventNames_1.AST_EVENT.AGENT_DUMP] = onUnhandledEvent.bind(this);
+        map[eventNames_1.AST_EVENT.AGENT_LOGIN] = this._handleAgentLoginEvent;
+        map[eventNames_1.AST_EVENT.AGENT_LOGOFF] = this._handleAgentLogoffEvent;
+        map[eventNames_1.AST_EVENT.AGENT_RING_NO_ANSWER] = onUnhandledEvent.bind(this);
         this._mapEvents(map);
     }
-
-    private get agents(): Agents {
+    get agents() {
         return this._collection;
     }
-
-    get ringingAgents(): Map<string, Agent> {
+    get ringingAgents() {
         return this.getProp(RINGING_AGENTS);
     }
-
-    public getAgentsKeys() {
+    getAgentsKeys() {
         return this.agents.keys();
     }
-
-    public getAgentsArray(): Agent[] {
+    getAgentsArray() {
         return this.agents.toArray();
     }
-
-    public start(callbackFn: IDfiCallbackResult, context?) {
-
+    start(callbackFn, context) {
         function finish() {
             this.server.logger.info('manager "AgentManager" started');
             AstUtil.maybeCallbackOnce(callbackFn, context, null, "agentManager");
         }
-
-
         this.server.logger.info('starting manager "AgentManager"');
-
         if (!this.enabled) {
             finish.call(this);
             return;
         }
-
-
-        let action: IAstActionAgents = {Action: AST_ACTION.AGENTS};
+        let action = { Action: actionNames_1.AST_ACTION.AGENTS };
         this.server.sendEventGeneratingAction(action, (err, re) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
                 return;
             }
             if (typeof re !== "undefined") {
-                re.events.forEach((event: IAstEventAgents) => {
-                    if (event.Event === AST_EVENT.AGENTS) {
+                re.events.forEach((event) => {
+                    if (event.Event === eventNames_1.AST_EVENT.AGENTS) {
                         this._getOrCreateAgent(event);
                     }
                 }, this);
@@ -104,25 +74,23 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
             finish.call(this);
         }, this);
     }
-
-    public disconnected() {
+    disconnected() {
         this.agents.clear();
     }
-
     /**
      * Return or create (dynamic) the requested agent.
      */
-    private _getOrCreateAgent(event: TIAgent|TIInterface): Agent {
-        let name: string;
-        if ((event as TIAgent).Agent) {
-            name = (event as TIAgent).Agent;
-        } else {
-            name = (event as TIInterface).Interface;
+    _getOrCreateAgent(event) {
+        let name;
+        if (event.Agent) {
+            name = event.Agent;
         }
-
+        else {
+            name = event.Interface;
+        }
         let agent = this.agents.get(name);
         if (!agent) {
-            let options: IDfiAstModelAttribsAgent = {
+            let options = {
                 Device: this.server.managers.device.devices.get(name),
                 Event: "agentManager:_getOrCreateAgent",
                 Name: name,
@@ -132,14 +100,12 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
             agent = new Agent(options);
             this._addAgent(agent);
         }
-
         return agent;
     }
-
     /**
      * Update state if agent was called.
      */
-    private _handleAgentCalledEvent(event: IAstEventAgentCalled): void {
+    _handleAgentCalledEvent(event) {
         this.logger.debug("handle  AgentCalled agent %j", event.Interface);
         let agent = this._getOrCreateAgent(event);
         if (agent == null) {
@@ -149,13 +115,11 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
         this._updateRingingAgents(event.Channel, agent);
         this._updateAgentState(agent, AgentState.byValue(AgentStates.AGENT_RINGING), event.Channel);
     }
-
     /**
      * Update state if agent was connected to channel.
      */
-    private _handleAgentConnectEvent(event: IAstEventAgentConnect): void {
+    _handleAgentConnectEvent(event) {
         this.logger.debug("handle  AgentConnect agent %j", event.Interface);
-
         let agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentConnectEvent for unknown agent %j", event.Interface, event.Channel);
@@ -163,13 +127,11 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
         }
         this._updateAgentState(agent, AgentState.byValue(AgentStates.AGENT_ONCALL), event.Channel);
     }
-
     /**
      * Change state if agent logs in.
      */
-    private _handleAgentLoginEvent(event: IAstEventAgentLogin): void {
+    _handleAgentLoginEvent(event) {
         this.logger.debug("handle  AgentLogin agent %j", event.Agent);
-
         let agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentLoginEvent for unknown agent %s ", event.Agent);
@@ -177,13 +139,11 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
         }
         this._updateAgentState(agent, AgentState.byValue(AgentStates.AGENT_IDLE), event.Channel);
     }
-
     /**
      * Change state if agent logs out.
      */
-    private _handleAgentLogoffEvent(event: IAstEventAgentLogoff): void {
+    _handleAgentLogoffEvent(event) {
         this.logger.debug("handle  AgentLogoff agent %j", event.Agent);
-
         let agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentLogoffEvent for unknown agent %s ", event.Agent);
@@ -191,10 +151,8 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
         }
         this._updateAgentState(agent, AgentState.byValue(AgentStates.AGENT_LOGGEDOFF));
     }
-
-    private _handleAgentCompleteEvent(event: IAstEventAgentComplete): void {
+    _handleAgentCompleteEvent(event) {
         this.logger.debug("handle  AgentComplete agent %j", event.Interface);
-
         let agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentCompleteEvent for unknown agent %j. Agents: %j", event.Interface);
@@ -203,13 +161,11 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
         // remove form ringings ?
         this._updateAgentState(agent, AgentState.byValue(AgentStates.AGENT_IDLE), event.Channel);
     }
-
-    private _handleQueueAddMember(member: QueueMember, queue: Queue): void {
+    _handleQueueAddMember(member, queue) {
         this.logger.debug("handle  QueueAddMember agent %j", member.id);
-
         let agent = this.agents.get(member.id);
         if (!agent) {
-            let options: IDfiAstModelAttribsAgent = {
+            let options = {
                 Device: this.server.managers.device.devices.get(member.id),
                 Event: "agentManager:_handleQueueAddMember",
                 Name: member.id,
@@ -218,14 +174,11 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
             };
             agent = new Agent(options);
             agent.addQueue(queue);
-
             member.agent = agent;
             this._addAgent(agent);
         }
-
     }
-
-    private _handleQueueRemoveMember(member: QueueMember, queue: Queue): void {
+    _handleQueueRemoveMember(member, queue) {
         this.logger.debug("handle  QueueRemoveMember agent %j", member.id);
         let agent = this.agents.get(member.id);
         if (!agent) {
@@ -233,38 +186,33 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
         }
         agent.removeQueue(queue);
     }
-
-    private _addAgent(agent: Agent) {
+    _addAgent(agent) {
         this.logger.info("Adding new agent %j", agent.id);
         this.agents.add(agent);
     }
-
     /**
      *  Set state of agent.
      */
-    private _updateAgentState(agent: Agent, newState: AgentState, channel?) {
+    _updateAgentState(agent, newState, channel) {
         if (channel && this.ringingAgents.size > 0 && newState.status !== AgentStates.AGENT_RINGING) {
             if (this.ringingAgents.has(channel)) {
                 this.ringingAgents.delete(channel);
             }
-
         }
-
         this.logger.info("Set state of agent " + agent.id + " to " + newState.name);
-
         agent.state = newState;
     }
-
     /**
      * Updates state of agent, if the call in a queue was redirect to the next
      * agent because the ringed agent doesn't answer the call. After reset
      * state, put the next agent in charge.
      */
-    private _updateRingingAgents(channelCalling: string, agent: Agent) {
+    _updateRingingAgents(channelCalling, agent) {
         if (this.ringingAgents.has(channelCalling)) {
             this._updateAgentState(this.ringingAgents.get(channelCalling), AgentState.byValue(AgentStates.AGENT_IDLE));
         }
         this.ringingAgents.set(channelCalling, agent);
     }
 }
-export = AgentManager;
+module.exports = AgentManager;
+//# sourceMappingURL=AgentManager.js.map

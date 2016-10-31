@@ -1,15 +1,15 @@
 import AsteriskModel = require("../../internal/asteriskModel");
 import AstUtil = require("../../internal/astUtil");
-import PeerStateHistoryEntry = require("../histories/peerStateHistoryEntry");
+import PeerStateHistoryEntry = require("../histories/PeerStateHistoryEntry");
 import {IDfiAstEventsPeer} from "../../definitions/events";
 import {IDfiAstModelAttribsPeer, IDfiAstModelOptions} from "../../definitions/models";
 import PeerStates = require("../../enums/peerStates");
-import Ip = require("../IpAddress");
+import Ip = require("../IpAddressModel");
 import Device = require("../DeviceModel");
 import PeerChannels = require("../../collections/channels/PeerChannelsCollection");
 import PeerState = require("../../states/peerState");
 import Channel = require("../ChannelModel");
-import PeerAddressHistoryEntry = require("../histories/peerAddressHistoryEntry");
+import PeerAddressHistoryEntry = require("../histories/PeerAddressHistoryEntry");
 
 const PROP_TECHNOLOGY = "technology";
 const PROP_IP = "ip";

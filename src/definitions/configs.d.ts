@@ -1,5 +1,4 @@
 import {IDfiBaseObjectConfig} from "local-dfi-base/src/dfiInterfaces";
-import AsteriskManager = require("../internal/server/Manager");
 import AsteriskServer = require("../asteriskServer");
 import ServerManagers = require("../internal/server/Managers");
 
