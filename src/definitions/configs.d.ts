@@ -7,15 +7,28 @@ export interface IDfiAstConfigCollection extends IDfiBaseObjectConfig {
     model: Function;
 }
 
+export interface IDfiAstConfigServerOptions extends IDfiBaseObjectConfig {
+    config: IDfiAstConfigServer;
+}
+
 export interface IDfiAstConfigServer extends Object {
     server: IDfiAstConfigAstServer;
-    managers: IDfiAstConfigAstManager;
+    managers?: IDfiAstConfigAstManagerConfig;
 }
 export interface IDfiAstConfigAstServer extends Object {
     host: string;
     port: string;
     username: string;
     secret: string;
+}
+export interface IDfiAstConfigAstManagerConfig extends Object {
+    channel?: boolean;
+    peer?: boolean;
+    device?: boolean;
+    bridge?: boolean;
+    dahdi?: boolean;
+    queue?: boolean;
+    agent?: boolean;
 }
 export interface IDfiAstConfigAstManager extends Object {
     channel: boolean;

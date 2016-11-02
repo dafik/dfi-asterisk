@@ -18,7 +18,7 @@ import {
     IAstEventQueueParams
 } from "../internal/asterisk/events";
 
-import ChannelManager = require("./channelManager");
+import ChannelManager = require("./ChannelManager");
 import Queue = require("../models/queues/QueueModel");
 import QueueMember = require("../models/queues/QueueMemberModel");
 import QueueMemberState = require("../states/queueMemberState");

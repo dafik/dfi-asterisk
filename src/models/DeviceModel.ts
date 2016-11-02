@@ -4,6 +4,7 @@ import DeviceState = require("../states/deviceState");
 
 const PROP_DEVICE = "device";
 const PROP_STATE = "state";
+const PROP_LAST_UPDATE = "lastUpdate";
 
 class Device extends AsteriskModel {
     protected static map = new Map([
@@ -30,6 +31,10 @@ class Device extends AsteriskModel {
 
     set state(state: DeviceState) {
         this.set(PROP_STATE, state);
+    }
+
+    public setLastUpdate($time: number): void {
+        this.setProp(PROP_LAST_UPDATE, $time);
     }
 }
 

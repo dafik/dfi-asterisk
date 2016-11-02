@@ -22,16 +22,18 @@ const PROP_DISPATCHER = "dispatcher";
 const PROP_ACTIONS = "actions";
 const PROP_MANAGERS = "managers";
 const PROP_VERSION = "version";
-const PROP_OPTIONS = "options";
+const PROP_CONFIG = "config";
 class AsteriskServer extends DfiEventObject {
     constructor(options) {
-        super({ loggerName: "dfi:as:" });
+        options.loggerName = options.loggerName || "dfi:as:";
+        super(options);
         this.setProp(PROP_INITIALIZED, false);
         this.setProp(PROP_INITIALIZATION_STARTED, false);
         this.setProp(PROP_PENDING_EVENTS, []);
         this.setProp(PROP_MULTIPART_RESPONSES, new Map());
         this.setProp(PROP_ALLOWED_ACTIONS, new Set());
-        this._initializeOptions(options);
+        this.allowedActions.add("Command");
+        this._initializeManagersOptions(options.config.managers);
         this._initializeEventConnection();
         this._initializeAmiHandlers();
         this.setProp(PROP_DISPATCHER, new EventDispatcher(this));
@@ -57,6 +59,9 @@ class AsteriskServer extends DfiEventObject {
     get version() {
         return this.getProp(PROP_VERSION);
     }
+    get managerConfig() {
+        return Object.assign(Object.create(null), this.getProp(PROP_CONFIG).managers);
+    }
     set version(version) {
         this.setProp(PROP_VERSION, version);
     }
@@ -77,6 +82,9 @@ class AsteriskServer extends DfiEventObject {
                 resolve();
             });
         });
+    }
+    shutdown() {
+        this.logger.error("not implemented yet");
     }
     get isConnected() {
         return this._ami && this._ami.isConnected;
@@ -247,8 +255,9 @@ class AsteriskServer extends DfiEventObject {
             }
         }
     }
-    _initializeOptions(options) {
-        let defaultState = {
+    _initializeManagersOptions(options) {
+        let config = this.getProp(PROP_CONFIG);
+        Object.assign(config.managers, Object.assign({
             agent: true,
             bridge: true,
             channel: true,
@@ -257,10 +266,8 @@ class AsteriskServer extends DfiEventObject {
             meetMe: true,
             peer: true,
             queue: true
-        };
-        this.allowedActions.add("Command");
-        options.managers = Object.assign(defaultState, options.managers);
-        this.setProp(PROP_OPTIONS, options);
+        }, options));
+        this.setProp(PROP_CONFIG, config);
     }
     _initializeEventConnection() {
         let eventConnection = new AmiClient({
@@ -309,7 +316,7 @@ class AsteriskServer extends DfiEventObject {
             ami.once("amiConnectionTimeout", errorFn);
             ami.once("amiConnectionError", errorFn);
             if (!ami.isConnected) {
-                let opts = _.has(this.getProp("options"), "server") ? this.getProp("options").server : null;
+                let opts = this.getProp(PROP_CONFIG).server;
                 this.setProp(PROP_INITIALIZATION_STARTED, true);
                 this._bindAmiEvents();
                 ami.connect(opts.username, opts.secret, { host: opts.host, port: parseInt(opts.port, 10) })

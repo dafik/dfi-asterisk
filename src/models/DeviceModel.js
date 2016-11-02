@@ -3,6 +3,7 @@ const AsteriskModel = require("../internal/asteriskModel");
 const DeviceState = require("../states/deviceState");
 const PROP_DEVICE = "device";
 const PROP_STATE = "state";
+const PROP_LAST_UPDATE = "lastUpdate";
 class Device extends AsteriskModel {
     constructor(attributes, options) {
         options = options || {};
@@ -18,6 +19,9 @@ class Device extends AsteriskModel {
     }
     set state(state) {
         this.set(PROP_STATE, state);
+    }
+    setLastUpdate($time) {
+        this.setProp(PROP_LAST_UPDATE, $time);
     }
 }
 Device.map = new Map([

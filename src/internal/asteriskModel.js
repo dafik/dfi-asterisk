@@ -7,7 +7,7 @@ class AsteriskModel extends DfiModel {
         options = options || {};
         options.loggerName = options.loggerName || "dfi:as:";
         options.sourceEvent = options.sourceEvent || attributes.Event;
-        super(attributes, options, true);
+        super(attributes, options);
         if (attributes.$time) {
             this.setProp("lastUpdate", attributes.$time);
         }
@@ -33,18 +33,6 @@ class AsteriskModel extends DfiModel {
     }
     destroy() {
         super.destroy();
-    }
-    toPlain() {
-        let tmp = { attr: {}, id: this.id, prop: {} };
-        this.getProp("attributes").forEach((value, key) => {
-            tmp.attr[key] = value;
-        });
-        this.__getProp().forEach((value, key) => {
-            if (key !== "attributes") {
-                tmp.prop[key] = value;
-            }
-        });
-        return tmp;
     }
     toString() {
         let sb = this.constructor.name;

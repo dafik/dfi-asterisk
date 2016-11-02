@@ -25,7 +25,7 @@ class ServerManagers extends DfiObject {
         this.setProp(PROP_SERVER, server);
         let managers = this.getProp(PROP_MANAGERS);
         let managerOptions = { managers: this, server };
-        let state = server.options.managers;
+        let state = server.managerConfig;
         managers.set(DEVICE, new DeviceManager(managerOptions, state.device));
         managers.set(PEER, new PeerManager(managerOptions, state.peer));
         managers.set(BRIDGE, new BridgeManager(managerOptions, state.bridge));

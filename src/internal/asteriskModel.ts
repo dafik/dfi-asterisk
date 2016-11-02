@@ -6,12 +6,23 @@ let getServerInstance;
 
 abstract class AsteriskModel extends DfiModel {
 
+    get sourceEvent(): string {
+        return this.getProp("sourceEvent");
+    }
+
+    protected get _server(): AsteriskServer {
+        if (typeof getServerInstance !== "function") {
+            getServerInstance = require("../asteriskServerInstance");
+        }
+        return getServerInstance() as AsteriskServer;
+    }
+
     constructor(attributes: IDfiAstModelAttribs, options?: IDfiAstModelOptions) {
         options = options || {};
         options.loggerName = options.loggerName || "dfi:as:";
         options.sourceEvent = options.sourceEvent || attributes.Event;
 
-        super(attributes, options, true);
+        super(attributes, options);
 
         if (attributes.$time) {
             this.setProp("lastUpdate", attributes.$time);
@@ -27,33 +38,8 @@ abstract class AsteriskModel extends DfiModel {
         });
     }
 
-    get sourceEvent(): string {
-        return this.getProp("sourceEvent");
-    }
-
-    protected get _server(): AsteriskServer {
-        if (typeof getServerInstance !== "function") {
-            getServerInstance = require("../asteriskServerInstance");
-        }
-        return getServerInstance() as AsteriskServer;
-    }
-
     public destroy() {
         super.destroy();
-    }
-
-    public toPlain() {
-        let tmp = {attr: {}, id: this.id, prop: {}};
-        this.getProp("attributes").forEach((value, key) => {
-            tmp.attr[key] = value;
-        });
-        this.__getProp().forEach((value, key) => {
-            if (key !== "attributes") {
-                tmp.prop[key] = value;
-            }
-        });
-
-        return tmp;
     }
 
     public toString() {

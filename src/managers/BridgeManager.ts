@@ -1,7 +1,7 @@
 import AsteriskManager = require("../internal/server/Manager");
 import Bridges = require("../collections/BridgesCollection");
 import Bridge = require("../models/BridgeModel");
-import ChannelManager = require("./channelManager");
+import ChannelManager = require("./ChannelManager");
 import {IDfiAMIResponseMessageMulti, IDfiCallbackResult} from "../definitions/interfaces";
 import {IDfiAstModelAttribsBridge} from "../definitions/models";
 import {AST_ACTION} from "../internal/asterisk/actionNames";
@@ -17,7 +17,6 @@ import {
     IAstEventLocalBridge
 } from "../internal/asterisk/events";
 
-import Moment = require("moment");
 import AstUtil = require("../internal/astUtil");
 
 const PROP_LOCAL_MAP = "localMap";
@@ -88,7 +87,6 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
             finish.call(this);
             return;
         }
-
 
         this.server.sendEventGeneratingAction({Action: AST_ACTION.BRIDGE_LIST}, (err, re: IDfiAMIResponseMessageMulti<IAstEventBridgeListItem>) => {
             if (err) {

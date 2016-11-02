@@ -8,7 +8,7 @@ import DahdiManager = require("../../managers/DahdiManager");
 import QueueManager = require("../../managers/QueueManager");
 import AgentManager = require("../../managers/AgentManager");
 import AstUtil = require("../astUtil");
-import {IDfiAstConfigAstManager, IDfiAstConfigServer} from "../../definitions/configs";
+import {IDfiAstConfigAstManager} from "../../definitions/configs";
 import {IDfiCallbackResult} from "../../definitions/interfaces";
 import AsteriskManager = require("./Manager");
 import AsteriskModel = require("../asteriskModel");
@@ -37,7 +37,7 @@ class ServerManagers extends DfiObject {
         let managers: Map<string, AsteriskManager<AsteriskModel, AsteriskCollection<AsteriskModel>>> = this.getProp(PROP_MANAGERS);
         let managerOptions = {managers: this, server};
 
-        let state: IDfiAstConfigAstManager = (server.options as IDfiAstConfigServer).managers;
+        let state: IDfiAstConfigAstManager = server.managerConfig;
 
         managers.set(DEVICE, new DeviceManager(managerOptions, state.device));
         managers.set(PEER, new PeerManager(managerOptions, state.peer));
