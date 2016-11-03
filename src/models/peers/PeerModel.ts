@@ -23,6 +23,7 @@ const P_PROP_STATE_HISTORY = "stateHistory";
 const P_PROP_ADDRESS_HISTORY = "addressHistory";
 const P_PROP_CHANNELS = "channels";
 const P_PROP_DEVICE = "device";
+const P_PROP_QUEUES = "queues";
 
 const PEER_TECH = {
     IAX: "IAX2",
@@ -67,6 +68,7 @@ class Peer extends AsteriskModel {
         this.setProp(P_PROP_STATE_HISTORY, []);
         this.setProp(P_PROP_ADDRESS_HISTORY, []);
         this.setProp(P_PROP_CHANNELS, new PeerChannels());
+        this.setProp(P_PROP_QUEUES, new Set());
 
         this._stateChanged(this.lastUpdate, attributes.state);
         this._addressChanged(this.lastUpdate, attributes.ip);
@@ -134,6 +136,18 @@ class Peer extends AsteriskModel {
 
     public removeChannel(channel: Channel) {
         this._channels.remove(channel.id);
+    }
+
+    public addQueue(queueName: string) {
+        (this.getProp(P_PROP_QUEUES) as Set<string>).add(queueName);
+    }
+
+    public removeQueue(queueName: string) {
+        (this.getProp(P_PROP_QUEUES) as Set<string>).delete(queueName);
+    }
+
+    public queues(): string[] {
+        return [...(this.getProp(P_PROP_QUEUES) as Set<string>).values()].sort();
     }
 
     public removeOldHistory(): void {

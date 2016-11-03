@@ -101,6 +101,14 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
                 member = new QueueMember(event);
             }
             queue.addMember(member);
+
+            if (this.server.managers.peer.enabled) {
+                let peer = this.server.managers.peer.peers.get(member.interface);
+                if (peer) {
+                    peer.addQueue(queue.id);
+                }
+            }
+
             this.emit(QueueManager.events.MEMBER_ADD, member, queue);
         }
 
@@ -322,6 +330,13 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
             member = new QueueMember(event);
         }
         queue.addMember(member);
+        if (this.server.managers.peer.enabled) {
+            let peer = this.server.managers.peer.peers.get(member.interface);
+            if (peer) {
+                peer.addQueue(queue.id);
+            }
+
+        }
         this.emit(QueueManager.events.MEMBER_ADD, member, queue);
     }
 
@@ -340,6 +355,13 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
             return;
         }
         queue.removeMember(member);
+        if (this.server.managers.peer.enabled) {
+            let peer = this.server.managers.peer.peers.get(member.interface);
+            if (peer) {
+                peer.removeQueue(queue.id);
+            }
+
+        }
         this.emit(QueueManager.events.MEMBER_REMOVE, member, queue);
     }
 }
