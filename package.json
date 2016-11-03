@@ -31,7 +31,7 @@
     "local-dfi-debug-logger": "^0.1.5",
     "local-dfi-linphone": "*",
     "local-dfi-linphone-endpoint-manager": "*",
-    "mocha": "^2.5.3",
+    "mocha": "^2.5.3"
   },
   "typings": "index.ts"
 }
