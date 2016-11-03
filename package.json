@@ -1,6 +1,6 @@
 {
   "name": "local-dfi-asterisk",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "asterisk-java port to node in type script",
   "main": "./src/asteriskServerInstance.ts",
   "repository": {
