@@ -1,5 +1,4 @@
 "use strict";
-///<reference path="../../../../node_modules/@types/node/index.d.ts"/>
 const BaseServerAction = require("./BaseAction");
 const Channel = require("../../../models/ChannelModel");
 const AstUtil = require("../../astUtil");

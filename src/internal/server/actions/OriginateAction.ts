@@ -1,7 +1,5 @@
-///<reference path="../../../../node_modules/@types/node/index.d.ts"/>
 import BaseServerAction = require("./BaseAction");
 import {IDfiAsOriginateCallback, IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../../../definitions/interfaces";
-
 import {IAstActionOriginate} from "../../asterisk/actions";
 import {IAstEventOriginateResponse} from "../../asterisk/events";
 import Channel = require("../../../models/ChannelModel");
