@@ -11,7 +11,6 @@ class LinkedChannelHistoryEntry extends AsteriskHistoryEntry {
     }
     /**
      * Returns the channel that has been linked.
-     * @returns the channel that has been linked.
      */
     get channel() {
         return this.entry;
@@ -19,8 +18,6 @@ class LinkedChannelHistoryEntry extends AsteriskHistoryEntry {
     ;
     /**
      * Returns the date the channel was linked.
-     *
-     * @returns {Moment} the date the channel was linked.
      */
     getDateLinked() {
         return this.date;
@@ -28,8 +25,6 @@ class LinkedChannelHistoryEntry extends AsteriskHistoryEntry {
     ;
     /**
      * Returns the date the channel was unlinked.
-     *
-     * @returns {Moment} the date the channel was unlinked.
      */
     getDateUnlinked() {
         return this.dateUnlinked;
@@ -37,17 +32,11 @@ class LinkedChannelHistoryEntry extends AsteriskHistoryEntry {
     ;
     /**
      * Sets the date the channel was unlinked.
-     *
-     * @param {Moment} dateUnlinked the date the channel was unlinked.
      */
     setDateUnlinked(dateUnlinked) {
         this.dateUnlinked = dateUnlinked;
     }
     ;
-    /**
-     *
-     * @returns {string}
-     */
     toString() {
         let sb;
         sb = "LinkedChannelHistoryEntry[";
