@@ -13,10 +13,9 @@ import {
     IDfiAstResponseMessageMulti,
     IDfiCallbackResult
 } from "./definitions/interfaces";
-import {AST_ACTION} from "./internal/asterisk/actionNames";
+
 import {IAstAction, IAstActionCommand, IAstActionGetvar} from "./internal/asterisk/actions";
-import {AST_EVENT} from "./internal/asterisk/eventNames";
-import {IAstEvent} from "./internal/asterisk/events";
+
 import * as _ from "lodash";
 import async = require("async");
 import AmiClient = require("asterisk-ami-client");
@@ -29,6 +28,9 @@ import ServerManagers = require("./internal/server/Managers");
 import AstUtil = require("./internal/astUtil");
 import ManagerCommunication = require("./errors/ManagerCommunication");
 import AsteriskVersion = require("./internal/server/Version");
+import AST_ACTION = require("./internal/asterisk/actionNames");
+import {IAstEvent} from "./internal/asterisk/events";
+import AST_EVENT = require("./internal/asterisk/eventNames");
 
 const PROP_AMI = "ami";
 const PROP_AMI_HANDLERS = "amiHandlers";

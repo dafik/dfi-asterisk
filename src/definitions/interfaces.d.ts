@@ -5,7 +5,7 @@ import {IAstAction, IAstActionOriginate} from "../internal/asterisk/actions";
 import {IAstEvent} from "../internal/asterisk/events";
 import Channel = require("../models/ChannelModel");
 import AsteriskVersion = require("../internal/server/Version");
-import DialplanContext = require("../models/dialans/DialplanContextModel");
+import DialplanContext = require("../models/dialplans/DialplanContextModel");
 
 export interface IDfiCallbackError extends Function {
     (error?: Error): void;

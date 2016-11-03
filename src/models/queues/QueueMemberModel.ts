@@ -1,6 +1,5 @@
 import AsteriskModel = require("../../internal/asteriskModel");
 import {IDfiAstModelAttribsQueueMember, IDfiAstModelOptions} from "../../definitions/models";
-import {AST_ACTION} from "../../internal/asterisk/actionNames";
 import {IAstActionQueuePause, IAstActionQueuePenalty} from "../../internal/asterisk/actions";
 import {IAstEventQueueMemberStatus} from "../../internal/asterisk/events";
 import QueueMemberState = require("../../states/queueMemberState");
@@ -11,6 +10,7 @@ import InvalidPenalty = require("../../errors/InvalidPenatly");
 import QueueMemberStates = require("../../enums/queueMemberStates");
 import NoSuchInterface = require("../../errors/NoSuchInterface");
 import Agent = require("../AgentModel");
+import AST_ACTION = require("../../internal/asterisk/actionNames");
 
 const PROP_QUEUE = "queue";
 const PROP_NAME = "name";

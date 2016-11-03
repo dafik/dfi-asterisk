@@ -1,9 +1,10 @@
 import BaseServerAction = require("./BaseAction");
 import {IDfiAMIResponseGetvar, IDfiCallbackError, IDfiCallbackResult} from "../../../definitions/interfaces";
-import {AST_ACTION} from "../../asterisk/actionNames";
+
 import {IAstActionGetvar, IAstActionSetvar} from "../../asterisk/actions";
 import {format} from "util";
 import AstUtil = require("../../astUtil");
+import AST_ACTION = require("../../asterisk/actionNames");
 
 class VariableServerAction extends BaseServerAction {
 

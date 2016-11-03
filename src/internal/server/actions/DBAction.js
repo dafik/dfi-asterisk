@@ -1,14 +1,14 @@
 "use strict";
 const BaseServerAction = require("./BaseAction");
-const actionNames_1 = require("../../asterisk/actionNames");
 const util_1 = require("util");
 const AstUtil = require("../../astUtil");
+const AST_ACTION = require("../../asterisk/actionNames");
 class DBServerAction extends BaseServerAction {
     dbGet(family, key, callbackFn, context) {
         this._server.start()
             .then(() => {
             let action = {
-                Action: actionNames_1.AST_ACTION.DB_GET,
+                Action: AST_ACTION.DB_GET,
                 Family: family,
                 Key: key
             };
@@ -36,7 +36,7 @@ class DBServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             let action = {
-                Action: actionNames_1.AST_ACTION.DB_DEL,
+                Action: AST_ACTION.DB_DEL,
                 Family: family,
                 Key: variable
             };
@@ -65,7 +65,7 @@ class DBServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             let action = {
-                Action: actionNames_1.AST_ACTION.DB_DEL_TREE,
+                Action: AST_ACTION.DB_DEL_TREE,
                 Family: family,
                 Key: variable
             };
@@ -94,7 +94,7 @@ class DBServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             let action = {
-                Action: actionNames_1.AST_ACTION.DB_PUT,
+                Action: AST_ACTION.DB_PUT,
                 Family: family,
                 Key: variable,
                 Val: value

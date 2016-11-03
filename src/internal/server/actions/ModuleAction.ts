@@ -1,9 +1,10 @@
 import BaseServerAction = require("./BaseAction");
 import {IDfiCallbackResult} from "../../../definitions/interfaces";
-import {AST_ACTION} from "../../asterisk/actionNames";
+
 import {IAstActionModuleCheck, IAstActionModuleLoad} from "../../asterisk/actions";
 import AstUtil = require("../../astUtil");
 import ManagerCommunication = require("../../../errors/ManagerCommunication");
+import AST_ACTION = require("../../asterisk/actionNames");
 
 class ModuleServerAction extends BaseServerAction {
 

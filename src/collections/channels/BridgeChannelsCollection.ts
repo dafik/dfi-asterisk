@@ -13,7 +13,15 @@ class BridgeChannels extends AsteriskCollection<Channel> {
         });
     }
 
-    public add(element: Channel): Map<any, Channel> {
+    public destroy(): any {
+        return super.destroy();
+    }
+
+    public has(element: any|Channel): boolean {
+        return super.has(element);
+    }
+
+    public add(element: Channel): this {
         return super.add(element);
     }
 
@@ -23,14 +31,6 @@ class BridgeChannels extends AsteriskCollection<Channel> {
 
     public clear(): this {
         return super.clear();
-    }
-
-    public has(element: any|Channel): boolean {
-        return super.has(element);
-    }
-
-    public destroy(): any {
-        return super.destroy();
     }
 }
 export = BridgeChannels;

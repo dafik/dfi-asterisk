@@ -1,6 +1,4 @@
 "use strict";
-const actionNames_1 = require("../internal/asterisk/actionNames");
-const eventNames_1 = require("../internal/asterisk/eventNames");
 const AsteriskManager = require("../internal/server/Manager");
 const Channels = require("../collections/channels/ChannelsCollection");
 const Channel = require("../models/ChannelModel");
@@ -11,6 +9,8 @@ const ChannelState = require("../states/channelState");
 const HangupCause = require("../states/hangupCause");
 const ChannelStates = require("../enums/channelStates");
 const moment = require("moment");
+const AST_EVENT = require("../internal/asterisk/eventNames");
+const AST_ACTION = require("../internal/asterisk/actionNames");
 const REMOVAL_THRESHOLD = 5; // 15 minutes in seconds
 const VARIABLE_TRACE_ID = "AJ_TRACE_ID";
 class ChannelManager extends AsteriskManager {
@@ -21,26 +21,26 @@ class ChannelManager extends AsteriskManager {
             return;
         }
         let map = {};
-        map[eventNames_1.AST_EVENT.NEW_CHANNEL] = this._handleNewChannelEvent;
-        map[eventNames_1.AST_EVENT.NEW_EXTEN] = this._handleNewExtenEvent;
-        map[eventNames_1.AST_EVENT.NEW_STATE] = this._handleNewStateEvent;
-        map[eventNames_1.AST_EVENT.NEW_CALLERID] = this._handleNewCallerIdEvent;
-        map[eventNames_1.AST_EVENT.DIAL_BEGIN] = this._handleDialEvent;
-        map[eventNames_1.AST_EVENT.DIAL_END] = this._handleDialEvent;
-        map[eventNames_1.AST_EVENT.RENAME] = this._handleRenameEvent;
-        map[eventNames_1.AST_EVENT.HANGUP] = this._handleHangupEvent;
-        map[eventNames_1.AST_EVENT.CDR] = this._handleCdrEvent;
-        map[eventNames_1.AST_EVENT.VAR_SET] = this._handleVarSetEvent;
-        map[eventNames_1.AST_EVENT.SOFT_HANGUP_REQUEST] = this._handleHangupRequest;
-        map[eventNames_1.AST_EVENT.HANGUP_REQUEST] = this._handleHangupRequest;
-        map[eventNames_1.AST_EVENT.NEW_CONNECTED_LINE] = this._handleNewConnectedLine;
-        map[eventNames_1.AST_EVENT.MUSIC_ON_HOLD_START] = this._handleMusicOnHold;
-        map[eventNames_1.AST_EVENT.MUSIC_ON_HOLD_STOP] = this._handleMusicOnHold;
-        map[eventNames_1.AST_EVENT.DTMF_END] = this._handleDtmfEvent;
-        map[eventNames_1.AST_EVENT.PARKED_CALL] = this._handleParkedCallEvent;
-        map[eventNames_1.AST_EVENT.PARKED_CALL_GIVE_UP] = this._handleParkedCallGiveUpEvent;
-        map[eventNames_1.AST_EVENT.PARKED_CALL_TIME_OUT] = this._handleParkedCallTimeOutEvent;
-        map[eventNames_1.AST_EVENT.UN_PARKED_CALL] = this._handleUnparkedCallEvent;
+        map[AST_EVENT.NEW_CHANNEL] = this._handleNewChannelEvent;
+        map[AST_EVENT.NEW_EXTEN] = this._handleNewExtenEvent;
+        map[AST_EVENT.NEW_STATE] = this._handleNewStateEvent;
+        map[AST_EVENT.NEW_CALLERID] = this._handleNewCallerIdEvent;
+        map[AST_EVENT.DIAL_BEGIN] = this._handleDialEvent;
+        map[AST_EVENT.DIAL_END] = this._handleDialEvent;
+        map[AST_EVENT.RENAME] = this._handleRenameEvent;
+        map[AST_EVENT.HANGUP] = this._handleHangupEvent;
+        map[AST_EVENT.CDR] = this._handleCdrEvent;
+        map[AST_EVENT.VAR_SET] = this._handleVarSetEvent;
+        map[AST_EVENT.SOFT_HANGUP_REQUEST] = this._handleHangupRequest;
+        map[AST_EVENT.HANGUP_REQUEST] = this._handleHangupRequest;
+        map[AST_EVENT.NEW_CONNECTED_LINE] = this._handleNewConnectedLine;
+        map[AST_EVENT.MUSIC_ON_HOLD_START] = this._handleMusicOnHold;
+        map[AST_EVENT.MUSIC_ON_HOLD_STOP] = this._handleMusicOnHold;
+        map[AST_EVENT.DTMF_END] = this._handleDtmfEvent;
+        map[AST_EVENT.PARKED_CALL] = this._handleParkedCallEvent;
+        map[AST_EVENT.PARKED_CALL_GIVE_UP] = this._handleParkedCallGiveUpEvent;
+        map[AST_EVENT.PARKED_CALL_TIME_OUT] = this._handleParkedCallTimeOutEvent;
+        map[AST_EVENT.UN_PARKED_CALL] = this._handleUnparkedCallEvent;
         this._mapEvents(map);
     }
     static get events() {
@@ -58,7 +58,7 @@ class ChannelManager extends AsteriskManager {
             AstUtil.maybeCallbackOnce(callbackFn, context, null, "ChannelManager");
         }
         function onForeach(event) {
-            if (event.Event === eventNames_1.AST_EVENT.STATUS || event.Event === eventNames_1.AST_EVENT.CORE_SHOW_CHANNEL) {
+            if (event.Event === AST_EVENT.STATUS || event.Event === AST_EVENT.CORE_SHOW_CHANNEL) {
                 let extension = null;
                 let isNew = false;
                 let channel = this.getChannelById(event.Uniqueid);
@@ -77,7 +77,7 @@ class ChannelManager extends AsteriskManager {
                 }
                 if (event.Context != null && event.Exten != null && event.Priority != null) {
                     extension = new Extension({
-                        AppData: (event.Event === eventNames_1.AST_EVENT.STATUS ? event.Data : event.ApplicationData),
+                        AppData: (event.Event === AST_EVENT.STATUS ? event.Data : event.ApplicationData),
                         Application: event.Application,
                         Context: event.Context,
                         Event: event.Event,
@@ -116,7 +116,7 @@ class ChannelManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        let action = { Action: actionNames_1.AST_ACTION.COMMAND, Command: "core show channeltypes" };
+        let action = { Action: AST_ACTION.COMMAND, Command: "core show channeltypes" };
         this.server.sendAction(action, (err, response) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -132,7 +132,7 @@ class ChannelManager extends AsteriskManager {
             found.forEach((technology) => {
                 this.technologyCount[technology] = 0;
             });
-            this.server.sendEventGeneratingAction({ Action: actionNames_1.AST_ACTION.CORE_SHOW_CHANNELS }, (err1, re) => {
+            this.server.sendEventGeneratingAction({ Action: AST_ACTION.CORE_SHOW_CHANNELS }, (err1, re) => {
                 if (err1) {
                     callbackFn.call(context, err1);
                     return;
@@ -572,7 +572,7 @@ class ChannelManager extends AsteriskManager {
         this.logger.debug("handle MusicOnHold %j", event.Event, event.Channel);
         let channel = this.channels.get(event.Uniqueid);
         if (channel) {
-            if (event.Event === eventNames_1.AST_EVENT.MUSIC_ON_HOLD_START) {
+            if (event.Event === AST_EVENT.MUSIC_ON_HOLD_START) {
                 channel.mohDate = event.$time;
                 channel.mohClass = event.Class;
             }

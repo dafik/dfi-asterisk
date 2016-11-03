@@ -1,10 +1,10 @@
 import BaseServerAction = require("./BaseAction");
 import {IDfiCallbackResult} from "../../../definitions/interfaces";
-import {AST_ACTION} from "../../asterisk/actionNames";
 import {IAstActionSIPpeers} from "../../asterisk/actions";
-import {AST_EVENT} from "../../asterisk/eventNames";
 import {IAstEventPeerSIPEntry} from "../../asterisk/events";
 import AstUtil = require("../../astUtil");
+import AST_ACTION = require("../../asterisk/actionNames");
+import AST_EVENT = require("../../asterisk/eventNames");
 
 class PeersServerAction extends BaseServerAction {
 

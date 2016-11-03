@@ -1,7 +1,7 @@
 "use strict";
 const AsteriskModel = require("../internal/asteriskModel");
-const eventNames_1 = require("../internal/asterisk/eventNames");
 const BridgeChannels = require("../collections/channels/BridgeChannelsCollection");
+const AST_EVENT = require("../internal/asterisk/eventNames");
 const PROP_UNIQUE_ID = "uniqueid";
 const PROP_TYPE = "type";
 const PROP_TECHNOLOGY = "technology";
@@ -15,10 +15,10 @@ const PROP_IS_HANGUP_SECOND = "isHangupSecond";
 const P_PROP_CHANNELS = "channels";
 class Bridge extends AsteriskModel {
     constructor(attributes, options) {
-        if (attributes.Event === eventNames_1.AST_EVENT.BRIDGE_CREATE) {
+        if (attributes.Event === AST_EVENT.BRIDGE_CREATE) {
             attributes.id = attributes.BridgeUniqueid;
         }
-        else if (attributes.Event === eventNames_1.AST_EVENT.BRIDGE_LIST_ITEM) {
+        else if (attributes.Event === AST_EVENT.BRIDGE_LIST_ITEM) {
             attributes.id = attributes.BridgeUniqueid;
         }
         super(attributes, options);

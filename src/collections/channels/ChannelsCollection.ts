@@ -1,6 +1,7 @@
 import AsteriskCollection = require("../../internal/asteriskCollection");
 import Channel = require("../../models/ChannelModel");
-import {AST_EVENT} from "../../internal/asterisk/eventNames";
+import AST_EVENT = require("../../internal/asterisk/eventNames");
+
 
 const SEPARATOR = "/";
 const P_PROP_CHANNELS_BY_NAME = "byName";
@@ -20,30 +21,6 @@ class Channels extends AsteriskCollection<Channel> {
         this.on(AsteriskCollection.events.REMOVE, this._onChannelRemove, this);
     }
 
-    public get(id: any): Channel {
-        return super.get(id);
-    }
-
-    public has(element: any|Channel): boolean {
-        return super.has(element);
-    }
-
-    public clear(): this {
-        return super.clear();
-    }
-
-    public forEach(fn: (value: Channel, index: any, map: Map<any, Channel>) => void, context?: any): void {
-        super.forEach(fn, context);
-    }
-
-    public toArray(): Array<Channel> {
-        return super.toArray();
-    }
-
-    public add(element: Channel): Map<any, Channel> {
-        return super.add(element);
-    }
-
     public destroy() {
         this.off(AsteriskCollection.events.ADD, this._onChannelAdd, this);
         this.off(AsteriskCollection.events.REMOVE, this._onChannelRemove, this);
@@ -55,6 +32,30 @@ class Channels extends AsteriskCollection<Channel> {
         this.removeProp(P_PROP_CHANNELS_BY_TECH);
 
         super.destroy();
+    }
+
+    public has(element: any|Channel): boolean {
+        return super.has(element);
+    }
+
+    public get(id: any): Channel {
+        return super.get(id);
+    }
+
+    public add(element: Channel): this {
+        return super.add(element);
+    }
+
+    public clear(): this {
+        return super.clear();
+    }
+
+    public forEach(fn: (value: Channel, index: string, map: Map<string, Channel>)=>void, thisArg?: any): void {
+        super.forEach(fn, thisArg);
+    }
+
+    public toArray(): Array<Channel> {
+        return super.toArray();
     }
 
     private _onChannelAdd(channel: Channel) {

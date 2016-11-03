@@ -133,11 +133,10 @@ const CallerId = require("./src/models/CallerIdModel");
 exports.CallerId = CallerId;
 const IpAddress = require("./src/models/IpAddressModel");
 exports.IpAddress = IpAddress;
-var actionNames_1 = require("./src/internal/asterisk/actionNames");
-exports.AST_ACTION = actionNames_1.AST_ACTION;
+const AST_ACTION = require("./src/internal/asterisk/actionNames");
+exports.AST_ACTION = AST_ACTION;
+const AST_EVENT = require("./src/internal/asterisk/eventNames");
+exports.AST_EVENT = AST_EVENT;
 __export(require("./src/internal/asterisk/enums"));
-var eventNames_1 = require("./src/internal/asterisk/eventNames");
-exports.AST_EVENT = eventNames_1.AST_EVENT;
-__export(require("./src/internal/asterisk/eventNames"));
 exports.asteriskServerInstance = getServerInstance;
 //# sourceMappingURL=index.js.map

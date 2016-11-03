@@ -10,11 +10,11 @@ class Devices extends AsteriskCollection {
     get(id) {
         return super.get(id);
     }
-    clear() {
-        return super.clear();
-    }
     add(element) {
         return super.add(element);
+    }
+    clear() {
+        return super.clear();
     }
 }
 module.exports = Devices;

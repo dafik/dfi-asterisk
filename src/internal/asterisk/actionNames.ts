@@ -1,4 +1,4 @@
-export const AST_ACTION = {
+const AST_ACTION = {
     ABSOLUTE_TIMEOUT: "AbsoluteTimeout",
     AGENTS: "Agents",
     AGENT_LOGOFF: "AgentLogoff",
@@ -152,3 +152,4 @@ export const AST_ACTION = {
     WAIT_EVENT: "WaitEvent",
     XMPP: "xmpp"
 };
+export = AST_ACTION;

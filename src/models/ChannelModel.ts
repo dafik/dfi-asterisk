@@ -1,6 +1,5 @@
 import {IDfiAMIResponseGetvar, IDfiCallbackResult, IDfiVariableCallback} from "../definitions/interfaces";
 import {IDfiAstModelAttribsChannel, IDfiAstModelOptions} from "../definitions/models";
-import {AST_ACTION} from "../internal/asterisk/actionNames";
 import {
     IAstActionAbsoluteTimeout,
     IAstActionChangeMonitor,
@@ -20,22 +19,23 @@ import AstUtil = require("../internal/astUtil");
 import Bridge = require("./BridgeModel");
 import Bridges = require("../collections/BridgesCollection");
 import CallerId = require("./CallerIdModel");
-import CallDetailRecord = require("./CallDetailRecord");
-import ChannelStateHistoryEntry = require("./histories/channelStateHistoryEntry");
+import CallDetailRecord = require("./CallDetailRecordModel");
+import ChannelStateHistoryEntry = require("./histories/ChannelStateHistoryEntry");
 import ChannelState = require("../states/channelState");
 import ChannelStates = require("../enums/channelStates");
-import DialedChannelHistoryEntry = require("./histories/dialedChannelHistoryEntry");
+import DialedChannelHistoryEntry = require("./histories/DialedChannelHistoryEntry");
 import Extension = require("./ExtensionModel");
-import ExtensionHistoryEntry = require("./histories/extensionHistoryEntry");
+import ExtensionHistoryEntry = require("./histories/ExtensionHistoryEntry");
 import HangupCause = require("../states/hangupCause");
 import HangupCauses = require("../enums/hangupCauses");
 import IllegalArgumentError = require("../errors/IllegalArgument");
-import LinkedChannelHistoryEntry = require("./histories/linkedChannelHistoryEntry");
+import LinkedChannelHistoryEntry = require("./histories/LinkedChannelHistoryEntry");
 import ManagerError = require("../errors/ManagerError");
 import NoSuchChannelError = require("../errors/NoSuchChannel");
 import Peers = require("../collections/PeersCollection");
 import Variable = require("./VariableModel");
 import Variables = require("../collections/VariablesCollection");
+import AST_ACTION = require("../internal/asterisk/actionNames");
 
 const CAUSE_VARIABLE_NAME = "PRI_CAUSE";
 const ID = "id";

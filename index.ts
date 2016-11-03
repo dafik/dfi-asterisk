@@ -65,11 +65,11 @@ import Channel = require("./src/models/ChannelModel");
 import CallerId = require("./src/models/CallerIdModel");
 import IpAddress = require("./src/models/IpAddressModel");
 
-export {AST_ACTION} from "./src/internal/asterisk/actionNames";
+import AST_ACTION  = require("./src/internal/asterisk/actionNames");
+import AST_EVENT = require("./src/internal/asterisk/eventNames");
+
 export * from "./src/internal/asterisk/actions";
 export * from "./src/internal/asterisk/enums";
-export {AST_EVENT} from "./src/internal/asterisk/eventNames";
-export * from "./src/internal/asterisk/eventNames";
 
 export * from "./src/definitions/configs";
 export * from "./src/definitions/events";
@@ -80,6 +80,8 @@ export * from "./src/definitions/types";
 export let asteriskServerInstance = getServerInstance;
 
 export {
+    AST_ACTION,
+    AST_EVENT,
     AsteriskServer,
 
     // collections

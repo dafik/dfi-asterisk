@@ -1,7 +1,7 @@
 ///<reference path="../../../../node_modules/@types/node/index.d.ts"/>
 import BaseServerAction = require("./BaseAction");
 import {IDfiAsOriginateCallback, IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../../../definitions/interfaces";
-import {AST_ACTION} from "../../asterisk/actionNames";
+
 import {IAstActionOriginate} from "../../asterisk/actions";
 import {IAstEventOriginateResponse} from "../../asterisk/events";
 import Channel = require("../../../models/ChannelModel");
@@ -10,6 +10,7 @@ import ChannelStates = require("../../../enums/channelStates");
 import NoSuchChannel = require("../../../errors/NoSuchChannel");
 import ChannelState = require("../../../states/channelState");
 import CallerId = require("../../../models/CallerIdModel");
+import AST_ACTION = require("../../asterisk/actionNames");
 
 const VARIABLE_TRACE_ID = "AJ_TRACE_ID";
 const ACTION_ID_PREFIX_ORIGINATE = "AJ_ORIGINATE_";

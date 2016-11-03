@@ -16,9 +16,10 @@ class Variables extends AsteriskCollection<Variable> {
         return super.get(id);
     }
 
-    public add(element: Variable): Map<any, Variable> {
+    public add(element: Variable): this {
         return super.add(element);
     }
+
 }
 
 export = Variables;

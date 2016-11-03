@@ -1,5 +1,5 @@
 import {IDfiBaseModelAttribs, IDfiBaseModelConfig} from "local-dfi-base/src/dfiInterfaces";
-import Ip = require("../models/IpAddress");
+import Ip = require("../models/IpAddressModel");
 import CallerId = require("../models/CallerIdModel");
 import DeviceState = require("../states/deviceState");
 import PeerState = require("../states/peerState");
@@ -13,8 +13,8 @@ import AgentState = require("../states/agentState");
 import Device = require("../models/DeviceModel");
 import Queue = require("../models/queues/QueueModel");
 import QueueEntryState = require("../states/queueEntryState");
-import DialplanContext = require("../models/dialans/DialplanContextModel");
-import DialplanExtension = require("../models/dialans/DialplanExtensionModel");
+import DialplanContext = require("../models/dialplans/DialplanContextModel");
+import DialplanExtension = require("../models/dialplans/DialplanExtensionModel");
 
 export interface IDfiAstModelOptions extends IDfiBaseModelConfig {
     sourceEvent?: string;

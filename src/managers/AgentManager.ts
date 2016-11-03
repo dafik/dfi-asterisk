@@ -7,15 +7,17 @@ import AstUtil = require("../internal/astUtil");
 import {IDfiCallbackResult, IEventHandlersMap} from "../definitions/interfaces";
 import {IDfiAstModelAttribsAgent} from "../definitions/models";
 import {TIAgent, TIInterface} from "../definitions/types";
-import {AST_ACTION} from "../internal/asterisk/actionNames";
+
 import {IAstActionAgents} from "../internal/asterisk/actions";
-import {AST_EVENT} from "../internal/asterisk/eventNames";
+
 import {IAstEvent, IAstEventAgentCalled, IAstEventAgentComplete, IAstEventAgentConnect, IAstEventAgentLogin, IAstEventAgentLogoff, IAstEventAgents} from "../internal/asterisk/events";
 
 import AgentState = require("../states/agentState");
 import AgentStates = require("../enums/agentStates");
 import QueueMember = require("../models/queues/QueueMemberModel");
 import Queue = require("../models/queues/QueueModel");
+import AST_ACTION = require("../internal/asterisk/actionNames");
+import AST_EVENT = require("../internal/asterisk/eventNames");
 
 const RINGING_AGENTS = "ringingAgents";
 

@@ -7,20 +7,20 @@ class Queues extends AsteriskCollection {
             model: Queue
         });
     }
+    get(id) {
+        return super.get(id);
+    }
     add(element) {
         return super.add(element);
     }
     remove(element) {
         return super.remove(element);
     }
-    get(id) {
-        return super.get(id);
-    }
     clear() {
         return super.clear();
     }
-    forEach(fn, context) {
-        super.forEach(fn, context);
+    forEach(fn, thisArg) {
+        super.forEach(fn, thisArg);
     }
     toArray() {
         return super.toArray();

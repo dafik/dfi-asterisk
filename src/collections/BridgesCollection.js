@@ -7,17 +7,14 @@ class Bridges extends AsteriskCollection {
             model: Bridge
         });
     }
-    add(element) {
-        return super.add(element);
-    }
     has(element) {
         return super.has(element);
     }
     get(id) {
         return super.get(id);
     }
-    toArray() {
-        return super.toArray();
+    add(element) {
+        return super.add(element);
     }
     remove(element) {
         return super.remove(element);
@@ -25,8 +22,11 @@ class Bridges extends AsteriskCollection {
     clear() {
         return super.clear();
     }
-    forEach(fn, context) {
-        super.forEach(fn, context);
+    forEach(fn, thisArg) {
+        super.forEach(fn, thisArg);
+    }
+    toArray() {
+        return super.toArray();
     }
 }
 module.exports = Bridges;

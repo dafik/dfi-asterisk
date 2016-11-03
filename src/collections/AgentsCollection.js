@@ -7,20 +7,20 @@ class Agents extends AsteriskCollection {
             model: Agent
         });
     }
-    keys() {
-        return super.keys();
-    }
-    toArray() {
-        return super.toArray();
-    }
-    clear() {
-        return super.clear();
-    }
     get(id) {
         return super.get(id);
     }
     add(element) {
         return super.add(element);
+    }
+    keys() {
+        return super.keys();
+    }
+    clear() {
+        return super.clear();
+    }
+    toArray() {
+        return super.toArray();
     }
 }
 module.exports = Agents;

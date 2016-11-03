@@ -7,24 +7,24 @@ class Agents extends AsteriskCollection<Agent> {
         });
     }
 
-    public keys(): Array<any> {
-        return super.keys();
+    public get(id: any): Agent {
+        return super.get(id);
     }
 
-    public toArray(): Array<Agent> {
-        return super.toArray();
+    public add(element: Agent): this {
+        return super.add(element);
+    }
+
+    public keys(): Array<any> {
+        return super.keys();
     }
 
     public clear(): this {
         return super.clear();
     }
 
-    public get(id: any): Agent {
-        return super.get(id);
-    }
-
-    public add(element: Agent): Map<any, Agent> {
-        return super.add(element);
+    public toArray(): Array<Agent> {
+        return super.toArray();
     }
 }
 export = Agents;

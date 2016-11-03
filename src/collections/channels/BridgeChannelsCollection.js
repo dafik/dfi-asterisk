@@ -10,6 +10,12 @@ class BridgeChannels extends AsteriskCollection {
             model: channelClass
         });
     }
+    destroy() {
+        return super.destroy();
+    }
+    has(element) {
+        return super.has(element);
+    }
     add(element) {
         return super.add(element);
     }
@@ -18,12 +24,6 @@ class BridgeChannels extends AsteriskCollection {
     }
     clear() {
         return super.clear();
-    }
-    has(element) {
-        return super.has(element);
-    }
-    destroy() {
-        return super.destroy();
     }
 }
 module.exports = BridgeChannels;

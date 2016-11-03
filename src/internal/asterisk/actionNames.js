@@ -1,5 +1,5 @@
 "use strict";
-exports.AST_ACTION = {
+const AST_ACTION = {
     ABSOLUTE_TIMEOUT: "AbsoluteTimeout",
     AGENTS: "Agents",
     AGENT_LOGOFF: "AgentLogoff",
@@ -153,4 +153,5 @@ exports.AST_ACTION = {
     WAIT_EVENT: "WaitEvent",
     XMPP: "xmpp"
 };
+module.exports = AST_ACTION;
 //# sourceMappingURL=actionNames.js.map

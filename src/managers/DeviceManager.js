@@ -1,11 +1,11 @@
 "use strict";
 const AsteriskManager = require("../internal/server/Manager");
 const Devices = require("../collections/DevicesCollection");
-const actionNames_1 = require("../internal/asterisk/actionNames");
-const eventNames_1 = require("../internal/asterisk/eventNames");
 const Device = require("../models/DeviceModel");
 const AstUtil = require("../internal/astUtil");
 const DeviceState = require("../states/deviceState");
+const AST_EVENT = require("../internal/asterisk/eventNames");
+const AST_ACTION = require("../internal/asterisk/actionNames");
 class DeviceManager extends AsteriskManager {
     constructor(options, state) {
         super(options, state, new Devices());
@@ -13,7 +13,7 @@ class DeviceManager extends AsteriskManager {
             return;
         }
         let map = {};
-        map[eventNames_1.AST_EVENT.DEVICE_STATE_CHANGE] = this._handleDeviceStateChangeEvent;
+        map[AST_EVENT.DEVICE_STATE_CHANGE] = this._handleDeviceStateChangeEvent;
         this._mapEvents(map);
     }
     get devices() {
@@ -29,7 +29,7 @@ class DeviceManager extends AsteriskManager {
             finish.call(this);
         }
         else {
-            this.server.sendEventGeneratingAction({ Action: actionNames_1.AST_ACTION.DEVICE_STATE_LIST }, (err, re) => {
+            this.server.sendEventGeneratingAction({ Action: AST_ACTION.DEVICE_STATE_LIST }, (err, re) => {
                 if (err) {
                     if (!err.message.match("Not Allowed Action")) {
                         AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -38,7 +38,7 @@ class DeviceManager extends AsteriskManager {
                 }
                 if (typeof re !== "undefined") {
                     re.events.forEach((event) => {
-                        if (event.Event === eventNames_1.AST_EVENT.DEVICE_STATE_CHANGE) {
+                        if (event.Event === AST_EVENT.DEVICE_STATE_CHANGE) {
                             if (event.Device.match(/Queue|Local|DAHDI/)) {
                                 // skip queue devices
                                 return;

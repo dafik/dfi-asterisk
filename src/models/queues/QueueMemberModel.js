@@ -1,6 +1,5 @@
 "use strict";
 const AsteriskModel = require("../../internal/asteriskModel");
-const actionNames_1 = require("../../internal/asterisk/actionNames");
 const QueueMemberState = require("../../states/queueMemberState");
 const AstUtil = require("../../internal/astUtil");
 const ManagerError = require("../../errors/ManagerError");
@@ -8,6 +7,7 @@ const IllegalArgumentError = require("../../errors/IllegalArgument");
 const InvalidPenalty = require("../../errors/InvalidPenatly");
 const QueueMemberStates = require("../../enums/queueMemberStates");
 const NoSuchInterface = require("../../errors/NoSuchInterface");
+const AST_ACTION = require("../../internal/asterisk/actionNames");
 const PROP_QUEUE = "queue";
 const PROP_NAME = "name";
 const PROP_INTERFACE = "interface";
@@ -110,7 +110,7 @@ class QueueMember extends AsteriskModel {
     }
     setPaused(paused) {
         let action = {
-            Action: actionNames_1.AST_ACTION.QUEUE_PAUSE,
+            Action: AST_ACTION.QUEUE_PAUSE,
             Interface: this.interface,
             Paused: paused.toString(),
             Queue: this.queue
@@ -119,7 +119,7 @@ class QueueMember extends AsteriskModel {
     }
     setPausedAll(paused) {
         let action = {
-            Action: actionNames_1.AST_ACTION.QUEUE_PAUSE,
+            Action: AST_ACTION.QUEUE_PAUSE,
             Interface: this.interface,
             Paused: paused.toString()
         };
@@ -136,7 +136,7 @@ class QueueMember extends AsteriskModel {
             throw new IllegalArgumentError("Penalty must not be negative");
         }
         let action = {
-            Action: actionNames_1.AST_ACTION.QUEUE_PENALTY,
+            Action: AST_ACTION.QUEUE_PENALTY,
             Interface: this.interface,
             Penalty: penalty.toString(),
             Queue: this.queue

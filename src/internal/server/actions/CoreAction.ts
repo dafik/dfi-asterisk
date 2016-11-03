@@ -1,11 +1,12 @@
 import BaseServerAction = require("./BaseAction");
 import {IDfiAMIResponse, IDfiAMIResponseCommand, IDfiActionCallback, IDfiCallbackError, IDfiGetAsteriskVersionCallback, IDfiGetFileVersionCallback} from "../../../definitions/interfaces";
-import {AST_ACTION} from "../../asterisk/actionNames";
+
 import {IAstActionCommand, IAstActionFilter} from "../../asterisk/actions";
 import AsteriskVersion = require("../Version");
 import AstUtil = require("../../astUtil");
 import ManagerCommunication = require("../../../errors/ManagerCommunication");
 import ManagerError = require("../../../errors/ManagerError");
+import AST_ACTION = require("../../asterisk/actionNames");
 
 const SHOW_VERSION_FILES_COMMAND = "core show file version";
 const SHOW_VERSION_FILES_PATTERN = /^([\S]+)\s+([0-9.]+)/;

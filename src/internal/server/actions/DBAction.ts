@@ -1,10 +1,11 @@
 import BaseServerAction = require("./BaseAction");
 import {IDfiAMICallbackError, IDfiDBGetCallback} from "../../../definitions/interfaces";
-import {AST_ACTION} from "../../asterisk/actionNames";
+
 import {IAstActionDBDel, IAstActionDBDelTree, IAstActionDBGet, IAstActionDBPut} from "../../asterisk/actions";
 import {IAstEventDBGetResponse} from "../../asterisk/events";
 import {format} from "util";
 import AstUtil = require("../../astUtil");
+import AST_ACTION = require("../../asterisk/actionNames");
 
 class DBServerAction extends BaseServerAction {
 

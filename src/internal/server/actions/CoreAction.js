@@ -1,10 +1,10 @@
 "use strict";
 const BaseServerAction = require("./BaseAction");
-const actionNames_1 = require("../../asterisk/actionNames");
 const AsteriskVersion = require("../Version");
 const AstUtil = require("../../astUtil");
 const ManagerCommunication = require("../../../errors/ManagerCommunication");
 const ManagerError = require("../../../errors/ManagerError");
+const AST_ACTION = require("../../asterisk/actionNames");
 const SHOW_VERSION_FILES_COMMAND = "core show file version";
 const SHOW_VERSION_FILES_PATTERN = /^([\S]+)\s+([0-9.]+)/;
 const SHOW_VERSION_COMMAND = "core show version";
@@ -12,7 +12,7 @@ class CoreServerAction extends BaseServerAction {
     getAvailableActions(callbackFn, context) {
         this._server.logger.debug("on getAvailableActions");
         let action = {
-            Action: actionNames_1.AST_ACTION.COMMAND,
+            Action: AST_ACTION.COMMAND,
             Command: "manager show commands"
         };
         this._server.sendAction(action, (err, response) => {
@@ -35,7 +35,7 @@ class CoreServerAction extends BaseServerAction {
     filterRTCP(callbackFn, context) {
         this._server.logger.debug("on onAvailableActions");
         let action = {
-            Action: actionNames_1.AST_ACTION.FILTER,
+            Action: AST_ACTION.FILTER,
             Filter: "!Event: RTCP",
             Operation: "Add"
         };
@@ -51,7 +51,7 @@ class CoreServerAction extends BaseServerAction {
             return;
         }
         let action = {
-            Action: actionNames_1.AST_ACTION.COMMAND,
+            Action: AST_ACTION.COMMAND,
             Command: SHOW_VERSION_COMMAND
         };
         this._server.sendAction(action, (err, response) => {
@@ -86,7 +86,7 @@ class CoreServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             let action = {
-                Action: actionNames_1.AST_ACTION.COMMAND,
+                Action: AST_ACTION.COMMAND,
                 Command: SHOW_VERSION_FILES_COMMAND
             };
             this._server.sendAction(action, (err, response) => {
@@ -122,7 +122,7 @@ class CoreServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             let action = {
-                Action: actionNames_1.AST_ACTION.COMMAND,
+                Action: AST_ACTION.COMMAND,
                 Command: command
             };
             this._server.sendAction(action, (err, response) => {

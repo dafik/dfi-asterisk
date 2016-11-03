@@ -20,12 +20,16 @@ class Peers extends AsteriskCollection<Peer> {
         return super.get(id);
     }
 
+    public add(element: Peer): this {
+        return super.add(element);
+    }
+
     public clear(): this {
         return super.clear();
     }
 
-    public forEach(fn: (value: Peer, index: any, map: Map<any, Peer>) => void, context?: any): void {
-        super.forEach(fn, context);
+    public forEach(fn: (value: Peer, index: string, map: Map<string, Peer>)=>void, thisArg?: any): void {
+        super.forEach(fn, thisArg);
     }
 
     public get peerTechs() {
@@ -38,10 +42,6 @@ class Peers extends AsteriskCollection<Peer> {
         } else {
             return new Map();
         }
-    }
-
-    public add(element: Peer): Map<any, Peer> {
-        return super.add(element);
     }
 
     private _onPeerAdd<T extends Peer>(peer: Peer) {

@@ -1,9 +1,10 @@
 import BaseServerAction = require("./BaseAction");
 import AstUtil = require("../../astUtil");
 import {IDfiAMIResponseCommand, IDfiAMIResponseMailboxCount, IDfiCallbackResult} from "../../../definitions/interfaces";
-import {AST_ACTION} from "../../asterisk/actionNames";
+
 import {IAstActionMailboxCount} from "../../asterisk/actions";
 import VoiceMailbox = require("../../../models/VoiceMailboxModel");
+import AST_ACTION = require("../../asterisk/actionNames");
 
 const SHOW_VOICEMAIL_USERS_COMMAND = "voicemail show users";
 const SHOW_VOICEMAIL_USERS_PATTERN = /^(\S+)\s+(\S+)\s+(.{25})\s+(\d+)/;

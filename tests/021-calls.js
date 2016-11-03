@@ -4,8 +4,8 @@ const asterisk = require("./mock/asterisk-real");
 const Linphone = require("local-dfi-linphone/src/linphone");
 const EndpointManger = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
 const manager = require("local-dfi-linphone-endpoint-manager");
-const actionNames_1 = require("../src/internal/asterisk/actionNames");
 const DebugLogger = require("local-dfi-debug-logger/debugLogger");
+const AST_ACTION = require("../src/internal/asterisk/actionNames");
 let endpointManger = manager.getInstance(asterisk);
 let answerTimeout = 0;
 let endCallTimeout = 0;
@@ -55,8 +55,8 @@ describe("calls", () => {
                     function createDialplan(technology) {
                         let ctx1 = "testSource";
                         let ctx2 = "testDestination";
-                        let add = actionNames_1.AST_ACTION.DIALPLAN_EXTENSION_ADD;
-                        let del = actionNames_1.AST_ACTION.DIALPLAN_EXTENSION_REMOVE;
+                        let add = AST_ACTION.DIALPLAN_EXTENSION_ADD;
+                        let del = AST_ACTION.DIALPLAN_EXTENSION_REMOVE;
                         asterisk.actions.dialplan.getDialplan(ctx1, (err, dialplan) => {
                             if (err && !err.message.match(/Did not find context/)) {
                                 finishInit(err);
@@ -243,7 +243,7 @@ describe("calls", () => {
         run();
         function makeCall(sSip, tSip) {
             let action = {
-                Action: actionNames_1.AST_ACTION.ORIGINATE,
+                Action: AST_ACTION.ORIGINATE,
                 Async: true.toString(),
                 Channel: "Local/" + sSip + "@testSource/n",
                 Context: "testDestination",

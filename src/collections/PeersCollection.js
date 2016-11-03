@@ -14,11 +14,14 @@ class Peers extends AsteriskCollection {
     get(id) {
         return super.get(id);
     }
+    add(element) {
+        return super.add(element);
+    }
     clear() {
         return super.clear();
     }
-    forEach(fn, context) {
-        super.forEach(fn, context);
+    forEach(fn, thisArg) {
+        super.forEach(fn, thisArg);
     }
     get peerTechs() {
         return new Set([...this.getProp(P_PROP_PEERS_BY_TECH).keys()]);
@@ -30,9 +33,6 @@ class Peers extends AsteriskCollection {
         else {
             return new Map();
         }
-    }
-    add(element) {
-        return super.add(element);
     }
     _onPeerAdd(peer) {
         let technology = peer.technology;

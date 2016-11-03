@@ -1,15 +1,15 @@
 "use strict";
 const BaseServerAction = require("./BaseAction");
 const AstUtil = require("../../astUtil");
-const actionNames_1 = require("../../asterisk/actionNames");
 const VoiceMailbox = require("../../../models/VoiceMailboxModel");
+const AST_ACTION = require("../../asterisk/actionNames");
 const SHOW_VOICEMAIL_USERS_COMMAND = "voicemail show users";
 const SHOW_VOICEMAIL_USERS_PATTERN = /^(\S+)\s+(\S+)\s+(.{25})\s+(\d+)/;
 class VoiceMailServerAction extends BaseServerAction {
     getVoicemailBoxes(callbackFn, context) {
         this._server.start()
             .then(() => {
-            this._server.sendAction({ Action: actionNames_1.AST_ACTION.COMMAND, Command: SHOW_VOICEMAIL_USERS_COMMAND }, (err, commandResponse) => {
+            this._server.sendAction({ Action: AST_ACTION.COMMAND, Command: SHOW_VOICEMAIL_USERS_COMMAND }, (err, commandResponse) => {
                 if (err) {
                     AstUtil.maybeCallback(callbackFn, context, err);
                     return;
@@ -43,7 +43,7 @@ class VoiceMailServerAction extends BaseServerAction {
                 voicemailboxes.forEach((voicemailbox) => {
                     let fullName = voicemailbox.mailbox + "@" + voicemailbox.context;
                     let action = {
-                        Action: actionNames_1.AST_ACTION.MAILBOX_COUNT, Mailbox: fullName
+                        Action: AST_ACTION.MAILBOX_COUNT, Mailbox: fullName
                     };
                     this._server.sendAction(action, (err1, response) => {
                         if (err1) {

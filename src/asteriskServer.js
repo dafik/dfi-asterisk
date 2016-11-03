@@ -1,6 +1,4 @@
 "use strict";
-const actionNames_1 = require("./internal/asterisk/actionNames");
-const eventNames_1 = require("./internal/asterisk/eventNames");
 const _ = require("lodash");
 const async = require("async");
 const AmiClient = require("asterisk-ami-client");
@@ -10,6 +8,8 @@ const ServerActions = require("./internal/server/Actions");
 const ServerManagers = require("./internal/server/Managers");
 const AstUtil = require("./internal/astUtil");
 const ManagerCommunication = require("./errors/ManagerCommunication");
+const AST_ACTION = require("./internal/asterisk/actionNames");
+const AST_EVENT = require("./internal/asterisk/eventNames");
 const PROP_AMI = "ami";
 const PROP_AMI_HANDLERS = "amiHandlers";
 const PROP_INITIALIZED = "initialized";
@@ -94,11 +94,11 @@ class AsteriskServer extends DfiEventObject {
             AstUtil.maybeCallbackOnce(callbackFn, context, "Not Allowed Action: " + action.Action);
             return;
         }
-        if (action.Action === actionNames_1.AST_ACTION.GET_VAR) {
+        if (action.Action === AST_ACTION.GET_VAR) {
             this.logger.debug('action: "' + action.Action + '" var: "' + action.Variable + '" channel: "' + action.Channel + '"');
         }
         else {
-            if (action.Action === actionNames_1.AST_ACTION.COMMAND) {
+            if (action.Action === AST_ACTION.COMMAND) {
                 this.logger.debug('action: "' + action.Action + '" comm: ' + action.Command);
             }
             else {
@@ -445,7 +445,7 @@ const amiHandlers = {
         this.logger.warn("on amiConnectionEnd" + JSON.stringify(arguments));
     },
     waitHandler(event) {
-        if (event.Event === eventNames_1.AST_EVENT.FULLY_BOOTED) {
+        if (event.Event === AST_EVENT.FULLY_BOOTED) {
             amiHandlers.event.call(this, event);
         }
         else {

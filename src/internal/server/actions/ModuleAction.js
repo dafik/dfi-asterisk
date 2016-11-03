@@ -1,14 +1,14 @@
 "use strict";
 const BaseServerAction = require("./BaseAction");
-const actionNames_1 = require("../../asterisk/actionNames");
 const AstUtil = require("../../astUtil");
 const ManagerCommunication = require("../../../errors/ManagerCommunication");
+const AST_ACTION = require("../../asterisk/actionNames");
 class ModuleServerAction extends BaseServerAction {
     isModuleLoaded(module, callbackFn, context) {
         this._server.start()
             .then(() => {
             let action = {
-                Action: actionNames_1.AST_ACTION.MODULE_CHECK,
+                Action: AST_ACTION.MODULE_CHECK,
                 Module: module
             };
             this._server.sendAction(action, (err, xxx) => {
@@ -46,7 +46,7 @@ class ModuleServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             let action = {
-                Action: actionNames_1.AST_ACTION.MODULE_LOAD,
+                Action: AST_ACTION.MODULE_LOAD,
                 LoadType: loadType,
                 Module: module
             };

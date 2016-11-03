@@ -65,15 +65,14 @@ import Channel = require("./src/models/ChannelModel");
 import CallerId = require("./src/models/CallerIdModel");
 import IpAddress = require("./src/models/IpAddressModel");
 
-let asteriskServerInstance = getServerInstance;
+
+import AST_ACTION  = require("./src/internal/asterisk/actionNames");
+import AST_EVENT = require("./src/internal/asterisk/eventNames");
 
 declare module "local-dfi-asterisk" {
 
-    export {AST_ACTION} from "./src/internal/asterisk/actionNames";
-    export * from "./src/internal/asterisk/actions";
-    export * from "./src/internal/asterisk/enums";
-    export {AST_EVENT} from "./src/internal/asterisk/eventNames";
-    export * from "./src/internal/asterisk/eventNames";
+    export * from "src/internal/asterisk/actions";
+    export * from "src/internal/asterisk/enums";
 
     export * from "./src/definitions/configs";
     export * from "./src/definitions/events";
@@ -81,10 +80,14 @@ declare module "local-dfi-asterisk" {
     export * from "./src/definitions/models";
     export * from "./src/definitions/types";
 
-    export  asteriskServerInstance;
 
     export {
+        AST_ACTION,
+        AST_EVENT,
+
         AsteriskServer,
+        getServerInstance as asteriskServerInstance,
+        getServerInstance,
 
         // collections
         BridgeChannels,

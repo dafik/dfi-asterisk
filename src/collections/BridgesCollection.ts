@@ -8,20 +8,16 @@ class Bridges extends AsteriskCollection<Bridge> {
         });
     }
 
-    public add(element: Bridge): Map<any, Bridge> {
-        return super.add(element);
-    }
-
     public has(element: any|Bridge): boolean {
         return super.has(element);
     }
 
-    public  get(id: any): Bridge {
+    public get(id: any): Bridge {
         return super.get(id);
     }
 
-    public   toArray(): Array<Bridge> {
-        return super.toArray();
+    public add(element: Bridge): this {
+        return super.add(element);
     }
 
     public remove(element: any|Bridge): boolean {
@@ -32,8 +28,12 @@ class Bridges extends AsteriskCollection<Bridge> {
         return super.clear();
     }
 
-    public forEach(fn: (value: Bridge, index: any, map: Map<any, Bridge>) => void, context?: any): void {
-        super.forEach(fn, context);
+    public forEach(fn: (value: Bridge, index: string, map: Map<string, Bridge>)=>void, thisArg?: any): void {
+        super.forEach(fn, thisArg);
+    }
+
+    public toArray(): Array<Bridge> {
+        return super.toArray();
     }
 }
 export = Bridges;

@@ -1,8 +1,8 @@
 "use strict";
 const BaseServerAction = require("./BaseAction");
 const Channel = require("../../../models/ChannelModel");
-const actionNames_1 = require("../../asterisk/actionNames");
 const AstUtil = require("../../astUtil");
+const AST_ACTION = require("../../asterisk/actionNames");
 class DTMFServerAction extends BaseServerAction {
     send(channel, digit, callbackFn, context) {
         this._server.start()
@@ -11,7 +11,7 @@ class DTMFServerAction extends BaseServerAction {
                 channel = channel.name;
             }
             let action = {
-                Action: actionNames_1.AST_ACTION.PLAY_DTMF,
+                Action: AST_ACTION.PLAY_DTMF,
                 Channel: channel,
                 Digit: digit,
                 Duration: "1000"

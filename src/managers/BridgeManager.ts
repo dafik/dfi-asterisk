@@ -4,8 +4,6 @@ import Bridge = require("../models/BridgeModel");
 import ChannelManager = require("./ChannelManager");
 import {IDfiAMIResponseMessageMulti, IDfiCallbackResult} from "../definitions/interfaces";
 import {IDfiAstModelAttribsBridge} from "../definitions/models";
-import {AST_ACTION} from "../internal/asterisk/actionNames";
-import {AST_EVENT} from "../internal/asterisk/eventNames";
 import {
     IAstEventBridgeCreate,
     IAstEventBridgeDestroy,
@@ -18,6 +16,8 @@ import {
 } from "../internal/asterisk/events";
 
 import AstUtil = require("../internal/astUtil");
+import AST_EVENT = require("../internal/asterisk/eventNames");
+import AST_ACTION = require("../internal/asterisk/actionNames");
 
 const PROP_LOCAL_MAP = "localMap";
 const PROP_CHANNEL_MANAGER = "channelManager";

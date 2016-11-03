@@ -1,10 +1,10 @@
 "use strict";
 const AsteriskManager = require("../internal/server/Manager");
-const actionNames_1 = require("../internal/asterisk/actionNames");
-const eventNames_1 = require("../internal/asterisk/eventNames");
 const Dahdi = require("../models/DahdiModel");
 const AstUtil = require("../internal/astUtil");
 const DAHDIChannels = require("../collections/channels/DAHDIChannelsCollection");
+const AST_EVENT = require("../internal/asterisk/eventNames");
+const AST_ACTION = require("../internal/asterisk/actionNames");
 const P_PROP_CHANNELS_BY_DAHDI_ID = "channelsByDahdiId";
 const P_PROP_ACTIVE_COUNT = "activeCount";
 /**
@@ -19,8 +19,8 @@ class DahdiManager extends AsteriskManager {
             return;
         }
         let map = {};
-        map[eventNames_1.AST_EVENT.DAHDI_CHANNEL] = this._handleDahdiChannelEvent;
-        map[eventNames_1.AST_EVENT.HANGUP] = this._handleHangupEvent;
+        map[AST_EVENT.DAHDI_CHANNEL] = this._handleDahdiChannelEvent;
+        map[AST_EVENT.HANGUP] = this._handleHangupEvent;
         this._mapEvents(map);
     }
     get channels() {
@@ -43,7 +43,7 @@ class DahdiManager extends AsteriskManager {
             return;
         }
         let action = {
-            Action: actionNames_1.AST_ACTION.DAHDI_SHOW_CHANNELS,
+            Action: AST_ACTION.DAHDI_SHOW_CHANNELS,
             DAHDIChannel: 0
         };
         if (!this.server.allowedActions.has(action.Action)) {
@@ -58,7 +58,7 @@ class DahdiManager extends AsteriskManager {
             }
             if (typeof re !== "undefined") {
                 re.events.forEach((event) => {
-                    if (event.Event === eventNames_1.AST_EVENT.DAHDI_SHOW_CHANNELS) {
+                    if (event.Event === AST_EVENT.DAHDI_SHOW_CHANNELS) {
                         if (event.Channel) {
                             let channel;
                             if (this.server.managers.channel.enabled) {

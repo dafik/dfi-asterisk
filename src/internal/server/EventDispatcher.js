@@ -1,6 +1,6 @@
 "use strict";
 const DfiObject = require("local-dfi-base/src/dfiObject");
-const eventNames_1 = require("../asterisk/eventNames");
+const AST_EVENT = require("../asterisk/eventNames");
 class EventDispatcher extends DfiObject {
     constructor(server) {
         super({ loggerName: "dfi:as:" });
@@ -19,7 +19,7 @@ class EventDispatcher extends DfiObject {
         }, this);
     }
     dispatch(event) {
-        if (event.Event === eventNames_1.AST_EVENT.ORIGINATE_RESPONSE) {
+        if (event.Event === AST_EVENT.ORIGINATE_RESPONSE) {
             this.getProp("server").actions.originate.handleOriginateEvent(event);
         }
         if (this.getProp("subscriptions").has(event.Event)) {

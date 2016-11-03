@@ -4,10 +4,10 @@ const Agents = require("../collections/AgentsCollection");
 const Agent = require("../models/AgentModel");
 const QueueManager = require("./QueueManager");
 const AstUtil = require("../internal/astUtil");
-const actionNames_1 = require("../internal/asterisk/actionNames");
-const eventNames_1 = require("../internal/asterisk/eventNames");
 const AgentState = require("../states/agentState");
 const AgentStates = require("../enums/agentStates");
+const AST_ACTION = require("../internal/asterisk/actionNames");
+const AST_EVENT = require("../internal/asterisk/eventNames");
 const RINGING_AGENTS = "ringingAgents";
 class AgentManager extends AsteriskManager {
     constructor(options, state) {
@@ -27,13 +27,13 @@ class AgentManager extends AsteriskManager {
             this.logger.error("unhandled event %s", event.Event);
         }
         let map = {};
-        map[eventNames_1.AST_EVENT.AGENT_CALLED] = this._handleAgentCalledEvent;
-        map[eventNames_1.AST_EVENT.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
-        map[eventNames_1.AST_EVENT.AGENT_CONNECT] = this._handleAgentConnectEvent;
-        map[eventNames_1.AST_EVENT.AGENT_DUMP] = onUnhandledEvent.bind(this);
-        map[eventNames_1.AST_EVENT.AGENT_LOGIN] = this._handleAgentLoginEvent;
-        map[eventNames_1.AST_EVENT.AGENT_LOGOFF] = this._handleAgentLogoffEvent;
-        map[eventNames_1.AST_EVENT.AGENT_RING_NO_ANSWER] = onUnhandledEvent.bind(this);
+        map[AST_EVENT.AGENT_CALLED] = this._handleAgentCalledEvent;
+        map[AST_EVENT.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
+        map[AST_EVENT.AGENT_CONNECT] = this._handleAgentConnectEvent;
+        map[AST_EVENT.AGENT_DUMP] = onUnhandledEvent.bind(this);
+        map[AST_EVENT.AGENT_LOGIN] = this._handleAgentLoginEvent;
+        map[AST_EVENT.AGENT_LOGOFF] = this._handleAgentLogoffEvent;
+        map[AST_EVENT.AGENT_RING_NO_ANSWER] = onUnhandledEvent.bind(this);
         this._mapEvents(map);
     }
     get agents() {
@@ -58,7 +58,7 @@ class AgentManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        let action = { Action: actionNames_1.AST_ACTION.AGENTS };
+        let action = { Action: AST_ACTION.AGENTS };
         this.server.sendEventGeneratingAction(action, (err, re) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -66,7 +66,7 @@ class AgentManager extends AsteriskManager {
             }
             if (typeof re !== "undefined") {
                 re.events.forEach((event) => {
-                    if (event.Event === eventNames_1.AST_EVENT.AGENTS) {
+                    if (event.Event === AST_EVENT.AGENTS) {
                         this._getOrCreateAgent(event);
                     }
                 }, this);

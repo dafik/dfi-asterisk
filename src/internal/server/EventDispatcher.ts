@@ -3,7 +3,8 @@ import AsteriskServer = require("../../asteriskServer");
 import AsteriskManager = require("./Manager");
 import AsteriskModel = require("../asteriskModel");
 import AsteriskCollection = require("../asteriskCollection");
-import {AST_EVENT} from "../asterisk/eventNames";
+import AST_EVENT = require("../asterisk/eventNames");
+
 
 class EventDispatcher extends DfiObject {
 

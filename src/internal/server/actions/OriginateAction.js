@@ -1,11 +1,11 @@
 "use strict";
 ///<reference path="../../../../node_modules/@types/node/index.d.ts"/>
 const BaseServerAction = require("./BaseAction");
-const actionNames_1 = require("../../asterisk/actionNames");
 const Channel = require("../../../models/ChannelModel");
 const AstUtil = require("../../astUtil");
 const ChannelStates = require("../../../enums/channelStates");
 const NoSuchChannel = require("../../../errors/NoSuchChannel");
+const AST_ACTION = require("../../asterisk/actionNames");
 const VARIABLE_TRACE_ID = "AJ_TRACE_ID";
 const ACTION_ID_PREFIX_ORIGINATE = "AJ_ORIGINATE_";
 class OriginateServerAction extends BaseServerAction {
@@ -238,7 +238,7 @@ class OriginateServerAction extends BaseServerAction {
         callerId = callerId || null;
         variables = variables || null;
         let originateAction = {
-            Action: actionNames_1.AST_ACTION.ORIGINATE,
+            Action: AST_ACTION.ORIGINATE,
             Application: application,
             Channel: channel,
             Data: data,
@@ -266,7 +266,7 @@ class OriginateServerAction extends BaseServerAction {
         callerId = callerId || null;
         variables = variables || null;
         let originateAction = {
-            Action: actionNames_1.AST_ACTION.ORIGINATE,
+            Action: AST_ACTION.ORIGINATE,
             Application: application,
             Channel: channel,
             Data: data,
@@ -295,7 +295,7 @@ class OriginateServerAction extends BaseServerAction {
         callerId = callerId || null;
         variables = variables || null;
         let action = {
-            Action: actionNames_1.AST_ACTION.ORIGINATE,
+            Action: AST_ACTION.ORIGINATE,
             Channel: channel,
             Context: ctx,
             Exten: exten,
@@ -324,7 +324,7 @@ class OriginateServerAction extends BaseServerAction {
         callerId = callerId || null;
         variables = variables || null;
         let action = {
-            Action: actionNames_1.AST_ACTION.ORIGINATE,
+            Action: AST_ACTION.ORIGINATE,
             Channel: channel,
             Context: ctx,
             Exten: exten,

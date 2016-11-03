@@ -1,7 +1,7 @@
 "use strict";
 const AsteriskCollection = require("../../internal/asteriskCollection");
 const Channel = require("../../models/ChannelModel");
-const eventNames_1 = require("../../internal/asterisk/eventNames");
+const AST_EVENT = require("../../internal/asterisk/eventNames");
 const SEPARATOR = "/";
 const P_PROP_CHANNELS_BY_NAME = "byName";
 const P_PROP_CHANNELS_BY_TECH = "byTech";
@@ -15,24 +15,6 @@ class Channels extends AsteriskCollection {
         this.on(AsteriskCollection.events.ADD, this._onChannelAdd, this);
         this.on(AsteriskCollection.events.REMOVE, this._onChannelRemove, this);
     }
-    get(id) {
-        return super.get(id);
-    }
-    has(element) {
-        return super.has(element);
-    }
-    clear() {
-        return super.clear();
-    }
-    forEach(fn, context) {
-        super.forEach(fn, context);
-    }
-    toArray() {
-        return super.toArray();
-    }
-    add(element) {
-        return super.add(element);
-    }
     destroy() {
         this.off(AsteriskCollection.events.ADD, this._onChannelAdd, this);
         this.off(AsteriskCollection.events.REMOVE, this._onChannelRemove, this);
@@ -42,8 +24,26 @@ class Channels extends AsteriskCollection {
         this.removeProp(P_PROP_CHANNELS_BY_TECH);
         super.destroy();
     }
+    has(element) {
+        return super.has(element);
+    }
+    get(id) {
+        return super.get(id);
+    }
+    add(element) {
+        return super.add(element);
+    }
+    clear() {
+        return super.clear();
+    }
+    forEach(fn, thisArg) {
+        super.forEach(fn, thisArg);
+    }
+    toArray() {
+        return super.toArray();
+    }
     _onChannelAdd(channel) {
-        if (channel.sourceEvent === eventNames_1.AST_EVENT.DAHDI_SHOW_CHANNELS) {
+        if (channel.sourceEvent === AST_EVENT.DAHDI_SHOW_CHANNELS) {
             return;
         }
         let name = channel.name;

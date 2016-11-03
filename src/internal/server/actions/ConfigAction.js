@@ -1,16 +1,16 @@
 "use strict";
 const BaseServerAction = require("./BaseAction");
-const actionNames_1 = require("../../asterisk/actionNames");
 const AstUtil = require("../../astUtil");
 const ManagerError = require("../../../errors/ManagerError");
 const ConfigFile = require("../ConfigFile");
+const AST_ACTION = require("../../asterisk/actionNames");
 class ConfigServerAction extends BaseServerAction {
     getConfig(filename, callbackFn, context) {
         // TODO check OCB
         this._server.start()
             .then(() => {
             let action = {
-                Action: actionNames_1.AST_ACTION.GET_CONFIG,
+                Action: AST_ACTION.GET_CONFIG,
                 Filename: filename
             };
             this._server.sendAction(action, onResponse);

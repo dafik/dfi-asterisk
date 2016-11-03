@@ -1,15 +1,15 @@
 "use strict";
 const BaseServerAction = require("./BaseAction");
-const actionNames_1 = require("../../asterisk/actionNames");
 const AstUtil = require("../../astUtil");
 const DialplanContext = require("../../../models/dialplans/DialplanContextModel");
 const DialplanExtension = require("../../../models/dialplans/DialplanExtensionModel");
 const DialplanPriority = require("../../../models/dialplans/DialplanPriorityModel");
+const AST_ACTION = require("../../asterisk/actionNames");
 class DialPlanServerAction extends BaseServerAction {
     getDialplans(callbackFn, context) {
         this._server.start()
             .then(() => {
-            let action = { Action: actionNames_1.AST_ACTION.SHOW_DIALPLAN };
+            let action = { Action: AST_ACTION.SHOW_DIALPLAN };
             this._server.sendEventGeneratingAction(action, (err, response) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -29,7 +29,7 @@ class DialPlanServerAction extends BaseServerAction {
     getDialplan(name, callbackFn, context) {
         this._server.start()
             .then(() => {
-            let action = { Action: actionNames_1.AST_ACTION.SHOW_DIALPLAN, Context: name };
+            let action = { Action: AST_ACTION.SHOW_DIALPLAN, Context: name };
             this._server.sendEventGeneratingAction(action, (err, response) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);

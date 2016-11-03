@@ -2,9 +2,9 @@
 const AsteriskManager = require("../internal/server/Manager");
 const Bridges = require("../collections/BridgesCollection");
 const Bridge = require("../models/BridgeModel");
-const actionNames_1 = require("../internal/asterisk/actionNames");
-const eventNames_1 = require("../internal/asterisk/eventNames");
 const AstUtil = require("../internal/astUtil");
+const AST_EVENT = require("../internal/asterisk/eventNames");
+const AST_ACTION = require("../internal/asterisk/actionNames");
 const PROP_LOCAL_MAP = "localMap";
 const PROP_CHANNEL_MANAGER = "channelManager";
 class BridgeManager extends AsteriskManager {
@@ -18,13 +18,13 @@ class BridgeManager extends AsteriskManager {
             return;
         }
         let map = {};
-        map[eventNames_1.AST_EVENT.BRIDGE_CREATE] = this._handleBridgeCreateEvent;
-        map[eventNames_1.AST_EVENT.BRIDGE_DESTROY] = this._handleBridgeDestroyEvent;
-        map[eventNames_1.AST_EVENT.BRIDGE_ENTER] = this._handleBridgeEnterEvent;
-        map[eventNames_1.AST_EVENT.BRIDGE_LEAVE] = this._handleBridgeLeaveEvent;
-        map[eventNames_1.AST_EVENT.BRIDGE_MERGE] = this._handleBridgeMergeEvent;
-        map[eventNames_1.AST_EVENT.HANGUP] = this._handleHangupEvent; // maybe listen to event ?
-        map[eventNames_1.AST_EVENT.LOCAL_BRIDGE] = this._handleLocalBridgeEvent;
+        map[AST_EVENT.BRIDGE_CREATE] = this._handleBridgeCreateEvent;
+        map[AST_EVENT.BRIDGE_DESTROY] = this._handleBridgeDestroyEvent;
+        map[AST_EVENT.BRIDGE_ENTER] = this._handleBridgeEnterEvent;
+        map[AST_EVENT.BRIDGE_LEAVE] = this._handleBridgeLeaveEvent;
+        map[AST_EVENT.BRIDGE_MERGE] = this._handleBridgeMergeEvent;
+        map[AST_EVENT.HANGUP] = this._handleHangupEvent; // maybe listen to event ?
+        map[AST_EVENT.LOCAL_BRIDGE] = this._handleLocalBridgeEvent;
         this._mapEvents(map);
     }
     get bridges() {
@@ -58,14 +58,14 @@ class BridgeManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        this.server.sendEventGeneratingAction({ Action: actionNames_1.AST_ACTION.BRIDGE_LIST }, (err, re) => {
+        this.server.sendEventGeneratingAction({ Action: AST_ACTION.BRIDGE_LIST }, (err, re) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
                 return;
             }
             if (typeof re !== "undefined") {
                 re.events.forEach((event) => {
-                    if (event.Event === eventNames_1.AST_EVENT.BRIDGE_LIST_ITEM) {
+                    if (event.Event === AST_EVENT.BRIDGE_LIST_ITEM) {
                         let bridge = new Bridge(event);
                         this._addBridge(bridge);
                     }

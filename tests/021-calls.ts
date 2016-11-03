@@ -6,10 +6,10 @@ import EndpointManger = require("local-dfi-linphone-endpoint-manager/src/endpoin
 import manager = require("local-dfi-linphone-endpoint-manager");
 
 import {IDfiAsOriginateCallback, IDfiCallbackResult} from "../src/definitions/interfaces";
-import {AST_ACTION} from "../src/internal/asterisk/actionNames";
 import {IAstActionDialplanExtensionAdd, IAstActionDialplanExtensionRemove, IAstActionOriginate} from "../src/internal/asterisk/actions";
 
 import DebugLogger = require("local-dfi-debug-logger/debugLogger");
+import AST_ACTION = require("../src/internal/asterisk/actionNames");
 
 let endpointManger = manager.getInstance(asterisk);
 

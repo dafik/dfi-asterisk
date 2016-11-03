@@ -1,8 +1,6 @@
 import {IDfiAstEventsChannelManager} from "../definitions/events";
 import {IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../definitions/interfaces";
-import {AST_ACTION} from "../internal/asterisk/actionNames";
 import {IAstActionCommand} from "../internal/asterisk/actions";
-import {AST_EVENT} from "../internal/asterisk/eventNames";
 import {
     IAstEventCdr,
     IAstEventCoreShowChannel,
@@ -39,6 +37,8 @@ import ChannelStates = require("../enums/channelStates");
 
 import moment = require("moment");
 import Moment = moment.Moment;
+import AST_EVENT = require("../internal/asterisk/eventNames");
+import AST_ACTION = require("../internal/asterisk/actionNames");
 
 const REMOVAL_THRESHOLD = 5; // 15 minutes in seconds
 const VARIABLE_TRACE_ID = "AJ_TRACE_ID";

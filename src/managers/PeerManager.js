@@ -2,13 +2,13 @@
 const AsteriskManager = require("../internal/server/Manager");
 const Peers = require("../collections/PeersCollection");
 const Peer = require("../models/peers/PeerModel");
-const actionNames_1 = require("../internal/asterisk/actionNames");
-const eventNames_1 = require("../internal/asterisk/eventNames");
 const AstUtil = require("../internal/astUtil");
 const IAXPeer = require("../models/peers/IAXPeerModel");
 const PJSIPPeer = require("../models/peers/PJSIPPeerModel");
 const SIPPeer = require("../models/peers/SIPPeerModel");
 const Ip = require("../models/IpAddressModel");
+const AST_EVENT = require("../internal/asterisk/eventNames");
+const AST_ACTION = require("../internal/asterisk/actionNames");
 /**
  * Manages all events related to peers on Asterisk server. For correct work
  * ensure enabled PeerCalledEvents. You have to set
@@ -22,7 +22,7 @@ class PeerManager extends AsteriskManager {
             return;
         }
         let map = {};
-        map[eventNames_1.AST_EVENT.PEER_STATUS] = this._handlePeerStatusEvent;
+        map[AST_EVENT.PEER_STATUS] = this._handlePeerStatusEvent;
         this._mapEvents(map);
     }
     get peers() {
@@ -49,11 +49,11 @@ class PeerManager extends AsteriskManager {
             if (typeof response !== "undefined") {
                 response.events.forEach((event) => {
                     let peer;
-                    if (event.Event === eventNames_1.AST_EVENT.ENDPOINT_LIST) {
+                    if (event.Event === AST_EVENT.ENDPOINT_LIST) {
                         let peer = new PJSIPPeer(event);
                         this.logger.debug("Adding peer %j (%s)", peer.id, peer.state.name);
                     }
-                    else if (event.Event === eventNames_1.AST_EVENT.PEER_ENTRY) {
+                    else if (event.Event === AST_EVENT.PEER_ENTRY) {
                         if (event.Channeltype === "SIP") {
                             peer = new SIPPeer(event);
                         }
@@ -76,17 +76,17 @@ class PeerManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        let action1 = { Action: actionNames_1.AST_ACTION.IAX_PEERLIST };
+        let action1 = { Action: AST_ACTION.IAX_PEERLIST };
         if (this.server.allowedActions.has(action1.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action1, handlePeers, this);
         }
-        let action2 = { Action: actionNames_1.AST_ACTION.SIP_PEERS };
+        let action2 = { Action: AST_ACTION.SIP_PEERS };
         if (this.server.allowedActions.has(action2.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action2, handlePeers, this);
         }
-        let action3 = { Action: actionNames_1.AST_ACTION.PJSIP_SHOW_ENDPOINTS };
+        let action3 = { Action: AST_ACTION.PJSIP_SHOW_ENDPOINTS };
         if (this.server.allowedActions.has(action3.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action3, handlePeers, this);

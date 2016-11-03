@@ -1,6 +1,6 @@
 import BaseServerAction = require("./BaseAction");
 import {IDfiGetDialplanCallback, IDfiGetDialplansCallback} from "../../../definitions/interfaces";
-import {AST_ACTION} from "../../asterisk/actionNames";
+
 import {IAstActionShowDialPlan} from "../../asterisk/actions";
 import {IAstEventListDialplan} from "../../asterisk/events";
 
@@ -8,6 +8,7 @@ import AstUtil = require("../../astUtil");
 import DialplanContext = require("../../../models/dialplans/DialplanContextModel");
 import DialplanExtension = require("../../../models/dialplans/DialplanExtensionModel");
 import DialplanPriority = require("../../../models/dialplans/DialplanPriorityModel");
+import AST_ACTION = require("../../asterisk/actionNames");
 
 class DialPlanServerAction extends BaseServerAction {
 

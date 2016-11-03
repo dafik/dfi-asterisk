@@ -2,6 +2,7 @@ import AsteriskCollection = require("../../internal/asteriskCollection");
 import Dahdi = require("../../models/DahdiModel");
 
 class DAHDIChannels extends AsteriskCollection<Dahdi> {
+
     constructor() {
 
         super({
@@ -13,7 +14,7 @@ class DAHDIChannels extends AsteriskCollection<Dahdi> {
         return super.get(id);
     }
 
-    public add(element: Dahdi): Map<any, Dahdi> {
+    public add(element: Dahdi): this {
         return super.add(element);
     }
 

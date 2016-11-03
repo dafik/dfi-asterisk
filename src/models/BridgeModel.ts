@@ -1,8 +1,8 @@
 import AsteriskModel = require("../internal/asteriskModel");
 import {IDfiAstModelAttribsBridge, IDfiAstModelOptions} from "../definitions/models";
-import {AST_EVENT} from "../internal/asterisk/eventNames";
 import Channel = require("./ChannelModel");
 import BridgeChannels = require("../collections/channels/BridgeChannelsCollection");
+import AST_EVENT = require("../internal/asterisk/eventNames");
 
 const PROP_UNIQUE_ID = "uniqueid";
 const PROP_TYPE = "type";

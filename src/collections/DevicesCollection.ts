@@ -12,12 +12,12 @@ class Devices extends AsteriskCollection<Device> {
         return super.get(id);
     }
 
-    public clear(): this {
-        return super.clear();
+    public add(element: Device): this {
+        return super.add(element);
     }
 
-    public add(element: Device): Map<any, Device> {
-        return super.add(element);
+    public clear(): this {
+        return super.clear();
     }
 }
 export = Devices;

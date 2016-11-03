@@ -2,13 +2,18 @@ import AsteriskCollection = require("../internal/asteriskCollection");
 import Queue = require("../models/queues/QueueModel");
 
 class Queues extends AsteriskCollection<Queue> {
+
     constructor() {
         super({
             model: Queue
         });
     }
 
-    public add(element: Queue): Map<any, Queue> {
+    public get(id: any): Queue {
+        return super.get(id);
+    }
+
+    public add(element: Queue): this {
         return super.add(element);
     }
 
@@ -16,16 +21,12 @@ class Queues extends AsteriskCollection<Queue> {
         return super.remove(element);
     }
 
-    public get(id: any): Queue {
-        return super.get(id);
-    }
-
     public clear(): this {
         return super.clear();
     }
 
-    public forEach(fn: (value: Queue, index: any, map: Map<any, Queue>) => void, context?: any): void {
-        super.forEach(fn, context);
+    public forEach(fn: (value: Queue, index: string, map: Map<string, Queue>)=>void, thisArg?: any): void {
+        super.forEach(fn, thisArg);
     }
 
     public toArray(): Array<Queue> {

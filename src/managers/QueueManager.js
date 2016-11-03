@@ -1,12 +1,12 @@
 "use strict";
 const AsteriskManager = require("../internal/server/Manager");
 const Queues = require("../collections/QueuesCollection");
-const actionNames_1 = require("../internal/asterisk/actionNames");
-const eventNames_1 = require("../internal/asterisk/eventNames");
 const Queue = require("../models/queues/QueueModel");
 const QueueMember = require("../models/queues/QueueMemberModel");
 const QueueMemberState = require("../states/queueMemberState");
 const AstUtil = require("../internal/astUtil");
+const AST_EVENT = require("../internal/asterisk/eventNames");
+const AST_ACTION = require("../internal/asterisk/actionNames");
 const PROP_CHANNEL_MANAGER = "channelManager";
 /**
  * Manages queue events on behalf of an AsteriskServer.
@@ -21,16 +21,16 @@ class QueueManager extends AsteriskManager {
             return;
         }
         let map = {};
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_ADDED] = this._handleMemberAddedEvent;
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_PENALTY] = this._handleMemberPenaltyEvent;
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_REMOVED] = this._handleMemberRemovedEvent;
-        map[eventNames_1.AST_EVENT.QUEUE_MEMBER_STATUS] = this._handleMemberStatusEvent;
+        map[AST_EVENT.QUEUE_MEMBER_ADDED] = this._handleMemberAddedEvent;
+        map[AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
+        map[AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
+        map[AST_EVENT.QUEUE_MEMBER_PENALTY] = this._handleMemberPenaltyEvent;
+        map[AST_EVENT.QUEUE_MEMBER_REMOVED] = this._handleMemberRemovedEvent;
+        map[AST_EVENT.QUEUE_MEMBER_STATUS] = this._handleMemberStatusEvent;
         if (this._managers.channel.enabled) {
-            map[eventNames_1.AST_EVENT.QUEUE_CALLER_ABANDON] = this._handleAbandonEvent;
-            map[eventNames_1.AST_EVENT.QUEUE_CALLER_JOIN] = this._handleCallerJoinEvent;
-            map[eventNames_1.AST_EVENT.QUEUE_CALLER_LEAVE] = this._handleLeaveEvent;
+            map[AST_EVENT.QUEUE_CALLER_ABANDON] = this._handleAbandonEvent;
+            map[AST_EVENT.QUEUE_CALLER_JOIN] = this._handleCallerJoinEvent;
+            map[AST_EVENT.QUEUE_CALLER_LEAVE] = this._handleLeaveEvent;
         }
         this._mapEvents(map);
     }
@@ -94,20 +94,20 @@ class QueueManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        let action = { Action: actionNames_1.AST_ACTION.QUEUE_STATUS };
+        let action = { Action: AST_ACTION.QUEUE_STATUS };
         this.server.sendEventGeneratingAction(action, (err, response) => {
             if (err) {
                 callback.call(thisp, err);
                 return;
             }
             response.events.forEach((event) => {
-                if (event.Event === eventNames_1.AST_EVENT.QUEUE_PARAMS) {
+                if (event.Event === AST_EVENT.QUEUE_PARAMS) {
                     handleQueueParamsEvent.call(this, event);
                 }
-                else if (event.Event === eventNames_1.AST_EVENT.QUEUE_MEMBER) {
+                else if (event.Event === AST_EVENT.QUEUE_MEMBER) {
                     handleQueueMemberEvent.call(this, event);
                 }
-                else if (event.Event === eventNames_1.AST_EVENT.QUEUE_ENTRY) {
+                else if (event.Event === AST_EVENT.QUEUE_ENTRY) {
                     handleQueueEntryEvent.call(this, event);
                 }
             }, this);
