@@ -182,7 +182,8 @@ QueueMember.map = new Map([
     ["LastCall", PROP_LAST_CALL],
     ["InCall", PROP_IN_CALL],
     // ["Status", "status"],
-    ["state", PROP_STATE]["Paused", PROP_PAUSED],
+    ["state", PROP_STATE],
+    ["Paused", PROP_PAUSED],
     ["PausedReason", PROP_PAUSED_REASON],
     ["ringInUse", PROP_RING_IN_USE]
 ]);
