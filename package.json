@@ -15,7 +15,7 @@
     "local-dfi-base": "*",
     "local-dfi-debug-logger": "^0.1.5",
     "lodash": "^4.13.1",
-    "moment": "*",
+    "moment": "^2.16.0",
     "@types/asterisk-ami-client": "^0.0.2",
     "@types/async": "^2.0.32",
     "@types/moment": "^2.13.0"

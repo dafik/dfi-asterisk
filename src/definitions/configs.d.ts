@@ -1,10 +1,11 @@
 import {IDfiBaseObjectConfig} from "local-dfi-base/src/dfiInterfaces";
 import AsteriskServer = require("../asteriskServer");
 import ServerManagers = require("../internal/server/Managers");
+import AsteriskModel = require("../internal/asteriskModel");
 
-export interface IDfiAstConfigCollection extends IDfiBaseObjectConfig {
+export interface IDfiAstConfigCollection<M extends AsteriskModel> extends IDfiBaseObjectConfig {
     idField?: string;
-    model: Function;
+    model?: new (...args: any[]) => M;
 }
 
 export interface IDfiAstConfigServerOptions extends IDfiBaseObjectConfig {

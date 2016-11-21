@@ -6,7 +6,7 @@ const ID_FIELD = "id";
 const COLLECTION = "collection";
 
 abstract class AsteriskCollection<M extends AsteriskModel> extends DfiCollection<string, M> {
-    constructor(opts: IDfiAstConfigCollection) {
+    constructor(opts: IDfiAstConfigCollection<M>) {
         opts.loggerName = "dfi:as:";
         opts.idField = opts.idField || ID_FIELD;
 
