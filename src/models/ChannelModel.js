@@ -61,6 +61,8 @@ const P_PROP_HANGUP_REQUEST_METHOD = "hangupRequestMethod";
  */
 class Channel extends AsteriskModel {
     constructor(attributes, options) {
+        options = options || {};
+        options.idAttribute = ID;
         attributes.callerId = new CallerId(attributes.CallerIDName, attributes.CallerIDNum);
         attributes.state = ChannelState.byValue(parseInt(attributes.ChannelState, 10));
         attributes.connectedCallerId = new CallerId(attributes.ConnectedLineName, attributes.ConnectedLineNum);
