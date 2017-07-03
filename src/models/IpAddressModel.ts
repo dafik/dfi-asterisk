@@ -15,7 +15,7 @@ class IpAddress extends DfiModel {
 
     constructor(attributes: IDfiAstModelAttribsIpAddress, options?) {
         super(attributes, options);
-        let ipReg = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
+        const ipReg = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
 
         if (!attributes.mask.match(ipReg)) {
             this.logger.error("error");

@@ -28,6 +28,6 @@ class ServiceLevelTimerTask extends DfiObject {
 
     private run() {
         (this.getProp(PROP_QUEUE) as Queue).fireServiceLevelExceeded(this.getProp(PROP_ENTRY));
-    };
+    }
 }
 export = ServiceLevelTimerTask;

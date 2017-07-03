@@ -10,23 +10,19 @@ class ConfigFile {
     getFilename() {
         return this._filename;
     }
-    ;
     getCategories() {
         return this._categories.keys();
     }
-    ;
     getValue(category, key) {
         if (this._categories.has(category)) {
             return this._categories.get(category).get(key);
         }
     }
-    ;
     getValues(category) {
         if (this._categories.has(category)) {
             return this._categories.get(category);
         }
     }
-    ;
 }
 module.exports = ConfigFile;
 //# sourceMappingURL=ConfigFile.js.map

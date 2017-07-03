@@ -8,7 +8,7 @@ import AST_ACTION = require("../../asterisk/actionNames");
 
 class DTMFServerAction extends BaseServerAction {
 
-    public send(channel: Channel|string | string, digit, callbackFn?: IDfiCallbackResult, context?) {
+    public send(channel: Channel | string | string, digit, callbackFn?: IDfiCallbackResult, context?) {
 
         this._server.start()
             .then(() => {
@@ -16,7 +16,7 @@ class DTMFServerAction extends BaseServerAction {
                     channel = channel.name;
                 }
 
-                let action: IAstActionPlayDTMF = {
+                const action: IAstActionPlayDTMF = {
                     Action: AST_ACTION.PLAY_DTMF,
                     Channel: channel as string,
                     Digit: digit,
@@ -27,16 +27,11 @@ class DTMFServerAction extends BaseServerAction {
                         AstUtil.maybeCallback(callbackFn, context, err);
                         return;
                     }
-                    let dbgre;
-                    if (response.events.length > 0) {
-                        dbgre = response.events[0];
-                    } else {
-                        dbgre = response;
-                    }
+                    const dbgre = response.events.length > 0 ? response.events[0] : response;
                     AstUtil.maybeCallback(callbackFn, context, null, dbgre);
                 }, context);
             })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);

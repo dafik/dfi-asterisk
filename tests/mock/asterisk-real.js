@@ -1,6 +1,6 @@
 "use strict";
 const getServerInstance = require("../../src/asteriskServerInstance");
-let asterisk = getServerInstance({
+const asterisk = getServerInstance({
     config: {
         managers: {
             agent: false,

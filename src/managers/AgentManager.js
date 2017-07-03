@@ -15,7 +15,7 @@ class AgentManager extends AsteriskManager {
         this.setProp(RINGING_AGENTS, new Map());
         this.server.once(this.serverEvents.BEFORE_INIT, () => {
             if (this.server.managers.queue.enabled) {
-                let queueManager = this.server.managers.queue;
+                const queueManager = this.server.managers.queue;
                 queueManager.on(QueueManager.events.MEMBER_ADD, this._handleQueueAddMember, this);
                 queueManager.on(QueueManager.events.MEMBER_REMOVE, this._handleQueueRemoveMember, this);
             }
@@ -26,7 +26,7 @@ class AgentManager extends AsteriskManager {
         function onUnhandledEvent(event) {
             this.logger.error("unhandled event %s", event.Event);
         }
-        let map = {};
+        const map = {};
         map[AST_EVENT.AGENT_CALLED] = this._handleAgentCalledEvent;
         map[AST_EVENT.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
         map[AST_EVENT.AGENT_CONNECT] = this._handleAgentConnectEvent;
@@ -58,7 +58,7 @@ class AgentManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        let action = { Action: AST_ACTION.AGENTS };
+        const action = { Action: AST_ACTION.AGENTS };
         this.server.sendEventGeneratingAction(action, (err, re) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -81,16 +81,10 @@ class AgentManager extends AsteriskManager {
      * Return or create (dynamic) the requested agent.
      */
     _getOrCreateAgent(event) {
-        let name;
-        if (event.Agent) {
-            name = event.Agent;
-        }
-        else {
-            name = event.Interface;
-        }
+        const name = (event.Agent) ? event.Agent : event.Interface;
         let agent = this.agents.get(name);
         if (!agent) {
-            let options = {
+            const options = {
                 Device: this.server.managers.device.devices.get(name),
                 Event: "agentManager:_getOrCreateAgent",
                 Name: name,
@@ -107,7 +101,7 @@ class AgentManager extends AsteriskManager {
      */
     _handleAgentCalledEvent(event) {
         this.logger.debug("handle  AgentCalled agent %j", event.Interface);
-        let agent = this._getOrCreateAgent(event);
+        const agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentCalledEvent for unknown agent %j", event.Interface);
             return;
@@ -120,7 +114,7 @@ class AgentManager extends AsteriskManager {
      */
     _handleAgentConnectEvent(event) {
         this.logger.debug("handle  AgentConnect agent %j", event.Interface);
-        let agent = this._getOrCreateAgent(event);
+        const agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentConnectEvent for unknown agent %j", event.Interface, event.Channel);
             return;
@@ -132,7 +126,7 @@ class AgentManager extends AsteriskManager {
      */
     _handleAgentLoginEvent(event) {
         this.logger.debug("handle  AgentLogin agent %j", event.Agent);
-        let agent = this._getOrCreateAgent(event);
+        const agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentLoginEvent for unknown agent %s ", event.Agent);
             return;
@@ -144,7 +138,7 @@ class AgentManager extends AsteriskManager {
      */
     _handleAgentLogoffEvent(event) {
         this.logger.debug("handle  AgentLogoff agent %j", event.Agent);
-        let agent = this._getOrCreateAgent(event);
+        const agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentLogoffEvent for unknown agent %s ", event.Agent);
             return;
@@ -153,7 +147,7 @@ class AgentManager extends AsteriskManager {
     }
     _handleAgentCompleteEvent(event) {
         this.logger.debug("handle  AgentComplete agent %j", event.Interface);
-        let agent = this._getOrCreateAgent(event);
+        const agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentCompleteEvent for unknown agent %j. Agents: %j", event.Interface);
             return;
@@ -165,7 +159,7 @@ class AgentManager extends AsteriskManager {
         this.logger.debug("handle  QueueAddMember agent %j", member.id);
         let agent = this.agents.get(member.id);
         if (!agent) {
-            let options = {
+            const options = {
                 Device: this.server.managers.device.devices.get(member.id),
                 Event: "agentManager:_handleQueueAddMember",
                 Name: member.id,
@@ -180,7 +174,7 @@ class AgentManager extends AsteriskManager {
     }
     _handleQueueRemoveMember(member, queue) {
         this.logger.debug("handle  QueueRemoveMember agent %j", member.id);
-        let agent = this.agents.get(member.id);
+        const agent = this.agents.get(member.id);
         if (!agent) {
             return;
         }

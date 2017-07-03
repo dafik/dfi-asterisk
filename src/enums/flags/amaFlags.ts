@@ -1,7 +1,7 @@
 enum AmaFlags  {
-    BILLING = <any> "billing",
-    DOCUMENTATION = <any> "documentation",
-    OMIT = <any> "omit",
-    UNKNOWN = <any> "unknown"
+    BILLING = "billing" as any,
+    DOCUMENTATION = "documentation" as any,
+    OMIT = "omit" as any,
+    UNKNOWN = "unknown" as any
 }
 export = AmaFlags;

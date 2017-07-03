@@ -7,12 +7,12 @@ class PeersServerAction extends BaseServerAction {
     getEntries(callbackFn, context) {
         this._server.start()
             .then(() => {
-            let action = { Action: AST_ACTION.SIP_PEERS };
+            const action = { Action: AST_ACTION.SIP_PEERS };
             this._server.sendEventGeneratingAction(action, (err, response) => {
                 if (err) {
                     AstUtil.maybeCallback(callbackFn, context, err);
                 }
-                let peerEntries = [];
+                const peerEntries = [];
                 response.events.forEach((event) => {
                     if (event.Event === AST_EVENT.PEER_ENTRY) {
                         peerEntries.push(event);
@@ -21,7 +21,7 @@ class PeersServerAction extends BaseServerAction {
                 AstUtil.maybeCallback(callbackFn, context, null, peerEntries);
             });
         })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);

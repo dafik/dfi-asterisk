@@ -123,7 +123,7 @@ class Queue extends AsteriskModel {
      * @param [source]
      */
     public createNewEntry(channel, reportedPosition: number, dateReceived: number, source?: string): void {
-        let attribs: IDfiAstModelAttribsQueueEntry = {
+        const attribs: IDfiAstModelAttribsQueueEntry = {
             Event: source ? source : "QueueModel:createNewEntry",
             ReportedPosition: reportedPosition,
             channel,
@@ -131,12 +131,12 @@ class Queue extends AsteriskModel {
             queue: this
         };
 
-        let qe = new QueueEntry(attribs);
+        const qe = new QueueEntry(attribs);
 
-        let delay = this.serviceLevel * 1000;
+        const delay = this.serviceLevel * 1000;
         if (delay > 0) {
 
-            let timerTask = new ServiceLevelTimerTask(this, qe);
+            const timerTask = new ServiceLevelTimerTask(this, qe);
             timerTask.schedule(delay);
             this._serviceLevelTimerTasks.set(qe, timerTask);
         }
@@ -163,14 +163,14 @@ class Queue extends AsteriskModel {
     public removeEntry(entry: QueueEntry, dateReceived: number) {
 
         if (this._serviceLevelTimerTasks.has(entry)) {
-            let timerTask = this._serviceLevelTimerTasks.get(entry);
+            const timerTask = this._serviceLevelTimerTasks.get(entry);
             timerTask.cancel();
             this._serviceLevelTimerTasks.delete(entry);
         }
 
-        let index = this._entries.indexOf(entry);
+        const index = this._entries.indexOf(entry);
         if (-1 !== index) {
-            let changed = this._entries.splice(index, 1);
+            const changed = this._entries.splice(index, 1);
 
             if (changed) {
                 // Keep the lock !
@@ -184,8 +184,8 @@ class Queue extends AsteriskModel {
         }
     }
 
-    public getEntry(channelNameOrPosition: string|number): QueueEntry {
-        let tmp = parseInt(channelNameOrPosition as string, 10);
+    public getEntry(channelNameOrPosition: string | number): QueueEntry {
+        const tmp = parseInt(channelNameOrPosition as string, 10);
         if (tmp === channelNameOrPosition) {
             return this._getEntryByPosition(channelNameOrPosition as number);
         } else {
@@ -287,7 +287,7 @@ class Queue extends AsteriskModel {
         position--;
         let foundEntry = null;
 
-        this._entries.forEach(entry => {
+        this._entries.forEach((entry) => {
             if (entry.position === position) {
                 foundEntry = entry;
             }
@@ -313,17 +313,16 @@ class Queue extends AsteriskModel {
     }
 }
 
-const EVENTS = Object.assign(
-    Object.assign({}, AsteriskModel.events),
-    {
-        ENTRY_ADD: Symbol("entry:add"),
-        ENTRY_LEAVE: Symbol("entry:leave"),
+const EVENTS = {
+    ...AsteriskModel.events,
 
-        MEMBER_ADD: Symbol("member:add"),
-        MEMBER_LEAVE: Symbol("member:leave"),
+    ENTRY_ADD: Symbol("entry:add"),
+    ENTRY_LEAVE: Symbol("entry:leave"),
 
-        SERVICE_LEVEL_EXCEEDED: Symbol("entry:ServiceLevelExceeded")
-    }
-);
+    MEMBER_ADD: Symbol("member:add"),
+    MEMBER_LEAVE: Symbol("member:leave"),
+
+    SERVICE_LEVEL_EXCEEDED: Symbol("entry:ServiceLevelExceeded")
+};
 
 export = Queue;

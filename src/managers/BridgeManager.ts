@@ -35,7 +35,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
             return;
         }
 
-        let map = {};
+        const map = {};
         map[AST_EVENT.BRIDGE_CREATE] = this._handleBridgeCreateEvent;
         map[AST_EVENT.BRIDGE_DESTROY] = this._handleBridgeDestroyEvent;
         map[AST_EVENT.BRIDGE_ENTER] = this._handleBridgeEnterEvent;
@@ -96,7 +96,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
             if (typeof re !== "undefined") {
                 re.events.forEach((event) => {
                     if (event.Event === AST_EVENT.BRIDGE_LIST_ITEM) {
-                        let bridge = new Bridge(event);
+                        const bridge = new Bridge(event);
                         this._addBridge(bridge);
                     }
                 });
@@ -111,13 +111,13 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
 
     private _handleBridgeCreateEvent(event: IAstEventBridgeCreate) {
         this.logger.info("Handle BridgeCreateEvent %s", event.BridgeUniqueid);
-        let bridge = new Bridge(event);
+        const bridge = new Bridge(event);
         this._addBridge(bridge);
     }
 
     private _handleBridgeDestroyEvent(event: IAstEventBridgeDestroy) {
         this.logger.info("Handle BridgeDestroyEvent %s", event.BridgeUniqueid);
-        let bridge = this.bridges.get(event.BridgeUniqueid);
+        const bridge = this.bridges.get(event.BridgeUniqueid);
         if (bridge == null) {
             this.logger.error('Ignored BridgeEnterEvent for unknown bridge "' + event.BridgeUniqueid);
             return;
@@ -128,13 +128,13 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
 
     private _handleBridgeEnterEvent(event: IAstEventBridgeEnter) {
         this.logger.info("Handle BridgeEnterEvent %s", event.BridgeUniqueid);
-        let bridge = this.getBridgeByBridgeId(event.BridgeUniqueid);
+        const bridge = this.getBridgeByBridgeId(event.BridgeUniqueid);
         if (bridge == null) {
             this.logger.error('Ignored BridgeEnterEvent for unknown bridge "' + event.BridgeUniqueid);
             return;
         }
         if (this.server.managers.channel.enabled) {
-            let channel = this._channelManager.getChannelById(event.Uniqueid);
+            const channel = this._channelManager.getChannelById(event.Uniqueid);
             if (channel == null) {
                 this.logger.error('Ignored BridgeEnterEvent for unknown channel "' + event.Channel);
                 return;
@@ -146,13 +146,13 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
 
     private _handleBridgeLeaveEvent(event: IAstEventBridgeLeave) {
         this.logger.info("Handle BridgeLeaveEvent %s", event.BridgeUniqueid);
-        let bridge = this.getBridgeByBridgeId(event.BridgeUniqueid);
+        const bridge = this.getBridgeByBridgeId(event.BridgeUniqueid);
         if (bridge == null) {
             this.logger.error('Ignored BridgeLeaveEvent for unknown bridge "' + event.BridgeUniqueid);
             return;
         }
         if (this.server.managers.channel.enabled) {
-            let channel = this._channelManager.getChannelById(event.Uniqueid);
+            const channel = this._channelManager.getChannelById(event.Uniqueid);
             if (channel == null) {
                 this.logger.error('Ignored BridgeLeaveEvent for unknown channel "' + event.Channel);
                 return;
@@ -172,7 +172,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
     }
 
     private _handleLocalBridgeEvent(event: IAstEventLocalBridge) {
-        let id = event.LocalOneUniqueid + "-" + event.LocalTwoUniqueid;
+        const id = event.LocalOneUniqueid + "-" + event.LocalTwoUniqueid;
         this.logger.info("Handle LocalBridgeEvent %s, %s->%s", id, event.LocalOneChannel, event.LocalTwoChannel);
 
         if (this.bridges.has(id)) {
@@ -193,13 +193,13 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
 
         };
 
-        attrs = Object.assign(attrs, event);
-        let bridge = new Bridge(attrs);
+        attrs = {...attrs, ...event};
+        const bridge = new Bridge(attrs);
         this._addLocalBridge(bridge);
 
         if (this.server.managers.channel.enabled) {
-            let channel1 = this._channelManager.getChannelById(event.LocalOneUniqueid);
-            let channel2 = this._channelManager.getChannelById(event.LocalTwoUniqueid);
+            const channel1 = this._channelManager.getChannelById(event.LocalOneUniqueid);
+            const channel2 = this._channelManager.getChannelById(event.LocalTwoUniqueid);
 
             this.logger.info('enter: "' + bridge.id + '" channel: "' + channel1.name + '"');
             bridge.addChannel(channel1);
@@ -218,10 +218,10 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
     private _handleHangupEvent(event: IAstEventHangup) {
         this.logger.info("Handle HangupEvent %s", event.Channel);
 
-        let localMap = this.localMap;
+        const localMap = this.localMap;
 
         if (localMap.has(event.Uniqueid)) {
-            let bridge = localMap.get(event.Uniqueid);
+            const bridge = localMap.get(event.Uniqueid);
             if (bridge.localOneUniqueId === event.Uniqueid) {
                 bridge.isHangupFirst = true;
             } else if (bridge.localTwoUniqueId === event.Uniqueid) {
@@ -278,7 +278,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
     private _addLocalBridge(bridge: Bridge) {
         this.logger.info('adding local bridge: "' + bridge.id + '"');
 
-        let localMap = this.localMap;
+        const localMap = this.localMap;
 
         localMap.set(bridge.localOneUniqueId, bridge);
         localMap.set(bridge.localTwoUniqueId, bridge);

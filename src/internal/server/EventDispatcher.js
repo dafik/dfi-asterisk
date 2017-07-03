@@ -24,7 +24,7 @@ class EventDispatcher extends DfiObject {
         }
         if (this.getProp("subscriptions").has(event.Event)) {
             this.logger.debug("event %s", event.Event);
-            let sub = this.getProp("subscriptions").get(event.Event);
+            const sub = this.getProp("subscriptions").get(event.Event);
             sub.forEach((manager) => {
                 manager.handleEvent(event);
             });

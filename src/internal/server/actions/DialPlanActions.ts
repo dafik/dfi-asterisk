@@ -16,18 +16,18 @@ class DialPlanServerAction extends BaseServerAction {
 
         this._server.start()
             .then(() => {
-                let action: IAstActionShowDialPlan = {Action: AST_ACTION.SHOW_DIALPLAN};
+                const action: IAstActionShowDialPlan = {Action: AST_ACTION.SHOW_DIALPLAN};
                 this._server.sendEventGeneratingAction<IAstEventListDialplan>(action, (err, response) => {
                     if (err) {
                         AstUtil.maybeCallbackOnce(callbackFn, context, err);
                         return;
                     }
 
-                    let dialplans = this._buildDialplans(response.events);
+                    const dialplans = this._buildDialplans(response.events);
                     AstUtil.maybeCallbackOnce(callbackFn, context, null, dialplans);
                 });
             })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -39,18 +39,18 @@ class DialPlanServerAction extends BaseServerAction {
 
         this._server.start()
             .then(() => {
-                let action: IAstActionShowDialPlan = {Action: AST_ACTION.SHOW_DIALPLAN, Context: name};
+                const action: IAstActionShowDialPlan = {Action: AST_ACTION.SHOW_DIALPLAN, Context: name};
                 this._server.sendEventGeneratingAction<IAstEventListDialplan>(action, (err, response) => {
                     if (err) {
                         AstUtil.maybeCallbackOnce(callbackFn, context, err);
                         return;
                     }
 
-                    let dialplan = this._buildDialplans(response.events).get(name);
+                    const dialplan = this._buildDialplans(response.events).get(name);
                     AstUtil.maybeCallbackOnce(callbackFn, context, null, dialplan);
                 });
             })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -59,7 +59,7 @@ class DialPlanServerAction extends BaseServerAction {
     }
 
     private _buildDialplans(events: IAstEventListDialplan[]): Map<string, DialplanContext> {
-        let dialplans: Map<string, DialplanContext> = new Map();
+        const dialplans: Map<string, DialplanContext> = new Map();
 
         events.forEach((event: IAstEventListDialplan) => {
             let context: DialplanContext = dialplans.get(event.Context);

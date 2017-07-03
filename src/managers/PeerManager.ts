@@ -28,7 +28,7 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
             return;
         }
 
-        let map = {};
+        const map = {};
         map[AST_EVENT.PEER_STATUS] = this._handlePeerStatusEvent;
         this._mapEvents(map);
 
@@ -53,18 +53,18 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
             }
         }
 
-        let handlePeers: IDfiAMIMultiCallback<IAstEventPeerEntry|IAstEventEndpointList> = (err, response) => {
+        const handlePeers: IDfiAMIMultiCallback<IAstEventPeerEntry | IAstEventEndpointList> = (err, response) => {
             if (err && err.message !== "No endpoints found") {
                 AstUtil.maybeCallback(callbackFn, context, err);
                 return;
             }
             if (typeof response !== "undefined") {
-                response.events.forEach((event: IAstEventEndpointList|IAstEventPeerEntry) => {
+                response.events.forEach((event: IAstEventEndpointList | IAstEventPeerEntry) => {
 
-                    let peer: SIPPeer|IAXPeer|PJSIPPeer;
+                    let peer: SIPPeer | IAXPeer | PJSIPPeer;
 
                     if (event.Event === AST_EVENT.ENDPOINT_LIST) {
-                        let peer = new PJSIPPeer(event as IAstEventEndpointList);
+                        peer = new PJSIPPeer(event as IAstEventEndpointList);
                         this.logger.debug("Adding peer %j (%s)", peer.id, peer.state.name);
 
                     } else if (event.Event === AST_EVENT.PEER_ENTRY) {
@@ -91,17 +91,17 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
             finish.call(this);
             return;
         }
-        let action1: IAstActionIAXpeerlist = {Action: AST_ACTION.IAX_PEERLIST};
+        const action1: IAstActionIAXpeerlist = {Action: AST_ACTION.IAX_PEERLIST};
         if (this.server.allowedActions.has(action1.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action1, handlePeers, this);
         }
-        let action2: IAstActionSIPpeers = {Action: AST_ACTION.SIP_PEERS};
+        const action2: IAstActionSIPpeers = {Action: AST_ACTION.SIP_PEERS};
         if (this.server.allowedActions.has(action2.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action2, handlePeers, this);
         }
-        let action3: IAstActionPJSIPShowEndpoints = {Action: AST_ACTION.PJSIP_SHOW_ENDPOINTS};
+        const action3: IAstActionPJSIPShowEndpoints = {Action: AST_ACTION.PJSIP_SHOW_ENDPOINTS};
         if (this.server.allowedActions.has(action3.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action3, handlePeers, this);
@@ -120,17 +120,17 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
     private _handlePeerStatusEvent(event: IAstEventPeerStatus) {
         this.logger.debug("handle  PeerStatusEvent peer: %j,(%s),%j", event.Peer, event.PeerStatus, event.Address);
 
-        let peer = this.peers.get(event.Peer);
+        const peer = this.peers.get(event.Peer);
         if (!peer) {
             this.logger.error('discarding peerstatus: peer not found: %s "', event.Peer);
         } else {
             let port = "0";
             let address = null;
-            let mask = "255.255.255.255";
+            const mask = "255.255.255.255";
 
             if (peer.technology === Peer.PEER_TECH.SIP) {
                 if (event.Address) {
-                    let parts = event.Address.split(":");
+                    const parts = event.Address.split(":");
                     address = parts[0];
                     port = parts[1];
                 } else {
@@ -141,7 +141,7 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
             } else if (peer.technology === Peer.PEER_TECH.PJSIP) {
                 this.logger.error("error");
             }
-            let ip = new Ip({
+            const ip = new Ip({
                 ipAddress: address,
                 mask,
                 port: parseInt(port, 10)
@@ -153,7 +153,7 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
 
     private _addPeer(peer: Peer) {
         if (this.server.managers.device.enabled) {
-            let device = this.server.managers.device.devices.get(peer.id);
+            const device = this.server.managers.device.devices.get(peer.id);
             if (device) {
                 peer.device = device;
             }

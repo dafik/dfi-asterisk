@@ -17,12 +17,9 @@ class QueueEntry extends AsteriskModel {
         attributes.state = QueueEntryState.byValue(QueueEntryStates.JOINED);
         attributes.id = attributes.channel.id;
         attributes.abandoned = false;
-        if (attributes.ReportedPosition) {
-            attributes.ReportedPosition = parseInt(attributes.ReportedPosition, 10);
-        }
-        else {
-            attributes.ReportedPosition = POSITION_UNDETERMINED;
-        }
+        attributes.ReportedPosition = attributes.ReportedPosition ?
+            parseInt(attributes.ReportedPosition, 10) :
+            attributes.ReportedPosition;
         super(attributes, options);
     }
     /**

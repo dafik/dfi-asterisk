@@ -8,7 +8,6 @@ class PeerStateHistoryEntry extends AsteriskHistoryEntry {
     get state() {
         return this.entry;
     }
-    ;
     get stateDesc() {
         return this.entry.name;
     }
@@ -19,7 +18,6 @@ class PeerStateHistoryEntry extends AsteriskHistoryEntry {
         sb += "state=" + this.state.toString() + "]";
         return sb;
     }
-    ;
     toJSON() {
         return this.stateDesc;
     }

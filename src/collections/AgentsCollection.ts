@@ -15,7 +15,7 @@ class Agents extends AsteriskCollection<Agent> {
         return super.add(element);
     }
 
-    public keys(): Array<any> {
+    public keys(): any[] {
         return super.keys();
     }
 
@@ -23,7 +23,7 @@ class Agents extends AsteriskCollection<Agent> {
         return super.clear();
     }
 
-    public toArray(): Array<Agent> {
+    public toArray(): Agent[] {
         return super.toArray();
     }
 }

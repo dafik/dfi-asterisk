@@ -10,7 +10,7 @@ class DTMFServerAction extends BaseServerAction {
             if (channel instanceof Channel) {
                 channel = channel.name;
             }
-            let action = {
+            const action = {
                 Action: AST_ACTION.PLAY_DTMF,
                 Channel: channel,
                 Digit: digit,
@@ -21,17 +21,11 @@ class DTMFServerAction extends BaseServerAction {
                     AstUtil.maybeCallback(callbackFn, context, err);
                     return;
                 }
-                let dbgre;
-                if (response.events.length > 0) {
-                    dbgre = response.events[0];
-                }
-                else {
-                    dbgre = response;
-                }
+                const dbgre = response.events.length > 0 ? response.events[0] : response;
                 AstUtil.maybeCallback(callbackFn, context, null, dbgre);
             }, context);
         })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);

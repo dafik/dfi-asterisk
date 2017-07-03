@@ -17,7 +17,7 @@ class Queues extends AsteriskCollection<Queue> {
         return super.add(element);
     }
 
-    public remove(element: any|Queue): boolean {
+    public remove(element: any | Queue): boolean {
         return super.remove(element);
     }
 
@@ -25,11 +25,11 @@ class Queues extends AsteriskCollection<Queue> {
         return super.clear();
     }
 
-    public forEach(fn: (value: Queue, index: string, map: Map<string, Queue>)=>void, thisArg?: any): void {
+    public forEach(fn: (value: Queue, index: string, map: Map<string, Queue>) => void, thisArg?: any): void {
         super.forEach(fn, thisArg);
     }
 
-    public toArray(): Array<Queue> {
+    public toArray(): Queue[] {
         return super.toArray();
     }
 }

@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const asterisk = require("./mock/asterisk-real");
 const AsteriskVersion = require("../src/internal/server/Version");
@@ -9,7 +10,7 @@ describe("Core actions", () => {
             .then(() => {
             done();
         })
-            .catch(err => {
+            .catch((err) => {
             if (err) {
                 assert.ok(false, err.message);
             }

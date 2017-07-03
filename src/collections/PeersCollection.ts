@@ -28,7 +28,7 @@ class Peers extends AsteriskCollection<Peer> {
         return super.clear();
     }
 
-    public forEach(fn: (value: Peer, index: string, map: Map<string, Peer>)=>void, thisArg?: any): void {
+    public forEach(fn: (value: Peer, index: string, map: Map<string, Peer>) => void, thisArg?: any): void {
         super.forEach(fn, thisArg);
     }
 
@@ -45,7 +45,7 @@ class Peers extends AsteriskCollection<Peer> {
     }
 
     private _onPeerAdd<T extends Peer>(peer: Peer) {
-        let technology = peer.technology;
+        const technology = peer.technology;
 
         if (!this.getProp(P_PROP_PEERS_BY_TECH).has(technology)) {
             this.getProp(P_PROP_PEERS_BY_TECH).set(technology, new Map());
@@ -54,9 +54,9 @@ class Peers extends AsteriskCollection<Peer> {
     }
 
     private _onPeerRemove<T extends Peer>(peer: T) {
-        let technology = peer.technology;
+        const technology = peer.technology;
 
-        delete this.getProp(P_PROP_PEERS_BY_TECH).get(technology).delete(peer.objectName);
+        this.getProp(P_PROP_PEERS_BY_TECH).get(technology).delete(peer.objectName);
         if (this.getProp(P_PROP_PEERS_BY_TECH).get(technology).size === 0) {
             this.getProp(P_PROP_PEERS_BY_TECH).delete(technology);
         }

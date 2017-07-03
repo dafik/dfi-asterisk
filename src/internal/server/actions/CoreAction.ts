@@ -1,5 +1,5 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiAMIResponse, IDfiAMIResponseCommand, IDfiActionCallback, IDfiCallbackError, IDfiGetAsteriskVersionCallback, IDfiGetFileVersionCallback} from "../../../definitions/interfaces";
+import {IDfiActionCallback, IDfiAMIResponse, IDfiAMIResponseCommand, IDfiCallbackError, IDfiGetAsteriskVersionCallback, IDfiGetFileVersionCallback} from "../../../definitions/interfaces";
 
 import {IAstActionCommand, IAstActionFilter} from "../../asterisk/actions";
 import AsteriskVersion = require("../Version");
@@ -18,7 +18,7 @@ class CoreServerAction extends BaseServerAction {
     public getAvailableActions(callbackFn: IDfiCallbackError, context?) {
 
         this._server.logger.debug("on getAvailableActions");
-        let action: IAstActionCommand = {
+        const action: IAstActionCommand = {
             Action: AST_ACTION.COMMAND,
             Command: "manager show commands"
         };
@@ -28,8 +28,8 @@ class CoreServerAction extends BaseServerAction {
                 callbackFn.call(context, err);
                 return;
             }
-            let found = []; //
-            let lines = response.$content.split("\n");
+            const found = []; //
+            const lines = response.$content.split("\n");
             lines.forEach(onEachResponseLine);
 
             function onEachResponseLine(line, index) {
@@ -38,7 +38,7 @@ class CoreServerAction extends BaseServerAction {
                 }
             }
 
-            found.forEach(value => this._server.allowedActions.add(value));
+            found.forEach((value) => this._server.allowedActions.add(value));
 
             callbackFn.call(context, null);
         }, this);
@@ -46,7 +46,7 @@ class CoreServerAction extends BaseServerAction {
 
     public filterRTCP(callbackFn: IDfiActionCallback<IDfiAMIResponse>, context?) {
         this._server.logger.debug("on onAvailableActions");
-        let action: IAstActionFilter = {
+        const action: IAstActionFilter = {
             Action: AST_ACTION.FILTER,
             Filter: "!Event: RTCP",
             Operation: "Add"
@@ -66,7 +66,7 @@ class CoreServerAction extends BaseServerAction {
             return;
         }
 
-        let action: IAstActionCommand = {
+        const action: IAstActionCommand = {
             Action: AST_ACTION.COMMAND,
             Command: SHOW_VERSION_COMMAND
         };
@@ -92,10 +92,10 @@ class CoreServerAction extends BaseServerAction {
                 return null;
             }
 
-            let parts = fileVersion.split(".");
-            let intParts = [];
+            const parts = fileVersion.split(".");
+            const intParts = [];
 
-            parts.forEach(part => {
+            parts.forEach((part) => {
                 intParts.push(parseInt(part, 10));
             });
 
@@ -108,7 +108,7 @@ class CoreServerAction extends BaseServerAction {
         }
         this._server.start()
             .then(() => {
-                    let action: IAstActionCommand = {
+                    const action: IAstActionCommand = {
                         Action: AST_ACTION.COMMAND,
                         Command: SHOW_VERSION_FILES_COMMAND
                     };
@@ -120,13 +120,13 @@ class CoreServerAction extends BaseServerAction {
                             return;
                         }
                         if (response.$content) {
-                            let map = new Map();
-                            let result = response.$content.split("\n");
+                            const map = new Map();
+                            const result = response.$content.split("\n");
                             result.shift();
                             result.shift();
 
-                            result.forEach(line => {
-                                let matcher = SHOW_VERSION_FILES_PATTERN.exec(line);
+                            result.forEach((line) => {
+                                const matcher = SHOW_VERSION_FILES_PATTERN.exec(line);
                                 if (matcher && matcher.length > 2) {
                                     map.set(matcher[1], matcher[2]);
                                 }
@@ -137,8 +137,8 @@ class CoreServerAction extends BaseServerAction {
                     }, this);
                 }
             )
-            .catch(error => error)
-            .then(err => {
+            .catch((error) => error)
+            .then((err) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
                 }
@@ -149,13 +149,13 @@ class CoreServerAction extends BaseServerAction {
         this._server.start()
             .then(
                 () => {
-                    let action: IAstActionCommand = {
+                    const action: IAstActionCommand = {
                         Action: AST_ACTION.COMMAND,
                         Command: command
                     };
                     this._server.sendAction(action, (err, response: IDfiAMIResponseCommand) => {
                         if (err) {
-                            let error = new ManagerError("Response to CommandAction(\"" + command + "\") was not a CommandResponse but " + response.Message, response);
+                            const error = new ManagerError("Response to CommandAction(\"" + command + "\") was not a CommandResponse but " + response.Message, response);
                             AstUtil.maybeCallbackOnce(callbackFn, context, error);
                         } else {
                             AstUtil.maybeCallbackOnce(callbackFn, context, null, response);

@@ -28,13 +28,8 @@ class Peer extends AsteriskModel {
         attributes.id = attributes.technology + "/" + attributes.ObjectName;
         attributes.Dynamic = AstUtil.isTrue(attributes.Dynamic) ? true : false;
         if (attributes.Status) {
-            let status = attributes.Status;
-            if (status.match(/OK \(.*\)/)) {
-                attributes.state = PeerState.byValue(2);
-            }
-            else {
-                attributes.state = PeerState.byName(status);
-            }
+            const status = attributes.Status;
+            attributes.state = status.match(/OK \(.*\)/) ? PeerState.byValue(2) : PeerState.byName(status);
         }
         else {
             attributes.state = PeerState.byValue(0);
@@ -108,7 +103,7 @@ class Peer extends AsteriskModel {
         return [...this.getProp(P_PROP_QUEUES).values()].sort();
     }
     removeOldHistory() {
-        let stateHistories = this.stateHistory;
+        const stateHistories = this.stateHistory;
         let entry;
         for (let i = stateHistories.length - 1; i >= 0; i -= 1) {
             entry = stateHistories[i];
@@ -121,10 +116,10 @@ class Peer extends AsteriskModel {
         return EVENTS;
     }
     _stateChanged(date, state) {
-        let stateHistory = this.stateHistory;
-        let oldState = this.state;
-        let historyEntry = new PeerStateHistoryEntry(date, state);
-        let last = stateHistory.length > 0 ? stateHistory[stateHistory.length - 1] : undefined;
+        const stateHistory = this.stateHistory;
+        const oldState = this.state;
+        const historyEntry = new PeerStateHistoryEntry(date, state);
+        const last = stateHistory.length > 0 ? stateHistory[stateHistory.length - 1] : undefined;
         if (last && last.state.status === state.status) {
             stateHistory.pop();
         }
@@ -136,11 +131,11 @@ class Peer extends AsteriskModel {
         this.emit(Peer.events.PROPERTY_STATE, this, { new: state, old: oldState });
     }
     _addressChanged(date, address) {
-        let oldAddress = this.ip;
+        const oldAddress = this.ip;
         if (oldAddress && oldAddress.equal(address)) {
             return;
         }
-        let historyEntry = new PeerAddressHistoryEntry(date, address);
+        const historyEntry = new PeerAddressHistoryEntry(date, address);
         this.addressHistory.push(historyEntry);
         this.set(PROP_IP, address);
         this.emit(Peer.events.PROPERTY_ADDRESS, this, { new: address, old: oldAddress });
@@ -155,9 +150,6 @@ Peer.map = new Map([
     ["ChanObjectType", PROP_CHAN_OBJECT_TYPE],
     ["Dynamic", PROP_DYNAMIC]
 ]);
-const EVENTS = Object.assign(Object.assign({}, AsteriskModel.events), {
-    PROPERTY_ADDRESS: Symbol("peer" + PROP_IP),
-    PROPERTY_STATE: Symbol("peer" + PROP_STATE)
-});
+const EVENTS = Object.assign({}, AsteriskModel.events, { PROPERTY_ADDRESS: Symbol("peer" + PROP_IP), PROPERTY_STATE: Symbol("peer" + PROP_STATE) });
 module.exports = Peer;
 //# sourceMappingURL=PeerModel.js.map

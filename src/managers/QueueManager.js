@@ -20,7 +20,7 @@ class QueueManager extends AsteriskManager {
         if (!this.enabled) {
             return;
         }
-        let map = {};
+        const map = {};
         map[AST_EVENT.QUEUE_MEMBER_ADDED] = this._handleMemberAddedEvent;
         map[AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
         map[AST_EVENT.QUEUE_MEMBER_PAUSE] = this._handleMemberPauseEvent;
@@ -51,12 +51,12 @@ class QueueManager extends AsteriskManager {
             }
         }
         function handleQueueParamsEvent(event) {
-            let queue = new Queue(event);
+            const queue = new Queue(event);
             this.logger.debug("Adding new queue: %s", queue.id);
             this.queues.add(queue);
         }
         function handleQueueMemberEvent(event) {
-            let queue = this.queues.get(event.Queue);
+            const queue = this.queues.get(event.Queue);
             if (queue == null) {
                 this.logger.error("Ignored QueueEntryEvent for unknown queue " + event.Queue);
                 return;
@@ -67,7 +67,7 @@ class QueueManager extends AsteriskManager {
             }
             queue.addMember(member);
             if (this.server.managers.peer.enabled) {
-                let peer = this.server.managers.peer.peers.get(member.interface);
+                const peer = this.server.managers.peer.peers.get(member.interface);
                 if (peer) {
                     peer.addQueue(queue.id);
                 }
@@ -75,8 +75,8 @@ class QueueManager extends AsteriskManager {
             this.emit(QueueManager.events.MEMBER_ADD, member, queue);
         }
         function handleQueueEntryEvent(event) {
-            let queue = this.getQueueByName(event.Queue);
-            let channel = this._channelManager.getChannelByName(event.Channel);
+            const queue = this.getQueueByName(event.Queue);
+            const channel = this._channelManager.getChannelByName(event.Channel);
             if (queue == null) {
                 this.logger.error("Ignored QueueEntryEvent for unknown queue " + event.Queue);
                 return;
@@ -100,7 +100,7 @@ class QueueManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        let action = { Action: AST_ACTION.QUEUE_STATUS };
+        const action = { Action: AST_ACTION.QUEUE_STATUS };
         this.server.sendEventGeneratingAction(action, (err, response) => {
             if (err) {
                 callback.call(thisp, err);
@@ -134,7 +134,7 @@ class QueueManager extends AsteriskManager {
         return this.queues.toArray();
     }
     getQueueByName(queueName) {
-        let queue = this.queues.get(queueName);
+        const queue = this.queues.get(queueName);
         if (queue == null) {
             this.logger.error("Requested queue '" + queueName + "' not found!");
         }
@@ -146,8 +146,8 @@ class QueueManager extends AsteriskManager {
      */
     _handleCallerJoinEvent(event) {
         this.logger.debug("handle Join queue: %s, pos: %s, %j", event.Queue, event.Position, event.Channel);
-        let queue = this.getQueueByName(event.Queue);
-        let channel = this._channelManager.getChannelByName(event.Channel);
+        const queue = this.getQueueByName(event.Queue);
+        const channel = this._channelManager.getChannelByName(event.Channel);
         if (queue == null) {
             this.logger.error("Ignored JoinEvent for unknown queue " + event.Queue);
             return;
@@ -173,8 +173,8 @@ class QueueManager extends AsteriskManager {
      */
     _handleLeaveEvent(event) {
         this.logger.debug("handle Leave queue: %s, pos: %s, %j", event.Queue, event.Position, event.Channel);
-        let queue = this.getQueueByName(event.Queue);
-        let channel = this._channelManager.getChannelByName(event.Channel);
+        const queue = this.getQueueByName(event.Queue);
+        const channel = this._channelManager.getChannelByName(event.Channel);
         if (queue == null) {
             this.logger.error("Ignored LeaveEvent for unknown queue " + event.Queue);
             return;
@@ -183,7 +183,7 @@ class QueueManager extends AsteriskManager {
             this.logger.error("Ignored LeaveEvent for unknown channel " + event.Channel);
             return;
         }
-        let existingQueueEntry = queue.getEntry(event.Channel);
+        const existingQueueEntry = queue.getEntry(event.Channel);
         if (existingQueueEntry == null) {
             this.logger.error("Ignored leave event for non existing queue entry in queue " + event.Queue + " for channel " + event.Channel);
             return;
@@ -196,8 +196,8 @@ class QueueManager extends AsteriskManager {
      */
     _handleAbandonEvent(event) {
         this.logger.debug("handle Abandon queue: %s, pos: %s, %j", event.Queue, event.Position, event.Channel);
-        let queue = this.getQueueByName(event.Queue);
-        let channel = this._channelManager.getChannelByName(event.Channel);
+        const queue = this.getQueueByName(event.Queue);
+        const channel = this._channelManager.getChannelByName(event.Channel);
         if (queue == null) {
             this.logger.error("Ignored AbandonEvent for unknown queue " + event.Queue);
             return;
@@ -206,7 +206,7 @@ class QueueManager extends AsteriskManager {
             this.logger.error("Ignored AbandonEvent for unknown channel " + event.Channel);
             return;
         }
-        let existingQueueEntry = queue.getEntry(event.Channel);
+        const existingQueueEntry = queue.getEntry(event.Channel);
         if (existingQueueEntry == null) {
             this.logger.error("Ignored Abandon event for non existing queue entry in queue " + event.Queue + " for channel " + event.Channel);
             return;
@@ -216,12 +216,12 @@ class QueueManager extends AsteriskManager {
     }
     _handleMemberStatusEvent(event) {
         this.logger.debug("handle QueueMemberStatus queue: %s member: %s ,(%s)", event.Queue, event.Interface, QueueMemberState.byValue(parseInt(event.Status, 10)).name);
-        let queue = this.getQueueByName(event.Queue);
+        const queue = this.getQueueByName(event.Queue);
         if (queue == null) {
             this.logger.error("Ignored QueueMemberStatusEvent for unknown queue " + event.Queue);
             return;
         }
-        let member = queue.getMember(event.Interface);
+        const member = queue.getMember(event.Interface);
         if (member == null) {
             this.logger.error("Ignored QueueMemberStatusEvent for unknown member " + event.Interface);
             return;
@@ -230,12 +230,12 @@ class QueueManager extends AsteriskManager {
     }
     _handleMemberPauseEvent(event) {
         this.logger.debug("handle QueueMemberPaused queue: %s, pause: %s ,%s", event.Queue, AstUtil.isTrue(event.Paused).toString(), event.MemberName);
-        let queue = this.getQueueByName(event.Queue);
+        const queue = this.getQueueByName(event.Queue);
         if (queue == null) {
             this.logger.error("Ignored QueueMemberPausedEvent for unknown queue " + event.Queue);
             return;
         }
-        let member = queue.getMember(event.Interface);
+        const member = queue.getMember(event.Interface);
         if (member == null) {
             this.logger.error("Ignored QueueMemberPausedEvent for unknown member " + event.Interface);
             return;
@@ -244,12 +244,12 @@ class QueueManager extends AsteriskManager {
     }
     _handleMemberPenaltyEvent(event) {
         this.logger.debug("handle QueueMemberPenalty queue: %s, pen: %s ,%s", event.Queue, event.Penalty, event.MemberName);
-        let queue = this.getQueueByName(event.Queue);
+        const queue = this.getQueueByName(event.Queue);
         if (queue == null) {
             this.logger.error("Ignored QueueMemberStatusEvent for unknown queue " + event.Queue);
             return;
         }
-        let member = queue.getMember(event.Interface);
+        const member = queue.getMember(event.Interface);
         if (member == null) {
             this.logger.error("Ignored QueueMemberStatusEvent for unknown member " + event.Interface);
             return;
@@ -258,7 +258,7 @@ class QueueManager extends AsteriskManager {
     }
     _handleMemberAddedEvent(event) {
         this.logger.debug("handle QueueMemberAdded queue: %s, %s (%s)", event.Queue, event.Interface, QueueMemberState.byValue(parseInt(event.Status, 10)).name);
-        let queue = this.queues.get(event.Queue);
+        const queue = this.queues.get(event.Queue);
         if (queue == null) {
             this.logger.error("Ignored QueueMemberAddedEvent for unknown queue " + event.Queue);
             return;
@@ -269,7 +269,7 @@ class QueueManager extends AsteriskManager {
         }
         queue.addMember(member);
         if (this.server.managers.peer.enabled) {
-            let peer = this.server.managers.peer.peers.get(member.interface);
+            const peer = this.server.managers.peer.peers.get(member.interface);
             if (peer) {
                 peer.addQueue(queue.id);
             }
@@ -278,12 +278,12 @@ class QueueManager extends AsteriskManager {
     }
     _handleMemberRemovedEvent(event) {
         this.logger.debug("handle queueMemberRemoved queue: %s, %s", event.Queue, event.Interface);
-        let queue = this.queues.get(event.Queue);
+        const queue = this.queues.get(event.Queue);
         if (queue == null) {
             this.logger.error("Ignored QueueMemberRemovedEvent for unknown queue " + event.Queue);
             return;
         }
-        let member = queue.getMember(event.Interface);
+        const member = queue.getMember(event.Interface);
         if (member == null) {
             this.logger.error("Ignored QueueMemberRemovedEvent for unknown agent name: " + event.MemberName +
                 " interface: " + event.Interface + " queue: " + event.Queue);
@@ -291,7 +291,7 @@ class QueueManager extends AsteriskManager {
         }
         queue.removeMember(member);
         if (this.server.managers.peer.enabled) {
-            let peer = this.server.managers.peer.peers.get(member.interface);
+            const peer = this.server.managers.peer.peers.get(member.interface);
             if (peer) {
                 peer.removeQueue(queue.id);
             }
@@ -299,9 +299,6 @@ class QueueManager extends AsteriskManager {
         this.emit(QueueManager.events.MEMBER_REMOVE, member, queue);
     }
 }
-const EVENTS = Object.assign(Object.assign({}, AsteriskManager.events), {
-    MEMBER_ADD: Symbol("member:add"),
-    MEMBER_REMOVE: Symbol("member:remove")
-});
+const EVENTS = Object.assign({}, AsteriskManager.events, { MEMBER_ADD: Symbol("member:add"), MEMBER_REMOVE: Symbol("member:remove") });
 module.exports = QueueManager;
 //# sourceMappingURL=QueueManager.js.map

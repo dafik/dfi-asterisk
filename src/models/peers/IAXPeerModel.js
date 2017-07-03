@@ -12,16 +12,11 @@ const PROP_TRUNK = "trunk";
 const PROP_ENCRYPTION = "encryption";
 class IAXPeer extends Peer {
     constructor(attributes, options) {
-        let attr = Object.assign(attributes, {
-            Encryption: AstUtil.isTrue(attributes.Encryption) ? true : false,
-            Trunk: AstUtil.isTrue(attributes.Trunk) ? true : false,
-            ip: new Ip({
+        const attr = Object.assign({}, attributes, { Encryption: AstUtil.isTrue(attributes.Encryption) ? true : false, Trunk: AstUtil.isTrue(attributes.Trunk) ? true : false, ip: new Ip({
                 ipAddress: attributes.IPaddress,
                 mask: attributes.Mask,
                 port: parseInt(attributes.Port, 10)
-            }),
-            technology: "IAX2"
-        });
+            }), technology: "IAX2" });
         super(attr, options);
     }
 }

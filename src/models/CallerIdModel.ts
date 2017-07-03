@@ -11,7 +11,7 @@ class CallerId extends DfiObject {
      * <code>"Some Name" &lt;1234&gt;</code> to a AsteriskCallerId object.
      */
     public static valueOf(s: string): CallerId {
-        let parsedCallerId = AstUtil.parseCallerId(s);
+        const parsedCallerId = AstUtil.parseCallerId(s);
         return new CallerId(parsedCallerId[0], parsedCallerId[1]);
     }
 

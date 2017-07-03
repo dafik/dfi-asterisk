@@ -10,7 +10,7 @@ describe("Core actions", () => {
             .then(() => {
                 done();
             })
-            .catch(err => {
+            .catch((err) => {
                 if (err) {
                     assert.ok(false, err.message);
                 }

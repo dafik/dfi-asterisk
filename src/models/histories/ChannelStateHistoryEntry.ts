@@ -13,7 +13,7 @@ class ChannelStateHistoryEntry extends AsteriskHistoryEntry {
      */
     get state() {
         return this.entry;
-    };
+    }
 
     get stateDesc() {
         return this.state.name;
@@ -29,7 +29,7 @@ class ChannelStateHistoryEntry extends AsteriskHistoryEntry {
         sb += "date=" + this.date.toString() + ",";
         sb += "state=" + this.state.toString() + "]";
         return sb;
-    };
+    }
 
     public toJSON() {
         return this.stateDesc;

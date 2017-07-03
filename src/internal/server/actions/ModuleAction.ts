@@ -11,7 +11,7 @@ class ModuleServerAction extends BaseServerAction {
     public isModuleLoaded(module: string, callbackFn: IDfiCallbackResult, context?) {
         this._server.start()
             .then(() => {
-                let action: IAstActionModuleCheck = {
+                const action: IAstActionModuleCheck = {
                     Action: AST_ACTION.MODULE_CHECK,
                     Module: module
                 };
@@ -19,7 +19,7 @@ class ModuleServerAction extends BaseServerAction {
                     let loaded = true;
                     if (err) {
                         loaded = false;
-                        if (err.response !== "Module not loaded") {
+                        if (err.message !== "Module not loaded") {
                             AstUtil.maybeCallback(callbackFn, context, err);
                             return;
                         }
@@ -27,7 +27,7 @@ class ModuleServerAction extends BaseServerAction {
                     AstUtil.maybeCallback(callbackFn, context, null, loaded);
                 });
             })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -55,7 +55,7 @@ class ModuleServerAction extends BaseServerAction {
 
         this._server.start()
             .then(() => {
-                let action: IAstActionModuleLoad = {
+                const action: IAstActionModuleLoad = {
                     Action: AST_ACTION.MODULE_LOAD,
                     LoadType: loadType,
                     Module: module
@@ -66,7 +66,7 @@ class ModuleServerAction extends BaseServerAction {
                     }
                 });
             })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -76,13 +76,12 @@ class ModuleServerAction extends BaseServerAction {
     }
 }
 
-const MODULE_LOAD_TYPES = Object.assign(
-    Object.create(null),
-    {
-        LOAD_TYPE_LOAD: "load",
-        LOAD_TYPE_RELOAD: "reload",
-        LOAD_TYPE_UNLOAD: "unload"
-    }
-);
+const MODULE_LOAD_TYPES = {
+    ...Object.create(null),
+
+    LOAD_TYPE_LOAD: "load",
+    LOAD_TYPE_RELOAD: "reload",
+    LOAD_TYPE_UNLOAD: "unload"
+};
 
 export = ModuleServerAction;

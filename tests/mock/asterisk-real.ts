@@ -1,7 +1,7 @@
 import getServerInstance = require("../../src/asteriskServerInstance");
 import AsteriskServer = require("../../src/asteriskServer");
 
-let asterisk: AsteriskServer = getServerInstance({
+const asterisk: AsteriskServer = getServerInstance({
     config: {
         managers: {
             agent: false,
@@ -11,7 +11,6 @@ let asterisk: AsteriskServer = getServerInstance({
             device: true,
             peer: true,
             queue: false
-
 
         },
         server: {

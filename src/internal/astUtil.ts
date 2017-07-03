@@ -1,6 +1,6 @@
+import * as _ from "lodash";
 import {IDfiCallbackResult} from "../definitions/interfaces";
 import {IAstAction} from "./asterisk/actions";
-import * as _ from "lodash";
 import DebugLogger = require("local-dfi-debug-logger/debugLogger");
 
 const TRUE_LITERALS = [
@@ -44,15 +44,10 @@ class AstUtil {
             return o;
         }
 
-        let s;
-        if (_.isString(o)) {
-            s = o.toString();
-        } else {
-            s = o.toString();
-        }
+        const s = _.isString(o) ? o.toString() : o.toString();
         return -1 !== TRUE_LITERALS.indexOf(s.toLowerCase());
 
-    };
+    }
 
     /**
      * Parses a string for caller id information.
@@ -64,7 +59,7 @@ class AstUtil {
      * @returns string[] a String[] with name (index 0) and number (index 1)
      */
     public static  parseCallerId(s: string): string[] {
-        let result: string[] = [];
+        const result: string[] = [];
         let lbPosition: number;
         let rbPosition: number;
         let name: string;
@@ -110,7 +105,7 @@ class AstUtil {
      */
 
     public static isNull(s) {
-        if (s === "" || s == null || typeof s == null || typeof s === "undefined") {
+        if (s === "" || s === null || typeof s === "undefined") {
             return true;
         }
 
@@ -119,10 +114,10 @@ class AstUtil {
         }
 
         return -1 !== NULL_LITERALS.indexOf(s.toLowerCase());
-    };
+    }
 
     public static duration2sec(duration: string): number {
-        let parts: string[] = duration.split(":");
+        const parts: string[] = duration.split(":");
         switch (parts.length) {
             case 1:
                 return parseInt(parts[0], 10);
@@ -165,7 +160,7 @@ class AstUtil {
             message.ActionID = "AN_" + AstUtil.uniqueActionID();
         }
 
-        let rawStr = Object.keys(message).reduce((result, currentKey) => {
+        const rawStr = Object.keys(message).reduce((result, currentKey) => {
             if (currentKey !== "serialize") {
                 if (Array.isArray(message[currentKey])) {
                     (message[currentKey] as string[]).forEach((val) => {

@@ -11,13 +11,13 @@ import {IAstActionDialplanExtensionAdd, IAstActionDialplanExtensionRemove, IAstA
 import DebugLogger = require("local-dfi-debug-logger/debugLogger");
 import AST_ACTION = require("../src/internal/asterisk/actionNames");
 
-let endpointManger = manager.getInstance(asterisk);
+const endpointManger = manager.getInstance(asterisk);
 
 let answerTimeout = 0;
 let endCallTimeout = 0;
-let eventTimeout = 30000;
+const eventTimeout = 30000;
 
-let logger = new DebugLogger("test:calls");
+const logger = new DebugLogger("test:calls");
 
 function getTimeout(name, done) {
     return setTimeout(() => {
@@ -73,10 +73,10 @@ describe("calls", () => {
                         }
 
                         function createDialplan(technology) {
-                            let ctx1 = "testSource";
-                            let ctx2 = "testDestination";
-                            let add = AST_ACTION.DIALPLAN_EXTENSION_ADD;
-                            let del = AST_ACTION.DIALPLAN_EXTENSION_REMOVE;
+                            const ctx1 = "testSource";
+                            const ctx2 = "testDestination";
+                            const add = AST_ACTION.DIALPLAN_EXTENSION_ADD;
+                            const del = AST_ACTION.DIALPLAN_EXTENSION_REMOVE;
 
                             asterisk.actions.dialplan.getDialplan(ctx1, (err, dialplan) => {
                                 if (err && !err.message.match(/Did not find context/)) {
@@ -85,11 +85,11 @@ describe("calls", () => {
                                 }
 
                                 let priorities;
-                                let toDelete: IAstActionDialplanExtensionRemove[] = [];
+                                const toDelete: IAstActionDialplanExtensionRemove[] = [];
                                 if (dialplan) {
-                                    dialplan.extensions.forEach(extension => {
+                                    dialplan.extensions.forEach((extension) => {
                                         priorities = extension.priorities;
-                                        [...priorities.keys()].sort().reverse().forEach(key => {
+                                        [...priorities.keys()].sort().reverse().forEach((key) => {
                                             toDelete.push({Action: del, Context: dialplan.id, Extension: extension.id, Priority: key});
                                         });
                                     });
@@ -100,7 +100,7 @@ describe("calls", () => {
                                         return;
                                     }
 
-                                    let toAdd: IAstActionDialplanExtensionAdd[] = [
+                                    const toAdd: IAstActionDialplanExtensionAdd[] = [
                                         {Action: add, Application: "Hangup", ApplicationData: "16", Context: ctx1, Extension: "h", Priority: "1", Replace: "1"},
                                         {Action: add, Application: "Noop", ApplicationData: "1,calling testsource ${EXTEN}", Context: ctx1, Extension: "_X.", Priority: "1", Replace: "1"},
                                         {Action: add, Application: "Dial", ApplicationData: technology + "/${EXTEN},30,F", Context: ctx1, Extension: "_X.", Priority: "2", Replace: "1"}
@@ -122,11 +122,11 @@ describe("calls", () => {
                                     return;
                                 }
                                 let priorities;
-                                let toDelete: IAstActionDialplanExtensionRemove[] = [];
+                                const toDelete: IAstActionDialplanExtensionRemove[] = [];
                                 if (dialplan) {
-                                    dialplan.extensions.forEach(extension => {
+                                    dialplan.extensions.forEach((extension) => {
                                         priorities = extension.priorities;
-                                        [...priorities.keys()].sort().reverse().forEach(key => {
+                                        [...priorities.keys()].sort().reverse().forEach((key) => {
                                             toDelete.push({Action: del, Context: dialplan.id, Extension: extension.id, Priority: key});
                                         });
                                     });
@@ -137,7 +137,7 @@ describe("calls", () => {
                                         return;
                                     }
 
-                                    let toAdd: IAstActionDialplanExtensionAdd[] = [
+                                    const toAdd: IAstActionDialplanExtensionAdd[] = [
                                         {Action: add, Application: "Hangup", ApplicationData: "16", Context: ctx2, Extension: "h", Priority: "1", Replace: "1"},
                                         {Action: add, Application: "Noop", ApplicationData: "1,calling testdestination ${EXTEN}", Context: ctx2, Extension: "_X.", Priority: "1", Replace: "1"},
                                         {Action: add, Application: "Dial", ApplicationData: technology + "/${EXTEN},30,F", Context: ctx2, Extension: "_X.", Priority: "2", Replace: "1"}
@@ -188,11 +188,11 @@ describe("calls", () => {
     function onSimpleCall(done) {
         // done();
         let waitEndCall = 0;
-        let linPhones = endpointManger.endpoints;
-        let keys = [...linPhones.keys()];
+        const linPhones = endpointManger.endpoints;
+        const keys = [...linPhones.keys()];
 
-        let endpoint1 = linPhones.get(keys.shift());
-        let endpoint2 = linPhones.get(keys.shift());
+        const endpoint1 = linPhones.get(keys.shift());
+        const endpoint2 = linPhones.get(keys.shift());
 
         endpoint1.on(Linphone.events.ANSWERED, () => {
             waitEndCall = waitEndCall + 2;
@@ -238,11 +238,11 @@ describe("calls", () => {
             let endpoint1EndCallTimeout;
             let endpoint2EndCallTimeout;
 
-            let linPhones = endpointManger.endpoints;
-            let keys = [...linPhones.keys()];
+            const linPhones = endpointManger.endpoints;
+            const keys = [...linPhones.keys()];
 
-            let endpoint1 = linPhones.get(keys.shift());
-            let endpoint2 = linPhones.get(keys.shift());
+            const endpoint1 = linPhones.get(keys.shift());
+            const endpoint2 = linPhones.get(keys.shift());
 
             endpoint1.on(Linphone.events.INCOMING, (line, id) => {
                 clearTimeout(endpoint1IncomingTimeout);
@@ -291,7 +291,7 @@ describe("calls", () => {
 
         function makeCall(sSip, tSip) {
 
-            let action: IAstActionOriginate = {
+            const action: IAstActionOriginate = {
                 Action: AST_ACTION.ORIGINATE,
                 Async: true.toString(),
                 Channel: "Local/" + sSip + "@testSource/n",
@@ -300,7 +300,7 @@ describe("calls", () => {
                 Priority: "1"
             };
 
-            let ocb: IDfiAsOriginateCallback = {
+            const ocb: IDfiAsOriginateCallback = {
                 onBusy: () => {
                     logger.info("onBusy");
                 },

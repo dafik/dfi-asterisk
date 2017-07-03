@@ -2,6 +2,7 @@
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 const getServerInstance = require("./src/asteriskServerInstance");
 const AsteriskServer = require("./src/asteriskServer");
 exports.AsteriskServer = AsteriskServer;

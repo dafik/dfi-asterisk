@@ -109,7 +109,7 @@ class QueueMember extends AsteriskModel {
         this.set(PROP_RING_IN_USE, AstUtil.isTrue(event.Ringinuse));
     }
     setPaused(paused) {
-        let action = {
+        const action = {
             Action: AST_ACTION.QUEUE_PAUSE,
             Interface: this.interface,
             Paused: paused.toString(),
@@ -118,7 +118,7 @@ class QueueMember extends AsteriskModel {
         this._sendPauseAction(action);
     }
     setPausedAll(paused) {
-        let action = {
+        const action = {
             Action: AST_ACTION.QUEUE_PAUSE,
             Interface: this.interface,
             Paused: paused.toString()
@@ -135,7 +135,7 @@ class QueueMember extends AsteriskModel {
         if (penalty < 0) {
             throw new IllegalArgumentError("Penalty must not be negative");
         }
-        let action = {
+        const action = {
             Action: AST_ACTION.QUEUE_PENALTY,
             Interface: this.interface,
             Penalty: penalty.toString(),
@@ -143,7 +143,7 @@ class QueueMember extends AsteriskModel {
         };
         this._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError) {
-                let msg = "Unable to set penalty for '" + this.interface +
+                const msg = "Unable to set penalty for '" + this.interface +
                     "' on '" + this.queue + "': " + response.message;
                 throw new InvalidPenalty(msg);
             }
@@ -156,12 +156,12 @@ class QueueMember extends AsteriskModel {
         this._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError) {
                 if (action.Queue != null) {
-                    let msg = "Unable to change paused state for '" + action.Interface +
+                    const msg = "Unable to change paused state for '" + action.Interface +
                         "' on '" + action.Queue + "' : " + response.message;
                     throw new NoSuchInterface(msg, this);
                 }
                 else {
-                    let msg = "Unable to change paused state for '" + action.Interface +
+                    const msg = "Unable to change paused state for '" + action.Interface +
                         "' on all queues: " + response.message;
                     throw new NoSuchInterface(msg, this);
                 }

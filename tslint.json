@@ -29,7 +29,10 @@
       "allow-leading-underscore"
     ],
     "no-reference": false,
-    "class-name": false
+    "class-name": false,
+    "no-empty-interface": false,
+    "no-invalid-template-strings": false,
+    "adjacent-overload-signatures": false
   },
   "rulesDirectory": [
     /*

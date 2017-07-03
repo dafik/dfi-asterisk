@@ -7,7 +7,7 @@ class DBServerAction extends BaseServerAction {
     dbGet(family, key, callbackFn, context) {
         this._server.start()
             .then(() => {
-            let action = {
+            const action = {
                 Action: AST_ACTION.DB_GET,
                 Family: family,
                 Key: key
@@ -17,7 +17,7 @@ class DBServerAction extends BaseServerAction {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
                     return;
                 }
-                let dbgre = response.events.shift();
+                const dbgre = response.events.shift();
                 AstUtil.maybeCallbackOnce(callbackFn, context, null, {
                     Family: dbgre.Family,
                     Key: dbgre.Key,
@@ -25,17 +25,16 @@ class DBServerAction extends BaseServerAction {
                 });
             });
         })
-            .catch(error => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
     dbDel(family, variable, callbackFn, context) {
         this._server.start()
             .then(() => {
-            let action = {
+            const action = {
                 Action: AST_ACTION.DB_DEL,
                 Family: family,
                 Key: variable
@@ -54,17 +53,16 @@ class DBServerAction extends BaseServerAction {
                 AstUtil.maybeCallback(callbackFn, context);
             });
         })
-            .catch(error => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
     dbDelTree(family, variable, callbackFn, context) {
         this._server.start()
             .then(() => {
-            let action = {
+            const action = {
                 Action: AST_ACTION.DB_DEL_TREE,
                 Family: family,
                 Key: variable
@@ -83,17 +81,16 @@ class DBServerAction extends BaseServerAction {
                 AstUtil.maybeCallback(callbackFn, context);
             }, context);
         })
-            .catch(error => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
     dbPut(family, variable, value, callbackFn, context) {
         this._server.start()
             .then(() => {
-            let action = {
+            const action = {
                 Action: AST_ACTION.DB_PUT,
                 Family: family,
                 Key: variable,
@@ -113,8 +110,7 @@ class DBServerAction extends BaseServerAction {
                 AstUtil.maybeCallback(callbackFn, context);
             });
         })
-            .catch(error => error)
-            .then((err) => {
+            .catch((err) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
             }

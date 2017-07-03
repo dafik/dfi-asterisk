@@ -42,25 +42,26 @@ class SIPPeer extends Peer {
 
     constructor(attributes: IDfiAstModelAttribsSipPeer, options?: IDfiAstModelOptions) {
 
-        let attr: IDfiAstModelAttribsPeer = Object.assign(attributes,
-            {
-                ACL: AstUtil.isTrue(attributes.ACL) ? true : false,
+        const attr: IDfiAstModelAttribsPeer = {
+            ...attributes,
 
-                AutoComedia: AstUtil.isTrue(attributes.AutoComedia) ? true : false,
-                AutoForcerport: AstUtil.isTrue(attributes.AutoForcerport) ? true : false,
-                Comedia: AstUtil.isTrue(attributes.Comedia) ? true : false,
-                Forcerport: AstUtil.isTrue(attributes.Forcerport) ? true : false,
-                RealtimeDevice: AstUtil.isTrue(attributes.RealtimeDevice) ? true : false,
-                TextSupport: AstUtil.isTrue(attributes.TextSupport) ? true : false,
-                VideoSupport: AstUtil.isTrue(attributes.VideoSupport) ? true : false,
+            ACL: AstUtil.isTrue(attributes.ACL) ? true : false,
 
-                ip: new Ip({
-                    ipAddress: AstUtil.isNull(attributes.IPaddress) ? null : attributes.IPaddress,
-                    mask: "255.255.255.255",
-                    port: parseInt(attributes.IPport, 10)
-                }),
-                technology: "SIP"
-            });
+            AutoComedia: AstUtil.isTrue(attributes.AutoComedia) ? true : false,
+            AutoForcerport: AstUtil.isTrue(attributes.AutoForcerport) ? true : false,
+            Comedia: AstUtil.isTrue(attributes.Comedia) ? true : false,
+            Forcerport: AstUtil.isTrue(attributes.Forcerport) ? true : false,
+            RealtimeDevice: AstUtil.isTrue(attributes.RealtimeDevice) ? true : false,
+            TextSupport: AstUtil.isTrue(attributes.TextSupport) ? true : false,
+            VideoSupport: AstUtil.isTrue(attributes.VideoSupport) ? true : false,
+
+            ip: new Ip({
+                ipAddress: AstUtil.isNull(attributes.IPaddress) ? null : attributes.IPaddress,
+                mask: "255.255.255.255",
+                port: parseInt(attributes.IPport, 10)
+            }),
+            technology: "SIP"
+        };
         super(attr, options);
     }
 }

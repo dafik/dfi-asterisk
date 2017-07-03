@@ -5,7 +5,7 @@ class PeerAddressHistoryEntry extends AsteriskHistoryEntry {
 
     get ip(): Ip {
         return this.entry;
-    };
+    }
 
     public toString(): string {
         let sb;
@@ -14,7 +14,7 @@ class PeerAddressHistoryEntry extends AsteriskHistoryEntry {
         sb += "date=" + this.date.toString() + ",";
         sb += "state=" + this.ip.toString() + "]";
         return sb;
-    };
+    }
 
     public toJSON() {
         return this.ip;

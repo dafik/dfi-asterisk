@@ -1,13 +1,13 @@
 enum CdrFlags {
-    DISPOSITION_NO_ANSWER = <any> "NO ANSWER",
-    DISPOSITION_FAILED = <any> "FAILED",
-    DISPOSITION_BUSY = <any> "BUSY",
-    DISPOSITION_ANSWERED = <any> "ANSWERED",
-    DISPOSITION_UNKNOWN = <any> "UNKNOWN",
+    DISPOSITION_NO_ANSWER =  "NO ANSWER" as any,
+    DISPOSITION_FAILED =  "FAILED" as any,
+    DISPOSITION_BUSY =  "BUSY" as any,
+    DISPOSITION_ANSWERED =  "ANSWERED" as any,
+    DISPOSITION_UNKNOWN =  "UNKNOWN" as any,
 
-    AMA_FLAG_OMIT = <any> "OMIT",
-    AMA_FLAG_BILLING = <any> "BILLING",
-    AMA_FLAG_DOCUMENTATION = <any> "DOCUMENTATION",
-    AMA_FLAG_UNKNOWN = <any> "Unknown"
+    AMA_FLAG_OMIT =  "OMIT" as any,
+    AMA_FLAG_BILLING =  "BILLING" as any,
+    AMA_FLAG_DOCUMENTATION =  "DOCUMENTATION" as any,
+    AMA_FLAG_UNKNOWN =  "Unknown" as any
 }
 export = CdrFlags;

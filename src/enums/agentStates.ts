@@ -2,27 +2,27 @@ enum AgentStates {
     /**
      * Agent isn't logged in.
      */
-    AGENT_LOGGEDOFF = <any> "agent_loggedoff",
+    AGENT_LOGGEDOFF =  "agent_loggedoff" as any,
 
         /**
          * Agent is logged in and waiting for call.
          */
-    AGENT_IDLE = <any> "agent_idle",
+    AGENT_IDLE =  "agent_idle" as any,
 
         /**
          * Agent is logged in and on a call.
          */
-    AGENT_ONCALL = <any> "agent_oncall",
+    AGENT_ONCALL =  "agent_oncall" as any,
 
         /**
          * Don't know anything about agent. Shouldn't ever get this.
          */
-    AGENT_UNKNOWN = <any> "agent_unknown",
+    AGENT_UNKNOWN =  "agent_unknown" as any,
 
         /**
          * Agent is logged in and a call is waiting for connect.
          */
-    AGENT_RINGING = <any> "agent_ringing"
+    AGENT_RINGING =  "agent_ringing" as any
 }
 
 export = AgentStates;

@@ -1,11 +1,11 @@
 "use strict";
 class AsteriskVersion {
     constructor(version) {
-        let fullVersion = version;
-        let parts = version.split(".");
-        let branch = parseInt(parts[0], 10);
-        let nbr = parseInt(parts[2], 10);
-        let series = parseInt(parts[1], 10);
+        const fullVersion = version;
+        const parts = version.split(".");
+        const branch = parseInt(parts[0], 10);
+        const nbr = parseInt(parts[2], 10);
+        const series = parseInt(parts[1], 10);
         Object.defineProperties(this, {
             branch: {
                 get: () => {

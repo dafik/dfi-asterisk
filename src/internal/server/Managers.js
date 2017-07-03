@@ -23,9 +23,9 @@ class ServerManagers extends DfiObject {
         super();
         this.setProp(PROP_MANAGERS, new Map());
         this.setProp(PROP_SERVER, server);
-        let managers = this.getProp(PROP_MANAGERS);
-        let managerOptions = { managers: this, server };
-        let state = server.managerConfig;
+        const managers = this.getProp(PROP_MANAGERS);
+        const managerOptions = { managers: this, server };
+        const state = server.managerConfig;
         managers.set(DEVICE, new DeviceManager(managerOptions, state.device));
         managers.set(PEER, new PeerManager(managerOptions, state.peer));
         managers.set(BRIDGE, new BridgeManager(managerOptions, state.bridge));
@@ -56,7 +56,7 @@ class ServerManagers extends DfiObject {
         return this.getProp(PROP_MANAGERS).get(AGENT);
     }
     restart(callbackFn, context) {
-        let self = this;
+        const self = this;
         async.series([
             self.device.restart.bind(self.device),
             self.peer.restart.bind(self.peer),
@@ -70,7 +70,7 @@ class ServerManagers extends DfiObject {
         });
     }
     start(callbackFn, context) {
-        let self = this;
+        const self = this;
         try {
             async.series([
                 self.device.start.bind(self.device),

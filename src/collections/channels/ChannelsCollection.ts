@@ -2,7 +2,6 @@ import AsteriskCollection = require("../../internal/asteriskCollection");
 import Channel = require("../../models/ChannelModel");
 import AST_EVENT = require("../../internal/asterisk/eventNames");
 
-
 const SEPARATOR = "/";
 const P_PROP_CHANNELS_BY_NAME = "byName";
 const P_PROP_CHANNELS_BY_TECH = "byTech";
@@ -34,7 +33,7 @@ class Channels extends AsteriskCollection<Channel> {
         super.destroy();
     }
 
-    public has(element: any|Channel): boolean {
+    public has(element: any | Channel): boolean {
         return super.has(element);
     }
 
@@ -50,11 +49,11 @@ class Channels extends AsteriskCollection<Channel> {
         return super.clear();
     }
 
-    public forEach(fn: (value: Channel, index: string, map: Map<string, Channel>)=>void, thisArg?: any): void {
+    public forEach(fn: (value: Channel, index: string, map: Map<string, Channel>) => void, thisArg?: any): void {
         super.forEach(fn, thisArg);
     }
 
-    public toArray(): Array<Channel> {
+    public toArray(): Channel[] {
         return super.toArray();
     }
 
@@ -62,9 +61,9 @@ class Channels extends AsteriskCollection<Channel> {
         if (channel.sourceEvent === AST_EVENT.DAHDI_SHOW_CHANNELS) {
             return;
         }
-        let name = channel.name;
-        let parts = name.split(SEPARATOR);
-        let technology = parts.shift();
+        const name = channel.name;
+        const parts = name.split(SEPARATOR);
+        const technology = parts.shift();
 
         this.getProp(P_PROP_CHANNELS_BY_NAME)[name] = channel;
         if (!this.getProp(P_PROP_CHANNELS_BY_TECH).has(technology)) {
@@ -75,9 +74,9 @@ class Channels extends AsteriskCollection<Channel> {
     }
 
     private _onChannelRemove(channel) {
-        let name = channel.name;
-        let parts = name.split(SEPARATOR);
-        let technology = parts.shift();
+        const name = channel.name;
+        const parts = name.split(SEPARATOR);
+        const technology = parts.shift();
 
         this.getProp(P_PROP_CHANNELS_BY_NAME).delete(name);
         this.getProp(P_PROP_CHANNELS_BY_TECH).get(technology).delete(parts.join(SEPARATOR));

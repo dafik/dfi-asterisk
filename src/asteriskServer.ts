@@ -1,6 +1,7 @@
-import {IDfiAstConfigAstServer, IDfiAstConfigAstManager, IDfiAstConfigServerOptions, IDfiAstConfigAstManagerConfig} from "./definitions/configs";
+import {IDfiAstConfigAstManager, IDfiAstConfigAstManagerConfig, IDfiAstConfigAstServer, IDfiAstConfigServerOptions} from "./definitions/configs";
 import {IDfiAstEventsServer} from "./definitions/events";
 import {
+    IDfiActionCallback,
     IDfiAMICallbackError,
     IDfiAMIMultiCallback,
     IDfiAMIResponse,
@@ -9,7 +10,6 @@ import {
     IDfiAMIResponseGetvar,
     IDfiAMIResponseMessage,
     IDfiAMIResponseMessageMulti,
-    IDfiActionCallback,
     IDfiAstResponseMessageMulti,
     IDfiCallbackResult
 } from "./definitions/interfaces";
@@ -17,6 +17,7 @@ import {
 import {IAstAction, IAstActionCommand, IAstActionGetvar} from "./internal/asterisk/actions";
 
 import * as _ from "lodash";
+import {IAstEvent} from "./internal/asterisk/events";
 import async = require("async");
 import AmiClient = require("asterisk-ami-client");
 
@@ -29,7 +30,6 @@ import AstUtil = require("./internal/astUtil");
 import ManagerCommunication = require("./errors/ManagerCommunication");
 import AsteriskVersion = require("./internal/server/Version");
 import AST_ACTION = require("./internal/asterisk/actionNames");
-import {IAstEvent} from "./internal/asterisk/events";
 import AST_EVENT = require("./internal/asterisk/eventNames");
 
 const PROP_AMI = "ami";
@@ -109,11 +109,11 @@ class AsteriskServer extends DfiEventObject {
 
     private get _ami(): AmiClient {
         return this.getProp(PROP_AMI);
-    };
+    }
 
     public start(): Promise<AsteriskServer> {
         return new Promise((resolve, reject) => {
-                this._initializeIfNeeded(err => {
+                this._initializeIfNeeded((err) => {
                     if (err) {
                         reject(err);
                         return;
@@ -132,7 +132,7 @@ class AsteriskServer extends DfiEventObject {
         return this._ami && this._ami.isConnected;
     }
 
-    public sendAction<R extends IDfiAMIResponse>(action: IAstAction | IAstActionGetvar |IAstActionCommand, callbackFn?: IDfiActionCallback<R>|IDfiAMICallbackError, context?: any) {
+    public sendAction<R extends IDfiAMIResponse>(action: IAstAction | IAstActionGetvar | IAstActionCommand, callbackFn?: IDfiActionCallback<R> | IDfiAMICallbackError, context?: any) {
         if (!this.allowedActions.has(action.Action)) {
             AstUtil.maybeCallbackOnce(callbackFn, context, "Not Allowed Action: " + action.Action);
             return;
@@ -172,30 +172,26 @@ class AsteriskServer extends DfiEventObject {
                 }
                 AstUtil.maybeCallbackOnce(callbackFn, context, null, response);
             })
-            .catch(error => error)
-            .then((response: IDfiAMIResponseMessage|Error) => {
+            .catch((response: IDfiAMIResponseMessage | Error) => {
                 if (response instanceof Error || response.Response === "Error") {
-                    let error: IDfiAMIResponseError;
-                    let message: string;
-                    if ((response as IDfiAMIResponse).Response === "Error") {
-                        message = (response as IDfiAMIResponseMessage).Message;
-                    } else {
-                        message = (response as Error).message;
-                    }
-                    error = Object.assign(new Error(message), {action});
-                    AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                    const message: string = (response as IDfiAMIResponse).Response === "Error" ? (response as IDfiAMIResponseMessage).Message : (response as Error).message;
+                    const errorLocal: IDfiAMIResponseError = response instanceof Error ?
+                        Object.assign(response, {action}) :
+                        Object.assign(new Error(message), {action});
+
+                    AstUtil.maybeCallbackOnce(callbackFn, context, errorLocal);
                 }
             });
     }
 
     public sendActions<R extends IDfiAMIResponse>(actions: IAstAction[], callbackFn?: IDfiActionCallback<R>, context?: any) {
         let wait = actions.length;
-        let errors = [];
-        let responses = [];
+        const errors = [];
+        const responses = [];
         if (wait === 0) {
             AstUtil.maybeCallbackOnce(callbackFn, context, errors.length > 0 ? errors : null, responses);
         }
-        actions.forEach(action => {
+        actions.forEach((action) => {
             this.sendAction(action, (err, resp) => {
                 wait--;
                 if (err) {
@@ -222,9 +218,9 @@ class AsteriskServer extends DfiEventObject {
         this.logger.trace("sending %s %j", action.Action, action);
         this.logger.trace("\n\n %j \n", action);
 
-        let responses = this._getResponses<E>();
+        const responses = this._getResponses<E>();
 
-        let responseMulti: IDfiAstResponseMessageMulti<E> = {
+        const responseMulti: IDfiAstResponseMessageMulti<E> = {
             ctx: context,
             events: [],
             fn: callbackFn
@@ -260,8 +256,8 @@ class AsteriskServer extends DfiEventObject {
                 }
                 this.getProp(PROP_MULTIPART_RESPONSE_HANDLER)(response);
             })
-            .catch(error => error)
-            .then(error => {
+            .catch((error) => error)
+            .then((error) => {
                 if (error instanceof Error) {
                     AstUtil.maybeCallback(callbackFn, context, error);
                 }
@@ -273,14 +269,14 @@ class AsteriskServer extends DfiEventObject {
     }
 
     private _finishMultipartResponse<E extends IAstEvent>(response, resp: IDfiAMIResponseMessageMulti<E>) {
-        let responses = this._getResponses();
+        const responses = this._getResponses();
         responses.delete(response.ActionID);
         if (responses.size === 0) {
             this._ami.removeListener("event", this.getProp(PROP_MULTIPART_RESPONSE_HANDLER));
         }
 
-        let fn = resp.fn;
-        let ctx = resp.ctx;
+        const fn = resp.fn;
+        const ctx = resp.ctx;
         delete resp.fn;
         delete resp.ctx;
 
@@ -289,7 +285,7 @@ class AsteriskServer extends DfiEventObject {
 
     private _onMultipartResponse(response) {
         if (response.ActionID) {
-            let resp = this._getResponses().get(response.ActionID);
+            const resp = this._getResponses().get(response.ActionID);
             if (resp) {
                 if (response.EventList) {
                     if (response.EventList === "start") {
@@ -310,11 +306,11 @@ class AsteriskServer extends DfiEventObject {
 
     private _initializeManagersOptions(options: IDfiAstConfigAstManagerConfig) {
 
-        let config = this.getProp(PROP_CONFIG);
+        const config = this.getProp(PROP_CONFIG);
 
         Object.assign(
             config.managers,
-            Object.assign({
+            {
                 agent: true,
                 bridge: true,
                 channel: true,
@@ -322,15 +318,15 @@ class AsteriskServer extends DfiEventObject {
                 device: true,
                 meetMe: true,
                 peer: true,
-                queue: true
-            }, options)
+                queue: true, ...options
+            }
         );
 
         this.setProp(PROP_CONFIG, config);
     }
 
     private _initializeEventConnection() {
-        let eventConnection = new AmiClient({
+        const eventConnection = new AmiClient({
             addTime: true,
             attemptsDelay: 1000,
             emitEventsByTypes: false,
@@ -348,8 +344,8 @@ class AsteriskServer extends DfiEventObject {
     }
 
     private _initializeAmiHandlers() {
-        let handlers = {};
-        for (let eventName in amiHandlers) {
+        const handlers = {};
+        for (const eventName in amiHandlers) {
             if (_.has(amiHandlers, eventName)) {
                 handlers[eventName] = amiHandlers[eventName].bind(this);
             }
@@ -360,14 +356,13 @@ class AsteriskServer extends DfiEventObject {
 
     private _initializeIfNeeded(callbackFn: IDfiCallbackResult, context?) {
 
-        let initialize = () => {
-            let ami = this._ami;
+        const initialize = () => {
+            const ami = this._ami;
 
             this.emit(AsteriskServer.events.BEFORE_INIT);
 
             if (typeof ami === "undefined") {
-                let err = new Error("nor event connection object and proper configuration provided");
-                onInitializedError.call(this, err);
+                onInitializedError.call(this, new Error("nor event connection object and proper configuration provided"));
             }
             if (_.isFunction(callbackFn)) {
                 this.once(AsteriskServer.events.INIT, () => {
@@ -386,7 +381,7 @@ class AsteriskServer extends DfiEventObject {
             ami.once("amiConnectionError", errorFn);
 
             if (!ami.isConnected) {
-                let opts: IDfiAstConfigAstServer = this.getProp(PROP_CONFIG).server;
+                const opts: IDfiAstConfigAstServer = this.getProp(PROP_CONFIG).server;
 
                 this.setProp(PROP_INITIALIZATION_STARTED, true);
                 this._bindAmiEvents();
@@ -397,12 +392,12 @@ class AsteriskServer extends DfiEventObject {
 
         function onConnectionError(event) {
             // TODO reconnect
-            let err = new ManagerCommunication("Unable to login: " + event.error.message + ", " + event.error);
+            const err = new ManagerCommunication("Unable to login: " + event.error.message + ", " + event.error);
             onInitializedError.call(this, err);
         }
 
         function onConnected() {
-            let self: AsteriskServer = this;
+            const self: AsteriskServer = this;
 
             async.series([
                 self.actions.core.getAvailableActions.bind(self.actions.core),
@@ -441,7 +436,7 @@ class AsteriskServer extends DfiEventObject {
             AstUtil.maybeCallback(callbackFn, context, err);
         }
 
-        let errorFn = onConnectionError.bind(this);
+        const errorFn = onConnectionError.bind(this);
 
         if (this.initialized) {
             onInitialized.call(this);
@@ -463,7 +458,7 @@ class AsteriskServer extends DfiEventObject {
              */
             function run() {
                 let wEvent;
-                let pendingEvents = this.getProp(PROP_PENDING_EVENTS);
+                const pendingEvents = this.getProp(PROP_PENDING_EVENTS);
 
                 if (pendingEvents.length > 0) {
                     this.logger.info("begin issuing pending events");
@@ -478,9 +473,9 @@ class AsteriskServer extends DfiEventObject {
             }
         }
 
-        let handlers = this.getProp(PROP_AMI_HANDLERS);
+        const handlers = this.getProp(PROP_AMI_HANDLERS);
 
-        for (let eventName in handlers) {
+        for (const eventName in handlers) {
             if (handlers.hasOwnProperty(eventName)) {
                 if (eventName !== "event") {
                     if (eventName === "waitHandler") {
@@ -497,23 +492,23 @@ class AsteriskServer extends DfiEventObject {
 }
 
 const amiHandlers = {
-    amiLoginIncorrect () {
+    amiLoginIncorrect() {
         this.logger.debug("on amiLoginIncorrect" + JSON.stringify(arguments));
     },
-    connect () {
+    connect() {
         this.logger.debug("on amiConnected");
         this.emit(AsteriskServer.events.CONNECTED);
     },
 
-    event (event) {
+    event(event) {
         this.logger.trace("on amiEvent: %j", event);
         this.dispatcher.dispatch(event);
     },
-    response (response) {
+    response(response) {
         this.logger.trace("on amiResponse: %j", response);
 
     },
-    internalError (hadError) {
+    internalError(hadError) {
         // let e = arguments[0].error;
         this.logger.error("on amiConnectionError" + JSON.stringify(arguments));
 
@@ -522,17 +517,17 @@ const amiHandlers = {
         throw hadError;
 
     },
-    amiConnectionClose () {
+    amiConnectionClose() {
         this.logger.warn("on amiConnectionClose" + JSON.stringify(arguments));
         this.logger.fatal("restart");
 
         // TODO
         this._reInitialize();
     },
-    amiConnectionTimeout () {
+    amiConnectionTimeout() {
         this.logger.warn("on amiConnectionTimeout" + JSON.stringify(arguments));
     },
-    amiConnectionEnd () {
+    amiConnectionEnd() {
         this.logger.warn("on amiConnectionEnd" + JSON.stringify(arguments));
     },
     waitHandler(event) {
@@ -546,15 +541,14 @@ const amiHandlers = {
     }
 };
 
-const EVENTS: IDfiAstEventsServer = Object.assign(
-    Object.assign({}, DfiEventObject.events),
-    {
-        BEFORE_INIT: Symbol("astBeforeInitialized"),
-        BEFORE_REINIT: Symbol("astBeforeReInitialized"),
-        CONNECTED: Symbol("astConnected"),
-        INIT: Symbol("astInitialized"),
-        REINIT: Symbol("astReInitialized")
-    }
-);
+const EVENTS: IDfiAstEventsServer = {
+    ...DfiEventObject.events,
+
+    BEFORE_INIT: Symbol("astBeforeInitialized"),
+    BEFORE_REINIT: Symbol("astBeforeReInitialized"),
+    CONNECTED: Symbol("astConnected"),
+    INIT: Symbol("astInitialized"),
+    REINIT: Symbol("astReInitialized")
+};
 
 export = AsteriskServer;

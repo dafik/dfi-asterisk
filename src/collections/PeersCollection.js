@@ -35,15 +35,15 @@ class Peers extends AsteriskCollection {
         }
     }
     _onPeerAdd(peer) {
-        let technology = peer.technology;
+        const technology = peer.technology;
         if (!this.getProp(P_PROP_PEERS_BY_TECH).has(technology)) {
             this.getProp(P_PROP_PEERS_BY_TECH).set(technology, new Map());
         }
         this.getProp(P_PROP_PEERS_BY_TECH).get(technology).set(peer.objectName, peer);
     }
     _onPeerRemove(peer) {
-        let technology = peer.technology;
-        delete this.getProp(P_PROP_PEERS_BY_TECH).get(technology).delete(peer.objectName);
+        const technology = peer.technology;
+        this.getProp(P_PROP_PEERS_BY_TECH).get(technology).delete(peer.objectName);
         if (this.getProp(P_PROP_PEERS_BY_TECH).get(technology).size === 0) {
             this.getProp(P_PROP_PEERS_BY_TECH).delete(technology);
         }

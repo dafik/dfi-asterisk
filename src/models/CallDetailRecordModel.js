@@ -24,6 +24,14 @@ CallDetailRecord.map = new Map([
     ["Duration", "duration"],
     ["BillableSeconds", "billableSeconds"],
     ["UserField", "userField"]
+    /*
+     ["CallerID","CallerID"],
+     ["Channel","Channel"],
+     ["DestinationChannel","DestinationChannel"],
+     ["Disposition","Disposition"],
+     ["AMAFlags","AMAFlags"],
+     ["UniqueID","UniqueID"],
+     ["Source","Source"],*/
 ]);
 const DISPOSITION_MAP = new Map([
     [CdrFlags.DISPOSITION_ANSWERED.toString(), DispositionFlags.ANSWERED],

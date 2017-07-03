@@ -82,19 +82,18 @@ abstract class AsteriskManager<M extends AsteriskModel, C extends AsteriskCollec
     }
 
     protected _mapEvents(eventsMap: IEventHandlersMap): void {
-        let events = Object.keys(eventsMap);
+        const events = Object.keys(eventsMap);
         events.forEach((event) => {
             this.eventsMap.set(event, eventsMap[event]);
             this.server.dispatcher.subscribeEvent(event, this);
         }, this);
     }
 }
-const EVENTS = Object.assign(
-    Object.assign({}, DfiEventObject.events),
-    {
-        ADD: Symbol("manager:add"),
-        UPDATE: Symbol("manager:update")
-    }
-);
+const EVENTS = {
+    ...DfiEventObject.events,
+
+    ADD: Symbol("manager:add"),
+    UPDATE: Symbol("manager:update")
+};
 
 export = AsteriskManager;

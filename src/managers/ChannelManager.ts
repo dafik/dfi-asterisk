@@ -4,17 +4,17 @@ import {IAstActionCommand} from "../internal/asterisk/actions";
 import {
     IAstEventCdr,
     IAstEventCoreShowChannel,
-    IAstEventDTMFBegin,
-    IAstEventDTMFEnd,
     IAstEventDialBegin,
     IAstEventDialEnd,
+    IAstEventDTMFBegin,
+    IAstEventDTMFEnd,
     IAstEventHangup,
     IAstEventHangupRequest,
     IAstEventMusicOnHoldStart,
     IAstEventNewCallerid,
+    IAstEventNewchannel,
     IAstEventNewConnectedLine,
     IAstEventNewExten,
-    IAstEventNewchannel,
     IAstEventNewstate,
     IAstEventParkedCall,
     IAstEventParkedCallGiveUp,
@@ -58,7 +58,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             return;
         }
 
-        let map = {};
+        const map = {};
         map[AST_EVENT.NEW_CHANNEL] = this._handleNewChannelEvent;
         map[AST_EVENT.NEW_EXTEN] = this._handleNewExtenEvent;
         map[AST_EVENT.NEW_STATE] = this._handleNewStateEvent;
@@ -99,7 +99,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             AstUtil.maybeCallbackOnce(callbackFn, context, null, "ChannelManager");
         }
 
-        function onForeach(event: IAstEventStatus |IAstEventCoreShowChannel) {
+        function onForeach(event: IAstEventStatus | IAstEventCoreShowChannel) {
             if (event.Event === AST_EVENT.STATUS || event.Event === AST_EVENT.CORE_SHOW_CHANNEL) {
 
                 let extension: Extension = null;
@@ -108,15 +108,14 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
 
                 if (channel == null) {
 
-                    let now = moment();
+                    const now = moment();
 
                     let dateOfCreation;
 
-                    if ((event as IAstEventCoreShowChannel).Duration != null) {
-                        dateOfCreation = moment(now.subtract(AstUtil.duration2sec((event as IAstEventCoreShowChannel).Duration), "seconds"));
-                    } else {
-                        dateOfCreation = now;
-                    }
+                    dateOfCreation = ((event as IAstEventCoreShowChannel).Duration != null) ?
+                        moment(now.subtract(AstUtil.duration2sec((event as IAstEventCoreShowChannel).Duration), "seconds")) :
+                        now;
+
                     (event as IAstEventCoreShowChannel).dateOfCreation = dateOfCreation;
 
                     channel = new Channel(event);
@@ -140,7 +139,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
                 channel.extensionVisited(event.$time, extension);
 
                 if (this.server.managers.bridge.enabled && (event as IAstEventCoreShowChannel).BridgeId) {
-                    let bridge = this.server.managers.bridge.bridges.get((event as IAstEventCoreShowChannel).BridgeId);
+                    const bridge = this.server.managers.bridge.bridges.get((event as IAstEventCoreShowChannel).BridgeId);
                     if (bridge) {
                         bridge.addChannel(channel);
                         channel._bridges.add(bridge);
@@ -149,7 +148,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
                     }
                 }
 
-                let linkedChannel = this.getChannelById(event.Linkedid);
+                const linkedChannel = this.getChannelById(event.Linkedid);
                 if (linkedChannel != null) {
                     // the date used here is not correct!
                     channel.channelLinked(event.$time, linkedChannel);
@@ -170,15 +169,14 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             return;
         }
 
-
-        let action: IAstActionCommand = {Action: AST_ACTION.COMMAND, Command: "core show channeltypes"};
+        const action: IAstActionCommand = {Action: AST_ACTION.COMMAND, Command: "core show channeltypes"};
         this.server.sendAction(action, (err, response) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
                 return;
             }
-            let found = [];
-            let lines = response.$content.split("\n");
+            const found = [];
+            const lines = response.$content.split("\n");
             lines.splice(0, 2);
             lines.splice(lines.length - 2);
             lines.forEach((line) => {
@@ -208,9 +206,9 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
      * Returns a collection of all active AsteriskChannels.
      */
     public getChannels(): Channel[] {
-        let copy: Channel[] = [];
+        const copy: Channel[] = [];
 
-        this.channels.forEach(channel => {
+        this.channels.forEach((channel) => {
             if (channel.state.status !== ChannelStates.HANGUP) {
                 copy.push(channel);
             }
@@ -221,10 +219,10 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
 
     public getChannelsByDateStart(): Channel[] {
 
-        let sorted = [];
-        let tmp = new Map();
+        const sorted = [];
+        const tmp = new Map();
 
-        this.channels.forEach(channel => {
+        this.channels.forEach((channel) => {
             tmp.set(channel.createDate, channel);
         });
 
@@ -292,7 +290,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
          * @returns {Channel}
          */
         function onForeach(tmp) {
-            if (tmp.get("name") != null && tmp.get("name") === name && tmp.getState() !== ChannelStates.HANGUP) {
+            if (tmp.get("name") != null && tmp.get("name") === name && tmp.get("state") !== ChannelStates.HANGUP) {
                 channel = tmp;
                 return channel;
             }
@@ -304,7 +302,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
      * @param id uniqueid
      * @returns {any}
      */
-    public getChannelById(id): Channel|null {
+    public getChannelById(id): Channel | null {
         if (id == null) {
             return null;
         }
@@ -315,7 +313,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         return null;
     }
 
-    public hasChannel(channel: string|Channel): boolean {
+    public hasChannel(channel: string | Channel): boolean {
         return this.channels.has(channel);
     }
 
@@ -333,17 +331,17 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             return null;
         }
 
-        let name = localChannel.name;
+        const name = localChannel.name;
 
-        let reS = /^Local\//;
-        let reE = /,.$|;.$/;
+        const reS = /^Local\//;
+        const reE = /,.$|;.$/;
 
         // if (name == null || !reS.test(name.startsWith("Local/") || (name.charAt(name.length() - 2) != ',' && name.charAt(name.length() - 2) != ';')) {
         if (name == null || !reS.test(name) || !reE.test(name)) {
             return null;
         }
 
-        let num = name.substring(name.length - 1);
+        const num = name.substring(name.length - 1);
 
         if (num === "1") {
             return this.getChannelByName(name.substring(0, name.length - 1) + "2");
@@ -355,7 +353,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
     }
 
     public toJSON() {
-        let obj = super.toJSON();
+        const obj = super.toJSON();
         obj.collection = this.channels.toJSON();
 
         return obj;
@@ -369,7 +367,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
     private _handleNewChannelEvent(event: IAstEventNewchannel) {
         this.logger.debug("handle  NewChannelEvent %j (%s) (%s)", event.Channel, event.Uniqueid, event.ChannelStateDesc);
 
-        let channel = this.getChannelById(event.Uniqueid);
+        const channel = this.getChannelById(event.Uniqueid);
 
         if (channel == null) {
             if (event.Channel == null) {
@@ -389,12 +387,12 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
     private _handleNewExtenEvent(event: IAstEventNewExten) {
         this.logger.debug("handle  NewExtenEvent channel:%j, ctx:%j, exten:%j, priority:%j", event.Channel, event.Context, event.Exten, event.Priority);
 
-        let channel: Channel = this.getChannelById(event.Uniqueid);
+        const channel: Channel = this.getChannelById(event.Uniqueid);
         if (channel == null) {
             this.logger.error("Ignored NewExtenEvent for unknown channel " + event.Channel);
             return;
         }
-        let extension: Extension = new Extension(event);
+        const extension: Extension = new Extension(event);
 
         channel.extensionVisited(event.$time, extension);
 
@@ -463,9 +461,9 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         channel.callerIdChanged(event.CallerIDName, event.CallerIDNum);
     }
 
-    private _handleHangupRequest(event: IAstEventHangupRequest|IAstEventSoftHangupRequest) {
+    private _handleHangupRequest(event: IAstEventHangupRequest | IAstEventSoftHangupRequest) {
         this.logger.debug("handle  HangupRequest %j", event.Channel, (event.Event.match("soft") ? "soft" : "hard"));
-        let channel = this.channels.get(event.Uniqueid);
+        const channel = this.channels.get(event.Uniqueid);
         if (channel) {
             channel.hangupRequestDate = event.$time;
             channel.hangupRequestMethod = event.Event === "HangupRequest" ? "hard" : "soft";
@@ -490,15 +488,12 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             }
         }
 
-        if (event.Cause != null) {
-            cause = HangupCause.byValue(parseInt(event.Cause, 10));
-        } else {
-            cause = HangupCause.byValue(-1);
-        }
+        cause = event.Cause != null ? HangupCause.byValue(parseInt(event.Cause, 10)) : HangupCause.byValue(-1);
+
         channel.handleHangup(event.$time, cause);
         this.logger.info('Removing channel "' + channel.name + '" due to hangup (' + cause.name + ')"');
 
-        let technology = channel.technology;
+        const technology = channel.technology;
         if (this.technologyCount.hasOwnProperty(technology)) {
             if (this.technologyCount[technology] > 0) {
                 this.technologyCount[technology]--;
@@ -510,11 +505,11 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         }
     }
 
-    private _handleDialEvent(event: IAstEventDialBegin|IAstEventDialEnd) {
+    private _handleDialEvent(event: IAstEventDialBegin | IAstEventDialEnd) {
         this.logger.debug("handle DialEvent: %j, %j (%s)", event.Event, event.Channel, event.ChannelStateDesc);
 
-        let sourceChannel: Channel = this.getChannelById(event.Uniqueid);
-        let destinationChannel: Channel = this.getChannelById(event.DestUniqueid);
+        const sourceChannel: Channel = this.getChannelById(event.Uniqueid);
+        const destinationChannel: Channel = this.getChannelById(event.DestUniqueid);
 
         if (sourceChannel == null) {
             if (event.DestChannel && event.DestChannel.substring(0, 5) === "Local") {
@@ -542,7 +537,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
     private _handleRenameEvent(event: IAstEventRename) {
         this.logger.debug("handle  RenameEvent %j", event);
 
-        let channel = this.getChannelById(event.Uniqueid);
+        const channel = this.getChannelById(event.Uniqueid);
 
         if (channel == null) {
             this.logger.error("Ignored RenameEvent for unknown channel with uniqueId " + event.Uniqueid);
@@ -557,8 +552,8 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
     private _handleCdrEvent(event: IAstEventCdr) {
         this.logger.debug("handle  CdrEvent %j", event);
 
-        let channel = this.getChannelById(event.UniqueID);
-        let destinationChannel = this.getChannelByName(event.DestinationChannel);
+        const channel = this.getChannelById(event.UniqueID);
+        const destinationChannel = this.getChannelByName(event.DestinationChannel);
         let cdr;
 
         if (channel == null) {
@@ -576,7 +571,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         this.logger.debug("handle  ParkedCallEvent %j", event);
         // Only bristuffed versions: Channel channel = this.getChannelById(event. getUniqueid());
 
-        let channel = this.getChannelByNameAndActive(event.ParkeeChannel);
+        const channel = this.getChannelByNameAndActive(event.ParkeeChannel);
 
         if (channel == null) {
             this.logger.info("Ignored ParkedCallEvent for unknown channel " + event.ParkeeChannel);
@@ -602,14 +597,14 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         this.logger.debug("handle  ParkedCallGiveUpEvent %j", event);
         // Only bristuffed versions: Channel channel = this.getChannelById(event. get("uniqueid"));
 
-        let channel = this.getChannelByNameAndActive(event.ParkeeChannel);
+        const channel = this.getChannelByNameAndActive(event.ParkeeChannel);
 
         if (channel == null) {
             this.logger.info("Ignored ParkedCallGiveUpEvent for unknown channel " + event.ParkeeChannel);
             return;
         }
 
-        let wasParkedAt = channel.parkedAt;
+        const wasParkedAt = channel.parkedAt;
 
         if (wasParkedAt == null) {
             this.logger.info("Ignored ParkedCallGiveUpEvent as the channel was not parked");
@@ -623,14 +618,14 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
     private _handleParkedCallTimeOutEvent(event: IAstEventParkedCallTimeOut) {
         this.logger.debug("handle  ParkedCallTimeOutEvent %j", event);
         // Only bristuffed versions: Channel channel = this.getChannelById(event. get("uniqueid"));
-        let channel = this.getChannelByNameAndActive(event.ParkeeChannel);
+        const channel = this.getChannelByNameAndActive(event.ParkeeChannel);
 
         if (channel == null) {
             this.logger.info("Ignored ParkedCallTimeOutEvent for unknown channel " + event.ParkeeChannel);
             return;
         }
 
-        let wasParkedAt = channel.parkedAt;
+        const wasParkedAt = channel.parkedAt;
 
         if (wasParkedAt == null) {
             this.logger.info("Ignored ParkedCallTimeOutEvent as the channel was not parked");
@@ -645,14 +640,14 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         this.logger.debug("handle  UnparkedCallEvent %j", event);
         // Only bristuffed versions: Channel channel = this.getChannelById(event. get("uniqueid"));
 
-        let channel = this.getChannelByNameAndActive(event.ParkeeChannel);
+        const channel = this.getChannelByNameAndActive(event.ParkeeChannel);
 
         if (channel == null) {
             this.logger.info("Ignored UnparkedCallEvent for unknown channel " + event.ParkeeChannel);
             return;
         }
 
-        let wasParkedAt: Extension = channel.parkedAt;
+        const wasParkedAt: Extension = channel.parkedAt;
 
         if (wasParkedAt == null) {
             this.logger.info("Ignored UnparkedCallEvent as the channel was not parked");
@@ -669,7 +664,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             return;
         }
 
-        let channel = this.getChannelById(event.Uniqueid);
+        const channel = this.getChannelById(event.Uniqueid);
         if (channel == null) {
             // this.logger.info("Ignored VarSetEvent for unknown channel with uniqueId " + event.Uniqueid);
             return;
@@ -679,28 +674,22 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
 
     }
 
-    private _handleDtmfEvent(event: IAstEventDTMFBegin|IAstEventDTMFEnd) {
+    private _handleDtmfEvent(event: IAstEventDTMFBegin | IAstEventDTMFEnd) {
         this.logger.debug("handle  DtmfEvent %j", event);
 
         if (event.Uniqueid == null) {
             return;
         }
 
-        let channel = this.getChannelById(event.Uniqueid);
+        const channel = this.getChannelById(event.Uniqueid);
         if (channel == null) {
             this.logger.info("Ignored DtmfEvent for unknown channel with uniqueId " + event.Uniqueid);
             return;
         }
 
-        let dtmfDigit;
-        if (event.Digit == null || event.Digit.length < 1) {
-            dtmfDigit = null;
-        } else {
-            dtmfDigit = event.Digit.charAt(0);
-        }
+        const dtmfDigit = (event.Digit == null || event.Digit.length < 1) ? null : event.Digit.charAt(0);
 
         if (event.Direction === "Received") {
-
             channel.dtmfReceived = dtmfDigit;
         }
         if (event.Direction === "Sent") {
@@ -712,8 +701,8 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
     private _handleNewConnectedLine(event: IAstEventNewConnectedLine) {
         this.logger.debug("handle  NewConnectedLine %j", event.Channel);
 
-        let channel = this.channels.get(event.Uniqueid);
-        let linkedChannel = this.channels.get(event.Linkedid);
+        const channel = this.channels.get(event.Uniqueid);
+        const linkedChannel = this.channels.get(event.Linkedid);
         if (channel && linkedChannel) {
             if (channel.linkedChannel && channel.linkedChannel.id === event.Linkedid) {
                 // throw new Error("error");
@@ -729,7 +718,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
 
     private _handleMusicOnHold(event: IAstEventMusicOnHoldStart) {
         this.logger.debug("handle MusicOnHold %j", event.Event, event.Channel);
-        let channel = this.channels.get(event.Uniqueid);
+        const channel = this.channels.get(event.Uniqueid);
         if (channel) {
             if (event.Event === AST_EVENT.MUSIC_ON_HOLD_START) {
                 channel.mohDate = event.$time;
@@ -760,7 +749,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
      */
     private _addChannel(channel) {
         if (!this.channels.has(channel.id)) {
-            let technology = channel.technology;
+            const technology = channel.technology;
             if (!this.technologyCount.hasOwnProperty(technology)) {
                 this.technologyCount[technology] = 1;
             } else {
@@ -777,10 +766,10 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
      * Removes channels that have been hung more than {@link REMOVAL_THRESHOLD} milliseconds.
      */
     private _removeOldChannels() {
-        let now = moment();
+        const now = moment();
         let dateOfRemoval;
 
-        let channels = this.channels.toArray();
+        const channels = this.channels.toArray();
         channels.forEach(onEachChannel, this);
 
         function onEachChannel(channel) {
@@ -792,7 +781,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
                 if (channel.destroyed) {
                     return;
                 }
-                let diff = now.diff(dateOfRemoval, "second");
+                const diff = now.diff(dateOfRemoval, "second");
                 if (diff >= REMOVAL_THRESHOLD) {
                     this.logger.info("Destroing channel %j(%s) due remove treshold", channel.name, channel.get("id"));
 
@@ -808,7 +797,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         /**
          * type Channel
          */
-        let channel = new Channel(event);
+        const channel = new Channel(event);
         channel.stateChanged(event.$time, ChannelState.byValue(parseInt(event.ChannelState, 10)));
 
         this.logger.info("Adding new channel %j-%j(%s)", channel.name, channel.id, channel.state.name);
@@ -818,13 +807,13 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             if (!traceId) {
                 return;
             }
-            let name = channel.name;
+            const name = channel.name;
 
-            let reS = /^local\//;
-            let reE = /,1$|;1$/;
+            const reS = /^local\//;
+            const reE = /,1$|;1$/;
             if (traceId && (!reS.test(name.toLowerCase()) || reE.test(name) )) {
 
-                let callbackData: IDfiAstOriginateCallbackData = this.server.actions.originate.getOriginateCallbackDataByTraceId(traceId);
+                const callbackData: IDfiAstOriginateCallbackData = this.server.actions.originate.getOriginateCallbackDataByTraceId(traceId);
                 if (callbackData && callbackData.channel == null) {
                     try {
                         callbackData.callbackFn.onDialing(channel);
@@ -841,11 +830,10 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
     }
 }
 
-const EVENTS: IDfiAstEventsChannelManager = Object.assign(
-    Object.assign({}, AsteriskManager.events),
-    {
-        CHANNEL_ADD: Symbol("channelr:add")
-    }
-);
+const EVENTS: IDfiAstEventsChannelManager = {
+    ...AsteriskManager.events,
+
+    CHANNEL_ADD: Symbol("channelr:add")
+};
 
 export = ChannelManager;

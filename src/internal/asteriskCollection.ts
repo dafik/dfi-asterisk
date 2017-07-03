@@ -22,7 +22,7 @@ abstract class AsteriskCollection<M extends AsteriskModel> extends DfiCollection
     }
 
     public toMap(): Map<any, M> {
-        let collection: Map<any, M> = this.getProp(COLLECTION);
+        const collection: Map<any, M> = this.getProp(COLLECTION);
         return new Map([...collection.entries()]);
     }
 }

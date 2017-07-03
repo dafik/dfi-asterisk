@@ -87,8 +87,8 @@ class Channel extends AsteriskModel {
             if (this.destroyed || !this._server.managers.peer.enabled) {
                 return;
             }
-            let peerName = this.name.split("-")[0];
-            let peer = this._server.managers.peer.peers.get(peerName);
+            const peerName = this.name.split("-")[0];
+            const peer = this._server.managers.peer.peers.get(peerName);
             if (peer) {
                 peer.addChannel(this);
                 this._peers.add(peer);
@@ -283,7 +283,7 @@ class Channel extends AsteriskModel {
         this._bridges.remove(bridge.id);
     }
     wasInState(state) {
-        for (let historyEntry of this._stateHistory) {
+        for (const historyEntry of this._stateHistory) {
             if (historyEntry.state.status === state) {
                 return true;
             }
@@ -296,7 +296,7 @@ class Channel extends AsteriskModel {
                 (this.hangupCause.status === HangupCauses.AST_CAUSE_BUSY || this.hangupCause.status === HangupCauses.AST_CAUSE_USER_BUSY));
     }
     stateChanged(date, state) {
-        let oldState = this.state;
+        const oldState = this.state;
         if (oldState && oldState.status === state.status) {
             return;
         }
@@ -351,7 +351,7 @@ class Channel extends AsteriskModel {
         this.setProp(P_PROP_WAS_LINKED, true);
     }
     channelUnlinked(date) {
-        let historyEntry = this._linkedChannelHistory.length === 0 ? null : this._linkedChannelHistory[this._linkedChannelHistory.length - 1];
+        const historyEntry = this._linkedChannelHistory.length === 0 ? null : this._linkedChannelHistory[this._linkedChannelHistory.length - 1];
         if (historyEntry != null) {
             historyEntry.setDateUnlinked(date);
         }
@@ -359,7 +359,7 @@ class Channel extends AsteriskModel {
     }
     // action methods
     hangup(cause) {
-        let action = {
+        const action = {
             Action: AST_ACTION.HANGUP,
             Channel: this.name
         };
@@ -370,7 +370,7 @@ class Channel extends AsteriskModel {
         this._server.sendAction(action, Channel.onServerResponse, this);
     }
     setAbsoluteTimeout(seconds) {
-        let action = {
+        const action = {
             Action: AST_ACTION.ABSOLUTE_TIMEOUT,
             Channel: this.name,
             Timeout: seconds.toString()
@@ -378,7 +378,7 @@ class Channel extends AsteriskModel {
         this._server.sendAction(action, Channel.onServerResponse, this);
     }
     redirect(context, exten, priority) {
-        let action = {
+        const action = {
             Action: AST_ACTION.REDIRECT,
             Channel: this.name,
             Context: context,
@@ -388,7 +388,7 @@ class Channel extends AsteriskModel {
         this._server.sendAction(action, Channel.onServerResponse, this);
     }
     redirectBothLegs(context, exten, priority) {
-        let action = {
+        const action = {
             Action: AST_ACTION.REDIRECT,
             Channel: this.name,
             Context: context,
@@ -407,7 +407,7 @@ class Channel extends AsteriskModel {
         if (digit == null) {
             throw new IllegalArgumentError("DTMF digit to send must not be null");
         }
-        let action = {
+        const action = {
             Action: AST_ACTION.PLAY_DTMF,
             Channel: this.name,
             Digit: digit
@@ -415,7 +415,7 @@ class Channel extends AsteriskModel {
         this._server.sendAction(action, Channel.onServerResponse, this);
     }
     startMonitoring(filename, format, mix) {
-        let action = {
+        const action = {
             Action: AST_ACTION.MONITOR,
             Channel: this.name,
             File: filename,
@@ -428,7 +428,7 @@ class Channel extends AsteriskModel {
         if (filename == null) {
             throw new IllegalArgumentError("New filename must not be null");
         }
-        let action = {
+        const action = {
             Action: AST_ACTION.CHANGE_MONITOR,
             Channel: this.name,
             File: filename
@@ -436,28 +436,28 @@ class Channel extends AsteriskModel {
         this._server.sendAction(action, Channel.onServerResponse, this);
     }
     stopMonitoring() {
-        let action = {
+        const action = {
             Action: AST_ACTION.STOP_MONITOR,
             Channel: this.name
         };
         this._server.sendAction(action, Channel.onServerResponse, this);
     }
     pauseMonitoring() {
-        let action = {
+        const action = {
             Action: AST_ACTION.PAUSE_MONITOR,
             Channel: this.name
         };
         this._server.sendAction(action, Channel.onServerResponse, this);
     }
     unpauseMonitoring() {
-        let action = {
+        const action = {
             Action: AST_ACTION.UNPAUSE_MONITOR,
             Channel: this.name
         };
         this._server.sendAction(action, Channel.onServerResponse, this);
     }
     setVariable(name, value) {
-        let action = {
+        const action = {
             Action: AST_ACTION.SET_VAR,
             Channel: this.name,
             Value: value,
@@ -471,7 +471,7 @@ class Channel extends AsteriskModel {
         }, this);
     }
     updateVariable(name, value, srcEvent) {
-        let variables = this._variables;
+        const variables = this._variables;
         if (variables.has(name)) {
             variables.get(name).value = value;
         }
@@ -480,7 +480,7 @@ class Channel extends AsteriskModel {
         }
     }
     getVariable(name, callbackFn, context) {
-        let value = this._variables.get(name);
+        const value = this._variables.get(name);
         if (value !== undefined) {
             AstUtil.maybeCallbackOnce(callbackFn, context, value);
             return;
@@ -490,7 +490,7 @@ class Channel extends AsteriskModel {
         }
         else {
             this._varsCallbacks.set(name, [{ context, fn: callbackFn }]);
-            let action = {
+            const action = {
                 Action: AST_ACTION.GET_VAR,
                 Channel: this.name,
                 Variable: name
@@ -502,10 +502,10 @@ class Channel extends AsteriskModel {
                 }
                 if (err) {
                     if (this.state.status !== ChannelStates.HANGUP) {
-                        let error = new NoSuchChannelError("Channel " + this.name + " is not available");
-                        let callbacks = this._varsCallbacks.get(name);
+                        const error = new NoSuchChannelError("Channel " + this.name + " is not available");
+                        const callbacks = this._varsCallbacks.get(name);
                         this._varsCallbacks.delete(name);
-                        callbacks.forEach(varCallback => {
+                        callbacks.forEach((varCallback) => {
                             AstUtil.maybeCallback(varCallback.fn, varCallback.context, error);
                         });
                         return;
@@ -516,9 +516,9 @@ class Channel extends AsteriskModel {
                 else {
                     this.updateVariable(name, response.Value, "ActionGetvar");
                 }
-                let callbacks = this._varsCallbacks.get(name);
+                const callbacks = this._varsCallbacks.get(name);
                 this._varsCallbacks.delete(name);
-                callbacks.forEach(varCallback => {
+                callbacks.forEach((varCallback) => {
                     AstUtil.maybeCallback(varCallback.fn, varCallback.context, null, response.Value);
                 });
             }, this);
@@ -533,7 +533,7 @@ class Channel extends AsteriskModel {
             bridge.removeChannel(this);
         });
         this._bridges.clear();
-        let toClear = [
+        const toClear = [
             this._extensionHistory,
             this._dialedChannelHistory,
             this._linkedChannelHistory,

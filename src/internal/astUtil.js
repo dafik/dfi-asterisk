@@ -38,16 +38,9 @@ class AstUtil {
         if (_.isBoolean(o)) {
             return o;
         }
-        let s;
-        if (_.isString(o)) {
-            s = o.toString();
-        }
-        else {
-            s = o.toString();
-        }
+        const s = _.isString(o) ? o.toString() : o.toString();
         return -1 !== TRUE_LITERALS.indexOf(s.toLowerCase());
     }
-    ;
     /**
      * Parses a string for caller id information.
      * The caller id string should be in the form <code>"Some Name" &lt;1234&gt;</code>.
@@ -58,7 +51,7 @@ class AstUtil {
      * @returns string[] a String[] with name (index 0) and number (index 1)
      */
     static parseCallerId(s) {
-        let result = [];
+        const result = [];
         let lbPosition;
         let rbPosition;
         let name;
@@ -97,7 +90,7 @@ class AstUtil {
      * @returns boolean true if the s was null in Asterisk, false otherwise.
      */
     static isNull(s) {
-        if (s === "" || s == null || typeof s == null || typeof s === "undefined") {
+        if (s === "" || s === null || typeof s === "undefined") {
             return true;
         }
         if (!(typeof s === "string")) {
@@ -105,9 +98,8 @@ class AstUtil {
         }
         return -1 !== NULL_LITERALS.indexOf(s.toLowerCase());
     }
-    ;
     static duration2sec(duration) {
-        let parts = duration.split(":");
+        const parts = duration.split(":");
         switch (parts.length) {
             case 1:
                 return parseInt(parts[0], 10);
@@ -146,7 +138,7 @@ class AstUtil {
         if (!message.ActionID) {
             message.ActionID = "AN_" + AstUtil.uniqueActionID();
         }
-        let rawStr = Object.keys(message).reduce((result, currentKey) => {
+        const rawStr = Object.keys(message).reduce((result, currentKey) => {
             if (currentKey !== "serialize") {
                 if (Array.isArray(message[currentKey])) {
                     message[currentKey].forEach((val) => {

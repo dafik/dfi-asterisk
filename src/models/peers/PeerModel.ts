@@ -54,12 +54,8 @@ class Peer extends AsteriskModel {
         attributes.Dynamic = AstUtil.isTrue(attributes.Dynamic) ? true : false;
 
         if (attributes.Status) {
-            let status = attributes.Status;
-            if (status.match(/OK \(.*\)/)) {
-                attributes.state = PeerState.byValue(2);
-            } else {
-                attributes.state = PeerState.byName(status);
-            }
+            const status = attributes.Status;
+            attributes.state = status.match(/OK \(.*\)/) ? PeerState.byValue(2) : PeerState.byName(status);
         } else {
             attributes.state = PeerState.byValue(0);
         }
@@ -151,7 +147,7 @@ class Peer extends AsteriskModel {
     }
 
     public removeOldHistory(): void {
-        let stateHistories = this.stateHistory;
+        const stateHistories = this.stateHistory;
         let entry;
         for (let i = stateHistories.length - 1; i >= 0; i -= 1) {
             entry = stateHistories[i];
@@ -167,11 +163,11 @@ class Peer extends AsteriskModel {
 
     private _stateChanged(date: number, state: PeerState) {
 
-        let stateHistory = this.stateHistory;
-        let oldState = this.state;
-        let historyEntry = new PeerStateHistoryEntry(date, state);
+        const stateHistory = this.stateHistory;
+        const oldState = this.state;
+        const historyEntry = new PeerStateHistoryEntry(date, state);
 
-        let last = stateHistory.length > 0 ? stateHistory[stateHistory.length - 1] : undefined;
+        const last = stateHistory.length > 0 ? stateHistory[stateHistory.length - 1] : undefined;
         if (last && last.state.status === state.status) {
             stateHistory.pop();
         } else if (stateHistory.length > 10) {
@@ -186,11 +182,11 @@ class Peer extends AsteriskModel {
     }
 
     private _addressChanged(date: number, address: Ip) {
-        let oldAddress = this.ip;
+        const oldAddress = this.ip;
         if (oldAddress && oldAddress.equal(address)) {
             return;
         }
-        let historyEntry = new PeerAddressHistoryEntry(date, address);
+        const historyEntry = new PeerAddressHistoryEntry(date, address);
         this.addressHistory.push(historyEntry);
 
         this.set(PROP_IP, address);
@@ -198,12 +194,11 @@ class Peer extends AsteriskModel {
     }
 }
 
-const EVENTS = Object.assign(
-    Object.assign({}, AsteriskModel.events),
-    {
-        PROPERTY_ADDRESS: Symbol("peer" + PROP_IP),
-        PROPERTY_STATE: Symbol("peer" + PROP_STATE)
-    }
-);
+const EVENTS = {
+    ...AsteriskModel.events,
+
+    PROPERTY_ADDRESS: Symbol("peer" + PROP_IP),
+    PROPERTY_STATE: Symbol("peer" + PROP_STATE)
+};
 
 export = Peer;

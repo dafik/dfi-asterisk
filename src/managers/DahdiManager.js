@@ -18,7 +18,7 @@ class DahdiManager extends AsteriskManager {
         if (!this.enabled) {
             return;
         }
-        let map = {};
+        const map = {};
         map[AST_EVENT.DAHDI_CHANNEL] = this._handleDahdiChannelEvent;
         map[AST_EVENT.HANGUP] = this._handleHangupEvent;
         this._mapEvents(map);
@@ -42,7 +42,7 @@ class DahdiManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        let action = {
+        const action = {
             Action: AST_ACTION.DAHDI_SHOW_CHANNELS,
             DAHDIChannel: 0
         };
@@ -78,7 +78,7 @@ class DahdiManager extends AsteriskManager {
                             }
                             event.channel = channel;
                         }
-                        let dahdiChannel = new Dahdi(event);
+                        const dahdiChannel = new Dahdi(event);
                         this.logger.info("Adding dahdiChannel " + dahdiChannel.name);
                         this._addChannel(dahdiChannel);
                     }
@@ -91,7 +91,7 @@ class DahdiManager extends AsteriskManager {
         this.channels.clear();
     }
     toJSON() {
-        let obj = super.toJSON();
+        const obj = super.toJSON();
         obj.collection = this.channels.toJSON();
         return obj;
     }
@@ -130,7 +130,7 @@ class DahdiManager extends AsteriskManager {
         }
     }
     _activeChanged(direction) {
-        let current = this.activeCount;
+        const current = this.activeCount;
         if (direction > 0) {
             this.setProp(P_PROP_ACTIVE_COUNT, current + 1);
         }
@@ -142,7 +142,7 @@ class DahdiManager extends AsteriskManager {
     _handleHangupEvent(event) {
         if (event.Channel.match(/DAHDI/)) {
             if (this._channelsByDahdiId.has(event.Channel)) {
-                let stat = this._channelsByDahdiId.get(event.Channel);
+                const stat = this._channelsByDahdiId.get(event.Channel);
                 this.channels.get(stat.id).channel = null;
                 this._channelsByDahdiId.delete(event.Channel);
                 this._activeChanged(-1);

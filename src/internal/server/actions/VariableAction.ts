@@ -1,8 +1,8 @@
 import BaseServerAction = require("./BaseAction");
 import {IDfiAMIResponseGetvar, IDfiCallbackError, IDfiCallbackResult} from "../../../definitions/interfaces";
 
-import {IAstActionGetvar, IAstActionSetvar} from "../../asterisk/actions";
 import {format} from "util";
+import {IAstActionGetvar, IAstActionSetvar} from "../../asterisk/actions";
 import AstUtil = require("../../astUtil");
 import AST_ACTION = require("../../asterisk/actionNames");
 
@@ -12,7 +12,7 @@ class VariableServerAction extends BaseServerAction {
 
         this._server.start()
             .then(() => {
-                let action: IAstActionGetvar = {
+                const action: IAstActionGetvar = {
                     Action: AST_ACTION.GET_VAR,
                     Variable: variable
                 };
@@ -24,7 +24,7 @@ class VariableServerAction extends BaseServerAction {
                     AstUtil.maybeCallback(callbackFn, context, null, response.Value);
                 });
             })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -36,7 +36,7 @@ class VariableServerAction extends BaseServerAction {
 
         this._server.start()
             .then(() => {
-                let action: IAstActionSetvar = {
+                const action: IAstActionSetvar = {
                     Action: AST_ACTION.SET_VAR,
                     Value: value,
                     Variable: variable
@@ -57,7 +57,7 @@ class VariableServerAction extends BaseServerAction {
                     AstUtil.maybeCallback(callbackFn, context);
                 });
             })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);

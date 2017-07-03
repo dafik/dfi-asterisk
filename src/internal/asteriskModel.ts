@@ -44,7 +44,7 @@ abstract class AsteriskModel extends DfiModel {
 
     public toString() {
         let sb = this.constructor.name;
-        let s = this.getProp("attributes").size;
+        const s = this.getProp("attributes").size;
         let i = 1;
 
         try {

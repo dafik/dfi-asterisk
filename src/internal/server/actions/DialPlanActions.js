@@ -9,17 +9,17 @@ class DialPlanServerAction extends BaseServerAction {
     getDialplans(callbackFn, context) {
         this._server.start()
             .then(() => {
-            let action = { Action: AST_ACTION.SHOW_DIALPLAN };
+            const action = { Action: AST_ACTION.SHOW_DIALPLAN };
             this._server.sendEventGeneratingAction(action, (err, response) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
                     return;
                 }
-                let dialplans = this._buildDialplans(response.events);
+                const dialplans = this._buildDialplans(response.events);
                 AstUtil.maybeCallbackOnce(callbackFn, context, null, dialplans);
             });
         })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -29,17 +29,17 @@ class DialPlanServerAction extends BaseServerAction {
     getDialplan(name, callbackFn, context) {
         this._server.start()
             .then(() => {
-            let action = { Action: AST_ACTION.SHOW_DIALPLAN, Context: name };
+            const action = { Action: AST_ACTION.SHOW_DIALPLAN, Context: name };
             this._server.sendEventGeneratingAction(action, (err, response) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
                     return;
                 }
-                let dialplan = this._buildDialplans(response.events).get(name);
+                const dialplan = this._buildDialplans(response.events).get(name);
                 AstUtil.maybeCallbackOnce(callbackFn, context, null, dialplan);
             });
         })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -47,7 +47,7 @@ class DialPlanServerAction extends BaseServerAction {
         });
     }
     _buildDialplans(events) {
-        let dialplans = new Map();
+        const dialplans = new Map();
         events.forEach((event) => {
             let context = dialplans.get(event.Context);
             if (!context) {

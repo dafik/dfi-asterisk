@@ -7,7 +7,7 @@ class VariableServerAction extends BaseServerAction {
     getGlobalVariable(variable, callbackFn, context) {
         this._server.start()
             .then(() => {
-            let action = {
+            const action = {
                 Action: AST_ACTION.GET_VAR,
                 Variable: variable
             };
@@ -18,7 +18,7 @@ class VariableServerAction extends BaseServerAction {
                 AstUtil.maybeCallback(callbackFn, context, null, response.Value);
             });
         })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -28,7 +28,7 @@ class VariableServerAction extends BaseServerAction {
     setGlobalVariable(variable, value, callbackFn, context) {
         this._server.start()
             .then(() => {
-            let action = {
+            const action = {
                 Action: AST_ACTION.SET_VAR,
                 Value: value,
                 Variable: variable
@@ -47,7 +47,7 @@ class VariableServerAction extends BaseServerAction {
                 AstUtil.maybeCallback(callbackFn, context);
             });
         })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);

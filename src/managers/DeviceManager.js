@@ -12,7 +12,7 @@ class DeviceManager extends AsteriskManager {
         if (!this.enabled) {
             return;
         }
-        let map = {};
+        const map = {};
         map[AST_EVENT.DEVICE_STATE_CHANGE] = this._handleDeviceStateChangeEvent;
         this._mapEvents(map);
     }
@@ -43,7 +43,7 @@ class DeviceManager extends AsteriskManager {
                                 // skip queue devices
                                 return;
                             }
-                            let device = new Device(event);
+                            const device = new Device(event);
                             this._addDevice(device);
                         }
                     }, this);

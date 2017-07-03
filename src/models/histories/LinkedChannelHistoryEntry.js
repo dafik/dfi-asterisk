@@ -5,38 +5,34 @@ const AsteriskHistoryEntry = require("../../internal/asteriskHistoryEntry");
  * Creates a new instance.
  */
 class LinkedChannelHistoryEntry extends AsteriskHistoryEntry {
-    constructor(date, entry) {
-        super(date, entry);
-        this.dateUnlinked = null;
-    }
     /**
      * Returns the channel that has been linked.
      */
     get channel() {
         return this.entry;
     }
-    ;
+    constructor(date, entry) {
+        super(date, entry);
+        this.dateUnlinked = null;
+    }
     /**
      * Returns the date the channel was linked.
      */
     getDateLinked() {
         return this.date;
     }
-    ;
     /**
      * Returns the date the channel was unlinked.
      */
     getDateUnlinked() {
         return this.dateUnlinked;
     }
-    ;
     /**
      * Sets the date the channel was unlinked.
      */
     setDateUnlinked(dateUnlinked) {
         this.dateUnlinked = dateUnlinked;
     }
-    ;
     toString() {
         let sb;
         sb = "LinkedChannelHistoryEntry[";
@@ -45,7 +41,6 @@ class LinkedChannelHistoryEntry extends AsteriskHistoryEntry {
         sb += "channel=" + this.channel.toString() + "]";
         return sb;
     }
-    ;
     toJSON() {
         return this.channel.id;
     }

@@ -5,7 +5,6 @@ import AsteriskModel = require("../asteriskModel");
 import AsteriskCollection = require("../asteriskCollection");
 import AST_EVENT = require("../asterisk/eventNames");
 
-
 class EventDispatcher extends DfiObject {
 
     constructor(server: AsteriskServer) {
@@ -22,7 +21,7 @@ class EventDispatcher extends DfiObject {
         this.getProp("subscriptions").get(event).add(manager);
     }
 
-    public subscribeEvents<M extends AsteriskModel, C extends AsteriskCollection<M>, T extends AsteriskManager<M, C>>(events: Array<string>, manager: T) {
+    public subscribeEvents<M extends AsteriskModel, C extends AsteriskCollection<M>, T extends AsteriskManager<M, C>>(events: string[], manager: T) {
         events.forEach((event) => {
             this.subscribeEvent(event, manager);
         }, this);
@@ -36,7 +35,7 @@ class EventDispatcher extends DfiObject {
 
         if (this.getProp("subscriptions").has(event.Event)) {
             this.logger.debug("event %s", event.Event);
-            let sub = this.getProp("subscriptions").get(event.Event);
+            const sub = this.getProp("subscriptions").get(event.Event);
             sub.forEach((manager) => {
                 manager.handleEvent(event);
             });

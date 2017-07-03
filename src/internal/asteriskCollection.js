@@ -15,7 +15,7 @@ class AsteriskCollection extends DfiCollection {
         super.destroy();
     }
     toMap() {
-        let collection = this.getProp(COLLECTION);
+        const collection = this.getProp(COLLECTION);
         return new Map([...collection.entries()]);
     }
 }

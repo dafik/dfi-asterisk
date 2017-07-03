@@ -1,4 +1,4 @@
-var xx = {
+const xx = {
     "AGENT": [
         "agentcalled",
         "agentcomplete",
@@ -183,13 +183,13 @@ var xx = {
     ]
 };
 
-var xx = [
+const xx0 = [
  "AGENT","AGI","SYSTEM","AOC","COMMAND","CALL","SECURITY","CDR","CEL","CLASS","DTMF","REPORTING","DIALPLAN","USER"
 ];
-var xx1 = [
+const xx1 = [
     "AGENT", "SYSTEM", "COMMAND", "CALL", "CLASS", "DTMF", "DIALPLAN", "USER"
 ];
-var xx2 = [
+const xx2 = [
      "AGI",  "AOC",  "SECURITY", "CDR", "CEL",   "REPORTING",  "USER"
 ];
 

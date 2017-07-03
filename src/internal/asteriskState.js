@@ -7,8 +7,8 @@ class AsteriskState {
     }
     static byValue(status, stateClass) {
         let tmp;
-        let states = stateClass.STATES;
-        for (let key in states) {
+        const states = stateClass.STATES;
+        for (const key in states) {
             if (states.hasOwnProperty(key) && states[key] === status) {
                 tmp = new stateClass(states[key], key);
                 return tmp;

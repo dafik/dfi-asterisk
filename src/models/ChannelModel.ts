@@ -148,8 +148,8 @@ class Channel extends AsteriskModel {
                 return;
             }
 
-            let peerName = this.name.split("-")[0];
-            let peer = this._server.managers.peer.peers.get(peerName);
+            const peerName = this.name.split("-")[0];
+            const peer = this._server.managers.peer.peers.get(peerName);
             if (peer) {
                 peer.addChannel(this);
                 this._peers.add(peer);
@@ -274,7 +274,7 @@ class Channel extends AsteriskModel {
         return this.getProp(P_PROP_VARIABLES);
     }
 
-    private get _extensionHistory(): Array<ExtensionHistoryEntry> {
+    private get _extensionHistory(): ExtensionHistoryEntry[] {
         return this.getProp(P_PROP_EXTENSION_HISTORY);
     }
 
@@ -392,7 +392,7 @@ class Channel extends AsteriskModel {
     }
 
     public wasInState(state: ChannelStates): boolean {
-        for (let historyEntry of this._stateHistory) {
+        for (const historyEntry of this._stateHistory) {
             if (historyEntry.state.status === state) {
                 return true;
             }
@@ -410,7 +410,7 @@ class Channel extends AsteriskModel {
 
     public stateChanged(date: number, state: ChannelState) {
 
-        let oldState = this.state;
+        const oldState = this.state;
         if (oldState && oldState.status === state.status) {
             return;
         }
@@ -443,7 +443,7 @@ class Channel extends AsteriskModel {
         return this._extensionHistory[0].extension;
     }
 
-    public getExtensionHistory(): Array<ExtensionHistoryEntry> {
+    public getExtensionHistory(): ExtensionHistoryEntry[] {
 
         return [...this._extensionHistory];
     }
@@ -466,7 +466,7 @@ class Channel extends AsteriskModel {
         this.setProp(P_PROP_CDR, callDetailRecord);
     }
 
-    public getDialedChannelHistory(): Array<DialedChannelHistoryEntry> {
+    public getDialedChannelHistory(): DialedChannelHistoryEntry[] {
         return [...this._dialedChannelHistory];
 
     }
@@ -483,7 +483,7 @@ class Channel extends AsteriskModel {
 
     public channelUnlinked(date: number) {
 
-        let historyEntry = this._linkedChannelHistory.length === 0 ? null : this._linkedChannelHistory[this._linkedChannelHistory.length - 1];
+        const historyEntry = this._linkedChannelHistory.length === 0 ? null : this._linkedChannelHistory[this._linkedChannelHistory.length - 1];
         if (historyEntry != null) {
             historyEntry.setDateUnlinked(date);
         }
@@ -494,7 +494,7 @@ class Channel extends AsteriskModel {
 // action methods
 
     public hangup(cause: HangupCause) {
-        let action: IAstActionHangup = {
+        const action: IAstActionHangup = {
             Action: AST_ACTION.HANGUP,
             Channel: this.name
         };
@@ -507,7 +507,7 @@ class Channel extends AsteriskModel {
     }
 
     public setAbsoluteTimeout(seconds: number) {
-        let action: IAstActionAbsoluteTimeout = {
+        const action: IAstActionAbsoluteTimeout = {
             Action: AST_ACTION.ABSOLUTE_TIMEOUT,
             Channel: this.name,
             Timeout: seconds.toString()
@@ -517,7 +517,7 @@ class Channel extends AsteriskModel {
     }
 
     public redirect(context: string, exten: string, priority: number) {
-        let action: IAstActionRedirect = {
+        const action: IAstActionRedirect = {
             Action: AST_ACTION.REDIRECT,
             Channel: this.name,
             Context: context,
@@ -530,7 +530,7 @@ class Channel extends AsteriskModel {
 
     public redirectBothLegs(context, exten, priority) {
 
-        let action: IAstActionRedirect = {
+        const action: IAstActionRedirect = {
             Action: AST_ACTION.REDIRECT,
             Channel: this.name,
             Context: context,
@@ -552,7 +552,7 @@ class Channel extends AsteriskModel {
             throw new IllegalArgumentError("DTMF digit to send must not be null");
         }
 
-        let action: IAstActionPlayDTMF = {
+        const action: IAstActionPlayDTMF = {
             Action: AST_ACTION.PLAY_DTMF,
             Channel: this.name,
             Digit: digit
@@ -561,7 +561,7 @@ class Channel extends AsteriskModel {
     }
 
     public startMonitoring(filename: string, format: string, mix: boolean) {
-        let action: IAstActionMonitor = {
+        const action: IAstActionMonitor = {
             Action: AST_ACTION.MONITOR,
             Channel: this.name,
             File: filename,
@@ -576,7 +576,7 @@ class Channel extends AsteriskModel {
         if (filename == null) {
             throw new IllegalArgumentError("New filename must not be null");
         }
-        let action: IAstActionChangeMonitor = {
+        const action: IAstActionChangeMonitor = {
             Action: AST_ACTION.CHANGE_MONITOR,
             Channel: this.name,
             File: filename
@@ -585,7 +585,7 @@ class Channel extends AsteriskModel {
     }
 
     public stopMonitoring() {
-        let action: IAstActionStopMonitor = {
+        const action: IAstActionStopMonitor = {
             Action: AST_ACTION.STOP_MONITOR,
             Channel: this.name
         };
@@ -593,7 +593,7 @@ class Channel extends AsteriskModel {
     }
 
     public pauseMonitoring() {
-        let action: IAstActionPauseMonitor = {
+        const action: IAstActionPauseMonitor = {
             Action: AST_ACTION.PAUSE_MONITOR,
             Channel: this.name
         };
@@ -601,7 +601,7 @@ class Channel extends AsteriskModel {
     }
 
     public unpauseMonitoring() {
-        let action: IAstActionUnpauseMonitor = {
+        const action: IAstActionUnpauseMonitor = {
             Action: AST_ACTION.UNPAUSE_MONITOR,
             Channel: this.name
         };
@@ -609,7 +609,7 @@ class Channel extends AsteriskModel {
     }
 
     public setVariable(name: string, value: string) {
-        let action: IAstActionSetvar = {
+        const action: IAstActionSetvar = {
             Action: AST_ACTION.SET_VAR,
             Channel: this.name,
             Value: value,
@@ -625,7 +625,7 @@ class Channel extends AsteriskModel {
     }
 
     public updateVariable(name: string, value: string, srcEvent?: string) {
-        let variables = this._variables;
+        const variables = this._variables;
         if (variables.has(name)) {
             variables.get(name).value = value;
         } else {
@@ -635,7 +635,7 @@ class Channel extends AsteriskModel {
 
     public getVariable(name: string, callbackFn: IDfiCallbackResult, context?): void {
 
-        let value = this._variables.get(name);
+        const value = this._variables.get(name);
         if (value !== undefined) {
             AstUtil.maybeCallbackOnce(callbackFn, context, value);
             return;
@@ -645,7 +645,7 @@ class Channel extends AsteriskModel {
         } else {
             this._varsCallbacks.set(name, [{context, fn: callbackFn}]);
 
-            let action: IAstActionGetvar = {
+            const action: IAstActionGetvar = {
                 Action: AST_ACTION.GET_VAR,
                 Channel: this.name,
                 Variable: name
@@ -658,11 +658,11 @@ class Channel extends AsteriskModel {
                 }
                 if (err) {
                     if (this.state.status !== ChannelStates.HANGUP) {
-                        let error = new NoSuchChannelError("Channel " + this.name + " is not available");
+                        const error = new NoSuchChannelError("Channel " + this.name + " is not available");
 
-                        let callbacks = this._varsCallbacks.get(name);
+                        const callbacks = this._varsCallbacks.get(name);
                         this._varsCallbacks.delete(name);
-                        callbacks.forEach(varCallback => {
+                        callbacks.forEach((varCallback) => {
                             AstUtil.maybeCallback(varCallback.fn, varCallback.context, error);
                         });
                         return;
@@ -673,9 +673,9 @@ class Channel extends AsteriskModel {
                     this.updateVariable(name, response.Value, "ActionGetvar");
                 }
 
-                let callbacks = this._varsCallbacks.get(name);
+                const callbacks = this._varsCallbacks.get(name);
                 this._varsCallbacks.delete(name);
-                callbacks.forEach(varCallback => {
+                callbacks.forEach((varCallback) => {
                     AstUtil.maybeCallback(varCallback.fn, varCallback.context, null, response.Value);
                 });
 
@@ -695,7 +695,7 @@ class Channel extends AsteriskModel {
         });
         this._bridges.clear();
 
-        let toClear = [
+        const toClear = [
             this._extensionHistory,
             this._dialedChannelHistory,
             this._linkedChannelHistory,

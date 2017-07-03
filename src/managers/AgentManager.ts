@@ -30,7 +30,7 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
 
         this.server.once(this.serverEvents.BEFORE_INIT, () => {
             if (this.server.managers.queue.enabled) {
-                let queueManager = this.server.managers.queue;
+                const queueManager = this.server.managers.queue;
 
                 queueManager.on(QueueManager.events.MEMBER_ADD, this._handleQueueAddMember, this);
                 queueManager.on(QueueManager.events.MEMBER_REMOVE, this._handleQueueRemoveMember, this);
@@ -45,7 +45,7 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
             this.logger.error("unhandled event %s", event.Event);
         }
 
-        let map: IEventHandlersMap = {};
+        const map: IEventHandlersMap = {};
 
         map[AST_EVENT.AGENT_CALLED] = this._handleAgentCalledEvent;
         map[AST_EVENT.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
@@ -81,7 +81,6 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
             AstUtil.maybeCallbackOnce(callbackFn, context, null, "agentManager");
         }
 
-
         this.server.logger.info('starting manager "AgentManager"');
 
         if (!this.enabled) {
@@ -89,8 +88,7 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
             return;
         }
 
-
-        let action: IAstActionAgents = {Action: AST_ACTION.AGENTS};
+        const action: IAstActionAgents = {Action: AST_ACTION.AGENTS};
         this.server.sendEventGeneratingAction(action, (err, re) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -114,17 +112,12 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
     /**
      * Return or create (dynamic) the requested agent.
      */
-    private _getOrCreateAgent(event: TIAgent|TIInterface): Agent {
-        let name: string;
-        if ((event as TIAgent).Agent) {
-            name = (event as TIAgent).Agent;
-        } else {
-            name = (event as TIInterface).Interface;
-        }
+    private _getOrCreateAgent(event: TIAgent | TIInterface): Agent {
+        const name: string = ((event as TIAgent).Agent) ? (event as TIAgent).Agent : (event as TIInterface).Interface;
 
         let agent = this.agents.get(name);
         if (!agent) {
-            let options: IDfiAstModelAttribsAgent = {
+            const options: IDfiAstModelAttribsAgent = {
                 Device: this.server.managers.device.devices.get(name),
                 Event: "agentManager:_getOrCreateAgent",
                 Name: name,
@@ -143,7 +136,7 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
      */
     private _handleAgentCalledEvent(event: IAstEventAgentCalled): void {
         this.logger.debug("handle  AgentCalled agent %j", event.Interface);
-        let agent = this._getOrCreateAgent(event);
+        const agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentCalledEvent for unknown agent %j", event.Interface);
             return;
@@ -158,7 +151,7 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
     private _handleAgentConnectEvent(event: IAstEventAgentConnect): void {
         this.logger.debug("handle  AgentConnect agent %j", event.Interface);
 
-        let agent = this._getOrCreateAgent(event);
+        const agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentConnectEvent for unknown agent %j", event.Interface, event.Channel);
             return;
@@ -172,7 +165,7 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
     private _handleAgentLoginEvent(event: IAstEventAgentLogin): void {
         this.logger.debug("handle  AgentLogin agent %j", event.Agent);
 
-        let agent = this._getOrCreateAgent(event);
+        const agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentLoginEvent for unknown agent %s ", event.Agent);
             return;
@@ -186,7 +179,7 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
     private _handleAgentLogoffEvent(event: IAstEventAgentLogoff): void {
         this.logger.debug("handle  AgentLogoff agent %j", event.Agent);
 
-        let agent = this._getOrCreateAgent(event);
+        const agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentLogoffEvent for unknown agent %s ", event.Agent);
             return;
@@ -197,7 +190,7 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
     private _handleAgentCompleteEvent(event: IAstEventAgentComplete): void {
         this.logger.debug("handle  AgentComplete agent %j", event.Interface);
 
-        let agent = this._getOrCreateAgent(event);
+        const agent = this._getOrCreateAgent(event);
         if (agent == null) {
             this.logger.error("Ignored AgentCompleteEvent for unknown agent %j. Agents: %j", event.Interface);
             return;
@@ -211,7 +204,7 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
 
         let agent = this.agents.get(member.id);
         if (!agent) {
-            let options: IDfiAstModelAttribsAgent = {
+            const options: IDfiAstModelAttribsAgent = {
                 Device: this.server.managers.device.devices.get(member.id),
                 Event: "agentManager:_handleQueueAddMember",
                 Name: member.id,
@@ -229,7 +222,7 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
 
     private _handleQueueRemoveMember(member: QueueMember, queue: Queue): void {
         this.logger.debug("handle  QueueRemoveMember agent %j", member.id);
-        let agent = this.agents.get(member.id);
+        const agent = this.agents.get(member.id);
         if (!agent) {
             return;
         }

@@ -1,9 +1,9 @@
 import BaseServerAction = require("./BaseAction");
 import {IDfiAMICallbackError, IDfiDBGetCallback} from "../../../definitions/interfaces";
 
+import {format} from "util";
 import {IAstActionDBDel, IAstActionDBDelTree, IAstActionDBGet, IAstActionDBPut} from "../../asterisk/actions";
 import {IAstEventDBGetResponse} from "../../asterisk/events";
-import {format} from "util";
 import AstUtil = require("../../astUtil");
 import AST_ACTION = require("../../asterisk/actionNames");
 
@@ -12,7 +12,7 @@ class DBServerAction extends BaseServerAction {
     public dbGet(family: string, key: string, callbackFn: IDfiDBGetCallback, context?) {
         this._server.start()
             .then(() => {
-                let action: IAstActionDBGet = {
+                const action: IAstActionDBGet = {
                     Action: AST_ACTION.DB_GET,
                     Family: family,
                     Key: key
@@ -22,7 +22,7 @@ class DBServerAction extends BaseServerAction {
                         AstUtil.maybeCallbackOnce(callbackFn, context, err);
                         return;
                     }
-                    let dbgre = response.events.shift();
+                    const dbgre = response.events.shift();
 
                     AstUtil.maybeCallbackOnce(callbackFn, context, null, {
                         Family: dbgre.Family,
@@ -33,10 +33,9 @@ class DBServerAction extends BaseServerAction {
 
                 });
             })
-            .catch(error => error)
-            .then((err) => {
-                if (err) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+                if (error) {
+                    AstUtil.maybeCallbackOnce(callbackFn, context, error);
                 }
             });
     }
@@ -44,7 +43,7 @@ class DBServerAction extends BaseServerAction {
     public dbDel(family: string, variable: string, callbackFn: IDfiAMICallbackError, context?) {
         this._server.start()
             .then(() => {
-                let action: IAstActionDBDel = {
+                const action: IAstActionDBDel = {
                     Action: AST_ACTION.DB_DEL,
                     Family: family,
                     Key: variable
@@ -65,10 +64,9 @@ class DBServerAction extends BaseServerAction {
 
                 });
             })
-            .catch(error => error)
-            .then((err) => {
-                if (err) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+                if (error) {
+                    AstUtil.maybeCallbackOnce(callbackFn, context, error);
                 }
             });
     }
@@ -76,7 +74,7 @@ class DBServerAction extends BaseServerAction {
     public dbDelTree(family: string, variable: string, callbackFn: IDfiAMICallbackError, context?) {
         this._server.start()
             .then(() => {
-                let action: IAstActionDBDelTree = {
+                const action: IAstActionDBDelTree = {
                     Action: AST_ACTION.DB_DEL_TREE,
                     Family: family,
                     Key: variable
@@ -98,10 +96,9 @@ class DBServerAction extends BaseServerAction {
 
                 }, context);
             })
-            .catch(error => error)
-            .then((err) => {
-                if (err) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+                if (error) {
+                    AstUtil.maybeCallbackOnce(callbackFn, context, error);
                 }
             });
     }
@@ -109,7 +106,7 @@ class DBServerAction extends BaseServerAction {
     public dbPut(family: string, variable: string, value: string, callbackFn: IDfiAMICallbackError, context?) {
         this._server.start()
             .then(() => {
-                let action: IAstActionDBPut = {
+                const action: IAstActionDBPut = {
                     Action: AST_ACTION.DB_PUT,
                     Family: family,
                     Key: variable,
@@ -131,8 +128,7 @@ class DBServerAction extends BaseServerAction {
 
                 });
             })
-            .catch(error => error)
-            .then((err) => {
+            .catch((err) => {
                 if (err) {
                     AstUtil.maybeCallbackOnce(callbackFn, context, err);
                 }

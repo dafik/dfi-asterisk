@@ -3,6 +3,15 @@ const DfiModel = require("local-dfi-base/src/dfiModel");
 const AsteriskState = require("./asteriskState");
 let getServerInstance;
 class AsteriskModel extends DfiModel {
+    get sourceEvent() {
+        return this.getProp("sourceEvent");
+    }
+    get _server() {
+        if (typeof getServerInstance !== "function") {
+            getServerInstance = require("../asteriskServerInstance");
+        }
+        return getServerInstance();
+    }
     constructor(attributes, options) {
         options = options || {};
         options.loggerName = options.loggerName || "dfi:as:";
@@ -22,21 +31,12 @@ class AsteriskModel extends DfiModel {
             }
         });
     }
-    get sourceEvent() {
-        return this.getProp("sourceEvent");
-    }
-    get _server() {
-        if (typeof getServerInstance !== "function") {
-            getServerInstance = require("../asteriskServerInstance");
-        }
-        return getServerInstance();
-    }
     destroy() {
         super.destroy();
     }
     toString() {
         let sb = this.constructor.name;
-        let s = this.getProp("attributes").size;
+        const s = this.getProp("attributes").size;
         let i = 1;
         try {
             sb += "[";

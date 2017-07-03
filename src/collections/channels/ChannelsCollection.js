@@ -46,9 +46,9 @@ class Channels extends AsteriskCollection {
         if (channel.sourceEvent === AST_EVENT.DAHDI_SHOW_CHANNELS) {
             return;
         }
-        let name = channel.name;
-        let parts = name.split(SEPARATOR);
-        let technology = parts.shift();
+        const name = channel.name;
+        const parts = name.split(SEPARATOR);
+        const technology = parts.shift();
         this.getProp(P_PROP_CHANNELS_BY_NAME)[name] = channel;
         if (!this.getProp(P_PROP_CHANNELS_BY_TECH).has(technology)) {
             this.getProp(P_PROP_CHANNELS_BY_TECH).set(technology, new Map());
@@ -56,9 +56,9 @@ class Channels extends AsteriskCollection {
         this.getProp(P_PROP_CHANNELS_BY_TECH).get(technology).set(parts.join(SEPARATOR), channel);
     }
     _onChannelRemove(channel) {
-        let name = channel.name;
-        let parts = name.split(SEPARATOR);
-        let technology = parts.shift();
+        const name = channel.name;
+        const parts = name.split(SEPARATOR);
+        const technology = parts.shift();
         this.getProp(P_PROP_CHANNELS_BY_NAME).delete(name);
         this.getProp(P_PROP_CHANNELS_BY_TECH).get(technology).delete(parts.join(SEPARATOR));
         if (this.getProp(P_PROP_CHANNELS_BY_TECH).get(technology).size === 0) {

@@ -24,6 +24,9 @@ const PROP_MANAGERS = "managers";
 const PROP_VERSION = "version";
 const PROP_CONFIG = "config";
 class AsteriskServer extends DfiEventObject {
+    static get events() {
+        return EVENTS;
+    }
     constructor(options) {
         options.loggerName = options.loggerName || "dfi:as:";
         super(options);
@@ -40,9 +43,6 @@ class AsteriskServer extends DfiEventObject {
         this.setProp(PROP_ACTIONS, new ServerActions(this));
         this.setProp(PROP_MANAGERS, new ServerManagers(this));
         this.setProp(PROP_MULTIPART_RESPONSE_HANDLER, this._onMultipartResponse.bind(this));
-    }
-    static get events() {
-        return EVENTS;
     }
     get managers() {
         return this.getProp(PROP_MANAGERS);
@@ -71,10 +71,9 @@ class AsteriskServer extends DfiEventObject {
     get _ami() {
         return this.getProp(PROP_AMI);
     }
-    ;
     start() {
         return new Promise((resolve, reject) => {
-            this._initializeIfNeeded(err => {
+            this._initializeIfNeeded((err) => {
                 if (err) {
                     reject(err);
                     return;
@@ -131,30 +130,24 @@ class AsteriskServer extends DfiEventObject {
             }
             AstUtil.maybeCallbackOnce(callbackFn, context, null, response);
         })
-            .catch(error => error)
-            .then((response) => {
+            .catch((response) => {
             if (response instanceof Error || response.Response === "Error") {
-                let error;
-                let message;
-                if (response.Response === "Error") {
-                    message = response.Message;
-                }
-                else {
-                    message = response.message;
-                }
-                error = Object.assign(new Error(message), { action });
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                const message = response.Response === "Error" ? response.Message : response.message;
+                const errorLocal = response instanceof Error ?
+                    Object.assign(response, { action }) :
+                    Object.assign(new Error(message), { action });
+                AstUtil.maybeCallbackOnce(callbackFn, context, errorLocal);
             }
         });
     }
     sendActions(actions, callbackFn, context) {
         let wait = actions.length;
-        let errors = [];
-        let responses = [];
+        const errors = [];
+        const responses = [];
         if (wait === 0) {
             AstUtil.maybeCallbackOnce(callbackFn, context, errors.length > 0 ? errors : null, responses);
         }
-        actions.forEach(action => {
+        actions.forEach((action) => {
             this.sendAction(action, (err, resp) => {
                 wait--;
                 if (err) {
@@ -178,8 +171,8 @@ class AsteriskServer extends DfiEventObject {
         this.logger.debug('action eg: "%s" id: %s', action.Action, action.ActionID);
         this.logger.trace("sending %s %j", action.Action, action);
         this.logger.trace("\n\n %j \n", action);
-        let responses = this._getResponses();
-        let responseMulti = {
+        const responses = this._getResponses();
+        const responseMulti = {
             ctx: context,
             events: [],
             fn: callbackFn
@@ -211,8 +204,8 @@ class AsteriskServer extends DfiEventObject {
             }
             this.getProp(PROP_MULTIPART_RESPONSE_HANDLER)(response);
         })
-            .catch(error => error)
-            .then(error => {
+            .catch((error) => error)
+            .then((error) => {
             if (error instanceof Error) {
                 AstUtil.maybeCallback(callbackFn, context, error);
             }
@@ -222,20 +215,20 @@ class AsteriskServer extends DfiEventObject {
         return this.getProp(PROP_MULTIPART_RESPONSES);
     }
     _finishMultipartResponse(response, resp) {
-        let responses = this._getResponses();
+        const responses = this._getResponses();
         responses.delete(response.ActionID);
         if (responses.size === 0) {
             this._ami.removeListener("event", this.getProp(PROP_MULTIPART_RESPONSE_HANDLER));
         }
-        let fn = resp.fn;
-        let ctx = resp.ctx;
+        const fn = resp.fn;
+        const ctx = resp.ctx;
         delete resp.fn;
         delete resp.ctx;
         AstUtil.maybeCallback(fn, ctx, null, resp);
     }
     _onMultipartResponse(response) {
         if (response.ActionID) {
-            let resp = this._getResponses().get(response.ActionID);
+            const resp = this._getResponses().get(response.ActionID);
             if (resp) {
                 if (response.EventList) {
                     if (response.EventList === "start") {
@@ -256,21 +249,12 @@ class AsteriskServer extends DfiEventObject {
         }
     }
     _initializeManagersOptions(options) {
-        let config = this.getProp(PROP_CONFIG);
-        Object.assign(config.managers, Object.assign({
-            agent: true,
-            bridge: true,
-            channel: true,
-            dahdi: true,
-            device: true,
-            meetMe: true,
-            peer: true,
-            queue: true
-        }, options));
+        const config = this.getProp(PROP_CONFIG);
+        Object.assign(config.managers, Object.assign({ agent: true, bridge: true, channel: true, dahdi: true, device: true, meetMe: true, peer: true, queue: true }, options));
         this.setProp(PROP_CONFIG, config);
     }
     _initializeEventConnection() {
-        let eventConnection = new AmiClient({
+        const eventConnection = new AmiClient({
             addTime: true,
             attemptsDelay: 1000,
             emitEventsByTypes: false,
@@ -286,8 +270,8 @@ class AsteriskServer extends DfiEventObject {
         // AsteriskServer.registerResponseClasses(eventConnection);
     }
     _initializeAmiHandlers() {
-        let handlers = {};
-        for (let eventName in amiHandlers) {
+        const handlers = {};
+        for (const eventName in amiHandlers) {
             if (_.has(amiHandlers, eventName)) {
                 handlers[eventName] = amiHandlers[eventName].bind(this);
             }
@@ -295,12 +279,11 @@ class AsteriskServer extends DfiEventObject {
         this.setProp(PROP_AMI_HANDLERS, handlers);
     }
     _initializeIfNeeded(callbackFn, context) {
-        let initialize = () => {
-            let ami = this._ami;
+        const initialize = () => {
+            const ami = this._ami;
             this.emit(AsteriskServer.events.BEFORE_INIT);
             if (typeof ami === "undefined") {
-                let err = new Error("nor event connection object and proper configuration provided");
-                onInitializedError.call(this, err);
+                onInitializedError.call(this, new Error("nor event connection object and proper configuration provided"));
             }
             if (_.isFunction(callbackFn)) {
                 this.once(AsteriskServer.events.INIT, () => {
@@ -316,7 +299,7 @@ class AsteriskServer extends DfiEventObject {
             ami.once("amiConnectionTimeout", errorFn);
             ami.once("amiConnectionError", errorFn);
             if (!ami.isConnected) {
-                let opts = this.getProp(PROP_CONFIG).server;
+                const opts = this.getProp(PROP_CONFIG).server;
                 this.setProp(PROP_INITIALIZATION_STARTED, true);
                 this._bindAmiEvents();
                 ami.connect(opts.username, opts.secret, { host: opts.host, port: parseInt(opts.port, 10) })
@@ -325,11 +308,11 @@ class AsteriskServer extends DfiEventObject {
         };
         function onConnectionError(event) {
             // TODO reconnect
-            let err = new ManagerCommunication("Unable to login: " + event.error.message + ", " + event.error);
+            const err = new ManagerCommunication("Unable to login: " + event.error.message + ", " + event.error);
             onInitializedError.call(this, err);
         }
         function onConnected() {
-            let self = this;
+            const self = this;
             async.series([
                 self.actions.core.getAvailableActions.bind(self.actions.core),
                 self.actions.core.filterRTCP.bind(self.actions.core),
@@ -361,7 +344,7 @@ class AsteriskServer extends DfiEventObject {
             this.logger.debug("on onInitializedError %j", err);
             AstUtil.maybeCallback(callbackFn, context, err);
         }
-        let errorFn = onConnectionError.bind(this);
+        const errorFn = onConnectionError.bind(this);
         if (this.initialized) {
             onInitialized.call(this);
         }
@@ -381,7 +364,7 @@ class AsteriskServer extends DfiEventObject {
              */
             function run() {
                 let wEvent;
-                let pendingEvents = this.getProp(PROP_PENDING_EVENTS);
+                const pendingEvents = this.getProp(PROP_PENDING_EVENTS);
                 if (pendingEvents.length > 0) {
                     this.logger.info("begin issuing pending events");
                     while (pendingEvents.length > 0) {
@@ -394,8 +377,8 @@ class AsteriskServer extends DfiEventObject {
                 this._ami.on("event", handlers.event); // restore original handler
             }
         }
-        let handlers = this.getProp(PROP_AMI_HANDLERS);
-        for (let eventName in handlers) {
+        const handlers = this.getProp(PROP_AMI_HANDLERS);
+        for (const eventName in handlers) {
             if (handlers.hasOwnProperty(eventName)) {
                 if (eventName !== "event") {
                     if (eventName === "waitHandler") {
@@ -455,12 +438,6 @@ const amiHandlers = {
         }
     }
 };
-const EVENTS = Object.assign(Object.assign({}, DfiEventObject.events), {
-    BEFORE_INIT: Symbol("astBeforeInitialized"),
-    BEFORE_REINIT: Symbol("astBeforeReInitialized"),
-    CONNECTED: Symbol("astConnected"),
-    INIT: Symbol("astInitialized"),
-    REINIT: Symbol("astReInitialized")
-});
+const EVENTS = Object.assign({}, DfiEventObject.events, { BEFORE_INIT: Symbol("astBeforeInitialized"), BEFORE_REINIT: Symbol("astBeforeReInitialized"), CONNECTED: Symbol("astConnected"), INIT: Symbol("astInitialized"), REINIT: Symbol("astReInitialized") });
 module.exports = AsteriskServer;
 //# sourceMappingURL=asteriskServer.js.map

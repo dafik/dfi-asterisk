@@ -81,17 +81,17 @@ class Queue extends AsteriskModel {
      * @param [source]
      */
     createNewEntry(channel, reportedPosition, dateReceived, source) {
-        let attribs = {
+        const attribs = {
             Event: source ? source : "QueueModel:createNewEntry",
             ReportedPosition: reportedPosition,
             channel,
             dateJoined: dateReceived,
             queue: this
         };
-        let qe = new QueueEntry(attribs);
-        let delay = this.serviceLevel * 1000;
+        const qe = new QueueEntry(attribs);
+        const delay = this.serviceLevel * 1000;
         if (delay > 0) {
-            let timerTask = new ServiceLevelTimerTask(this, qe);
+            const timerTask = new ServiceLevelTimerTask(this, qe);
             timerTask.schedule(delay);
             this._serviceLevelTimerTasks.set(qe, timerTask);
         }
@@ -112,13 +112,13 @@ class Queue extends AsteriskModel {
      */
     removeEntry(entry, dateReceived) {
         if (this._serviceLevelTimerTasks.has(entry)) {
-            let timerTask = this._serviceLevelTimerTasks.get(entry);
+            const timerTask = this._serviceLevelTimerTasks.get(entry);
             timerTask.cancel();
             this._serviceLevelTimerTasks.delete(entry);
         }
-        let index = this._entries.indexOf(entry);
+        const index = this._entries.indexOf(entry);
         if (-1 !== index) {
-            let changed = this._entries.splice(index, 1);
+            const changed = this._entries.splice(index, 1);
             if (changed) {
                 // Keep the lock !
                 this._shift();
@@ -129,7 +129,7 @@ class Queue extends AsteriskModel {
         }
     }
     getEntry(channelNameOrPosition) {
-        let tmp = parseInt(channelNameOrPosition, 10);
+        const tmp = parseInt(channelNameOrPosition, 10);
         if (tmp === channelNameOrPosition) {
             return this._getEntryByPosition(channelNameOrPosition);
         }
@@ -212,7 +212,7 @@ class Queue extends AsteriskModel {
         // positions in asterisk start at 1, but list starts at 0
         position--;
         let foundEntry = null;
-        this._entries.forEach(entry => {
+        this._entries.forEach((entry) => {
             if (entry.position === position) {
                 foundEntry = entry;
             }
@@ -247,12 +247,6 @@ Queue.map = new Map([
     ["ServicelevelPerf", PROP_SERVICE_LEVEL_PERF],
     ["Weight", PROP_WEIGHT]
 ]);
-const EVENTS = Object.assign(Object.assign({}, AsteriskModel.events), {
-    ENTRY_ADD: Symbol("entry:add"),
-    ENTRY_LEAVE: Symbol("entry:leave"),
-    MEMBER_ADD: Symbol("member:add"),
-    MEMBER_LEAVE: Symbol("member:leave"),
-    SERVICE_LEVEL_EXCEEDED: Symbol("entry:ServiceLevelExceeded")
-});
+const EVENTS = Object.assign({}, AsteriskModel.events, { ENTRY_ADD: Symbol("entry:add"), ENTRY_LEAVE: Symbol("entry:leave"), MEMBER_ADD: Symbol("member:add"), MEMBER_LEAVE: Symbol("member:leave"), SERVICE_LEVEL_EXCEEDED: Symbol("entry:ServiceLevelExceeded") });
 module.exports = Queue;
 //# sourceMappingURL=QueueModel.js.map

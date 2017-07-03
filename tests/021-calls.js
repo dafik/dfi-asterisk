@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const asterisk = require("./mock/asterisk-real");
 const Linphone = require("local-dfi-linphone/src/linphone");
@@ -6,11 +7,11 @@ const EndpointManger = require("local-dfi-linphone-endpoint-manager/src/endpoint
 const manager = require("local-dfi-linphone-endpoint-manager");
 const DebugLogger = require("local-dfi-debug-logger/debugLogger");
 const AST_ACTION = require("../src/internal/asterisk/actionNames");
-let endpointManger = manager.getInstance(asterisk);
+const endpointManger = manager.getInstance(asterisk);
 let answerTimeout = 0;
 let endCallTimeout = 0;
-let eventTimeout = 30000;
-let logger = new DebugLogger("test:calls");
+const eventTimeout = 30000;
+const logger = new DebugLogger("test:calls");
 function getTimeout(name, done) {
     return setTimeout(() => {
         assert(false, 'Event never fired in time: "' + eventTimeout + 'ms" for timeout: "' + name + '"');
@@ -53,21 +54,21 @@ describe("calls", () => {
                         finishInit(err);
                     }
                     function createDialplan(technology) {
-                        let ctx1 = "testSource";
-                        let ctx2 = "testDestination";
-                        let add = AST_ACTION.DIALPLAN_EXTENSION_ADD;
-                        let del = AST_ACTION.DIALPLAN_EXTENSION_REMOVE;
+                        const ctx1 = "testSource";
+                        const ctx2 = "testDestination";
+                        const add = AST_ACTION.DIALPLAN_EXTENSION_ADD;
+                        const del = AST_ACTION.DIALPLAN_EXTENSION_REMOVE;
                         asterisk.actions.dialplan.getDialplan(ctx1, (err, dialplan) => {
                             if (err && !err.message.match(/Did not find context/)) {
                                 finishInit(err);
                                 return;
                             }
                             let priorities;
-                            let toDelete = [];
+                            const toDelete = [];
                             if (dialplan) {
-                                dialplan.extensions.forEach(extension => {
+                                dialplan.extensions.forEach((extension) => {
                                     priorities = extension.priorities;
-                                    [...priorities.keys()].sort().reverse().forEach(key => {
+                                    [...priorities.keys()].sort().reverse().forEach((key) => {
                                         toDelete.push({ Action: del, Context: dialplan.id, Extension: extension.id, Priority: key });
                                     });
                                 });
@@ -77,7 +78,7 @@ describe("calls", () => {
                                     finishInit(err1);
                                     return;
                                 }
-                                let toAdd = [
+                                const toAdd = [
                                     { Action: add, Application: "Hangup", ApplicationData: "16", Context: ctx1, Extension: "h", Priority: "1", Replace: "1" },
                                     { Action: add, Application: "Noop", ApplicationData: "1,calling testsource ${EXTEN}", Context: ctx1, Extension: "_X.", Priority: "1", Replace: "1" },
                                     { Action: add, Application: "Dial", ApplicationData: technology + "/${EXTEN},30,F", Context: ctx1, Extension: "_X.", Priority: "2", Replace: "1" }
@@ -98,11 +99,11 @@ describe("calls", () => {
                                 return;
                             }
                             let priorities;
-                            let toDelete = [];
+                            const toDelete = [];
                             if (dialplan) {
-                                dialplan.extensions.forEach(extension => {
+                                dialplan.extensions.forEach((extension) => {
                                     priorities = extension.priorities;
-                                    [...priorities.keys()].sort().reverse().forEach(key => {
+                                    [...priorities.keys()].sort().reverse().forEach((key) => {
                                         toDelete.push({ Action: del, Context: dialplan.id, Extension: extension.id, Priority: key });
                                     });
                                 });
@@ -112,7 +113,7 @@ describe("calls", () => {
                                     finishInit(err1);
                                     return;
                                 }
-                                let toAdd = [
+                                const toAdd = [
                                     { Action: add, Application: "Hangup", ApplicationData: "16", Context: ctx2, Extension: "h", Priority: "1", Replace: "1" },
                                     { Action: add, Application: "Noop", ApplicationData: "1,calling testdestination ${EXTEN}", Context: ctx2, Extension: "_X.", Priority: "1", Replace: "1" },
                                     { Action: add, Application: "Dial", ApplicationData: technology + "/${EXTEN},30,F", Context: ctx2, Extension: "_X.", Priority: "2", Replace: "1" }
@@ -157,10 +158,10 @@ describe("calls", () => {
     function onSimpleCall(done) {
         // done();
         let waitEndCall = 0;
-        let linPhones = endpointManger.endpoints;
-        let keys = [...linPhones.keys()];
-        let endpoint1 = linPhones.get(keys.shift());
-        let endpoint2 = linPhones.get(keys.shift());
+        const linPhones = endpointManger.endpoints;
+        const keys = [...linPhones.keys()];
+        const endpoint1 = linPhones.get(keys.shift());
+        const endpoint2 = linPhones.get(keys.shift());
         endpoint1.on(Linphone.events.ANSWERED, () => {
             waitEndCall = waitEndCall + 2;
             setTimeout(() => {
@@ -197,10 +198,10 @@ describe("calls", () => {
             let endpoint2AnswerTimeout;
             let endpoint1EndCallTimeout;
             let endpoint2EndCallTimeout;
-            let linPhones = endpointManger.endpoints;
-            let keys = [...linPhones.keys()];
-            let endpoint1 = linPhones.get(keys.shift());
-            let endpoint2 = linPhones.get(keys.shift());
+            const linPhones = endpointManger.endpoints;
+            const keys = [...linPhones.keys()];
+            const endpoint1 = linPhones.get(keys.shift());
+            const endpoint2 = linPhones.get(keys.shift());
             endpoint1.on(Linphone.events.INCOMING, (line, id) => {
                 clearTimeout(endpoint1IncomingTimeout);
                 setTimeout(() => {
@@ -242,7 +243,7 @@ describe("calls", () => {
         }
         run();
         function makeCall(sSip, tSip) {
-            let action = {
+            const action = {
                 Action: AST_ACTION.ORIGINATE,
                 Async: true.toString(),
                 Channel: "Local/" + sSip + "@testSource/n",
@@ -250,7 +251,7 @@ describe("calls", () => {
                 Exten: tSip.toString(10),
                 Priority: "1"
             };
-            let ocb = {
+            const ocb = {
                 onBusy: () => {
                     logger.info("onBusy");
                 },

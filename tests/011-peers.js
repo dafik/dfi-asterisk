@@ -1,11 +1,12 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const asterisk = require("./mock/asterisk-real");
 const EndpointManger = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
 const manager = require("local-dfi-linphone-endpoint-manager");
 const PeerStates = require("../src/enums/peerStates");
 const DeviceStates = require("../src/enums/deviceStates");
-let endpointManger = manager.getInstance(asterisk);
+const endpointManger = manager.getInstance(asterisk);
 describe("peers", () => {
     function onAfter(done) {
         this.timeout(1000000);
@@ -52,16 +53,17 @@ describe("peers", () => {
     }
     function onCheckPresence(done) {
         this.timeout(0);
-        let linPhones = endpointManger.endpoints;
-        let keys = [...linPhones.keys()];
-        let endpoint1 = linPhones.get(keys[0]);
-        let id = endpoint1.getInterface();
-        let peer = asterisk.managers.peer.peers.get(id);
+        const linPhones = endpointManger.endpoints;
+        const keys = [...linPhones.keys()];
+        const endpoint1 = linPhones.get(keys[0]);
+        const id = endpoint1.getInterface();
+        const peer = asterisk.managers.peer.peers.get(id);
         assert.notEqual(peer, undefined);
         if (peer.state.status !== PeerStates.REGISTERED) {
-            let x = peer.stateHistory;
+            const x = peer.stateHistory;
+            // console.log("%j", x);
         }
-        let device = asterisk.managers.device.devices.get(id);
+        const device = asterisk.managers.device.devices.get(id);
         assert.notEqual(device, undefined);
         if (device.state.status !== DeviceStates.NOT_INUSE) {
             setTimeout(() => {

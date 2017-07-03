@@ -9,7 +9,7 @@ class ConfigServerAction extends BaseServerAction {
         // TODO check OCB
         this._server.start()
             .then(() => {
-            let action = {
+            const action = {
                 Action: AST_ACTION.GET_CONFIG,
                 Filename: filename
             };
@@ -19,10 +19,10 @@ class ConfigServerAction extends BaseServerAction {
         });
         function onResponse(err, response) {
             if (err) {
-                let error = new ManagerError("Response to GetConfigAction(\"" + filename + "\") " + err.message);
+                const error = new ManagerError("Response to GetConfigAction(\"" + filename + "\") " + err.message);
                 AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
-            let res = { categories: new Map() };
+            const res = { categories: new Map() };
             let val;
             let parts;
             let lParts;
@@ -52,7 +52,7 @@ class ConfigServerAction extends BaseServerAction {
                     res[key] = val;
                 }
             });
-            let categories = new Map();
+            const categories = new Map();
             res.categories.forEach((category) => {
                 categories.set(category.name, category.lines);
             });

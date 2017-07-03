@@ -45,25 +45,20 @@ class OriginateServerAction extends BaseServerAction {
                 cb.onNoAnswer(channel);
             }
         }
-        let traceId = originateEvent.ActionID;
+        const traceId = originateEvent.ActionID;
         if (traceId == null) {
             return;
         }
-        let callbackData = this._originateCallbacks.get(traceId);
+        const callbackData = this._originateCallbacks.get(traceId);
         if (callbackData == null) {
             return;
         }
         this._originateCallbacks.delete(traceId);
-        let cb = callbackData.callbackFn;
-        if (originateEvent.Uniqueid) {
-            channel = this._server.managers.channel.channels.get(originateEvent.Uniqueid);
-        }
-        else {
-            channel = this._server.managers.channel.getChannelByName(callbackData.channel);
-        }
+        const cb = callbackData.callbackFn;
+        channel = originateEvent.Uniqueid ? this._server.managers.channel.channels.get(originateEvent.Uniqueid) : this._server.managers.channel.getChannelByName(callbackData.channel);
         try {
             if (channel == null) {
-                let cause = new NoSuchChannel("Channel '" + callbackData.action.Channel + "' is not available");
+                const cause = new NoSuchChannel("Channel '" + callbackData.action.Channel + "' is not available");
                 cb.onFailure(cause);
                 return;
             }
@@ -141,7 +136,7 @@ class OriginateServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             // TODO check OCB cb
-            let traceId = ACTION_ID_PREFIX_ORIGINATE + AstUtil.uniqueActionID();
+            const traceId = ACTION_ID_PREFIX_ORIGINATE + AstUtil.uniqueActionID();
             if (originateAction.Variable) {
                 if (!Array.isArray(originateAction.Variable)) {
                     originateAction.Variable = [originateAction.Variable];
@@ -157,7 +152,7 @@ class OriginateServerAction extends BaseServerAction {
             originateAction.Async = true.toString();
             originateAction.ActionID = traceId;
             if (callbackFn != null) {
-                let callbackData = {
+                const callbackData = {
                     action: originateAction,
                     callbackFn,
                     channel: originateAction.Channel,
@@ -174,7 +169,7 @@ class OriginateServerAction extends BaseServerAction {
                 }
             });
         })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn.onFailure, callbackFn, err);
@@ -190,7 +185,7 @@ class OriginateServerAction extends BaseServerAction {
     originate(originateAction, callbackFn, context) {
         function onChannel(err, channel) {
             if (err || channel == null) {
-                let error = new NoSuchChannel("Channel '" + originateAction.Channel + "' is not available");
+                const error = new NoSuchChannel("Channel '" + originateAction.Channel + "' is not available");
                 AstUtil.maybeCallback(callbackFn, context, error);
             }
             AstUtil.maybeCallback(callbackFn, context, null, channel);
@@ -206,7 +201,7 @@ class OriginateServerAction extends BaseServerAction {
                     return;
                 }
                 if (response.Response === "Success") {
-                    let uniqueId = response.Uniqueid;
+                    const uniqueId = response.Uniqueid;
                     this._server.logger.debug(response.Event + " received with uniqueId " + uniqueId);
                     onChannel.call(null, this._server.managers.channel.getChannelById(uniqueId));
                 }
@@ -215,7 +210,7 @@ class OriginateServerAction extends BaseServerAction {
                 }
             }, this);
         })
-            .catch(error => error)
+            .catch((error) => error)
             .then((err) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
@@ -236,7 +231,7 @@ class OriginateServerAction extends BaseServerAction {
     toApplication(channel, application, data, timeout, callerId, variables, callbackFn, context) {
         callerId = callerId || null;
         variables = variables || null;
-        let originateAction = {
+        const originateAction = {
             Action: AST_ACTION.ORIGINATE,
             Application: application,
             Channel: channel,
@@ -264,7 +259,7 @@ class OriginateServerAction extends BaseServerAction {
     toApplicationAsync(channel, application, data, timeout, callerId, variables, callbackFn, context) {
         callerId = callerId || null;
         variables = variables || null;
-        let originateAction = {
+        const originateAction = {
             Action: AST_ACTION.ORIGINATE,
             Application: application,
             Channel: channel,
@@ -293,7 +288,7 @@ class OriginateServerAction extends BaseServerAction {
     toExtension(channel, ctx, exten, priority, timeout, callerId, variables, callbackFn, context) {
         callerId = callerId || null;
         variables = variables || null;
-        let action = {
+        const action = {
             Action: AST_ACTION.ORIGINATE,
             Channel: channel,
             Context: ctx,
@@ -322,7 +317,7 @@ class OriginateServerAction extends BaseServerAction {
     toExtensionAsync(channel, ctx, exten, priority, timeout, callerId, variables, callbackFn, context) {
         callerId = callerId || null;
         variables = variables || null;
-        let action = {
+        const action = {
             Action: AST_ACTION.ORIGINATE,
             Channel: channel,
             Context: ctx,

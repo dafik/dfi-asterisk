@@ -12,7 +12,7 @@ class ConfigServerAction extends BaseServerAction {
         // TODO check OCB
         this._server.start()
             .then(() => {
-                let action: IAstActionGetConfig = {
+                const action: IAstActionGetConfig = {
                     Action: AST_ACTION.GET_CONFIG,
                     Filename: filename
                 };
@@ -24,10 +24,10 @@ class ConfigServerAction extends BaseServerAction {
 
         function onResponse(err, response) {
             if (err) {
-                let error = new ManagerError("Response to GetConfigAction(\"" + filename + "\") " + err.message);
+                const error = new ManagerError("Response to GetConfigAction(\"" + filename + "\") " + err.message);
                 AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
-            let res: {categories: Map<string, {name: string, lines: Map<string, string|string[]>}>} = {categories: new Map()};
+            const res: {categories: Map<string, {name: string, lines: Map<string, string|string[]>}>} = {categories: new Map()};
             let val;
             let parts;
             let lParts;
@@ -55,7 +55,7 @@ class ConfigServerAction extends BaseServerAction {
                     res[key] = val;
                 }
             });
-            let categories = new Map();
+            const categories = new Map();
 
             res.categories.forEach((category) => {
                 categories.set(category.name, category.lines);

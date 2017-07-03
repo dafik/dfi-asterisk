@@ -29,7 +29,8 @@ class IAXPeer extends Peer {
 
     constructor(attributes: IDfiAstModelAttribsIAXPeer, options?: IDfiAstModelOptions) {
 
-        let attr: IDfiAstModelAttribsPeer = Object.assign(attributes, {
+        const attr: IDfiAstModelAttribsPeer = {
+            ...attributes,
             Encryption: AstUtil.isTrue(attributes.Encryption) ? true : false,
             Trunk: AstUtil.isTrue(attributes.Trunk) ? true : false,
             ip: new Ip({
@@ -38,7 +39,7 @@ class IAXPeer extends Peer {
                 port: parseInt(attributes.Port, 10)
             }),
             technology: "IAX2"
-        });
+        };
         super(attr, options);
     }
 }

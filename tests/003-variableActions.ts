@@ -8,7 +8,7 @@ describe("variable actions", () => {
             .then(() => {
                 done();
             })
-            .catch(err => {
+            .catch((err) => {
                 if (err) {
                     assert.ok(false, err.message);
                 }
@@ -18,10 +18,10 @@ describe("variable actions", () => {
     before(onBefore);
     it("variable put", (done) => {
 
-        let variable = "test";
-        let value = "value";
+        const variable = "test";
+        const value = "value";
 
-        asterisk.actions.variable.setGlobalVariable(variable, value, errSet => {
+        asterisk.actions.variable.setGlobalVariable(variable, value, (errSet) => {
             assert.ifError(errSet);
 
             asterisk.actions.variable.getGlobalVariable(variable, (errGet?, responseGet?) => {

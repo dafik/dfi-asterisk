@@ -68,9 +68,7 @@ export interface IDfiVariableCallback extends Object {
     context?;
 }
 
-export interface IEventHandle extends Function {
-    (event: IAstEvent): void;
-}
+type IEventHandle = (event: IAstEvent) => void;
 
 export interface IDfiAstOriginateCallbackData {
     action: IAstActionOriginate;
@@ -125,12 +123,12 @@ interface IDfiAstQueueListener {
      *
      * @param entry the new entry.
      */
-    onNewEntry (entry: QueueEntry);
+    onNewEntry(entry: QueueEntry);
     /**
      * Called whenever an entry leaves the queue.
      * @param entry the entry that leaves the queue.
      */
-    onEntryLeave (entry: QueueEntry) ;
+    onEntryLeave(entry: QueueEntry) ;
     /**
      * Called whenever a member changes his state.
      * @param member the member that changes his state.
@@ -198,9 +196,6 @@ export interface IDfiAMIResponseGetvar extends IDfiAMIResponse {
     Value: string;
 }
 
-export interface IEventHandle {
-    (event: IAstEvent): void;
-}
 export interface IEventHandlersMap {
     [key: string]: IEventHandle;
 }

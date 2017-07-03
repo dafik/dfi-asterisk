@@ -56,16 +56,13 @@ class AsteriskManager extends DfiEventObject {
         };
     }
     _mapEvents(eventsMap) {
-        let events = Object.keys(eventsMap);
+        const events = Object.keys(eventsMap);
         events.forEach((event) => {
             this.eventsMap.set(event, eventsMap[event]);
             this.server.dispatcher.subscribeEvent(event, this);
         }, this);
     }
 }
-const EVENTS = Object.assign(Object.assign({}, DfiEventObject.events), {
-    ADD: Symbol("manager:add"),
-    UPDATE: Symbol("manager:update")
-});
+const EVENTS = Object.assign({}, DfiEventObject.events, { ADD: Symbol("manager:add"), UPDATE: Symbol("manager:update") });
 module.exports = AsteriskManager;
 //# sourceMappingURL=Manager.js.map

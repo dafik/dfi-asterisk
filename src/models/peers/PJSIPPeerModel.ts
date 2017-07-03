@@ -1,12 +1,12 @@
 import Peer = require("./PeerModel");
-import {IDfiAstModelAttribsPJSIPPeer, IDfiAstModelAttribsPeer, IDfiAstModelOptions} from "../../definitions/models";
+import {IDfiAstModelAttribsPeer, IDfiAstModelAttribsPJSIPPeer, IDfiAstModelOptions} from "../../definitions/models";
 import Ip = require("../IpAddressModel");
 
 /*const PROP_CHANNEL_TYPE = "channelType";
-const PROP_OBJECT_NAME = "objectName";
-const PROP_CHAN_OBJECT_TYPE = "chanObjectType";
-const PROP_DYNAMIC = "dynamic";
-const PROP_STATE = "state";*/
+ const PROP_OBJECT_NAME = "objectName";
+ const PROP_CHAN_OBJECT_TYPE = "chanObjectType";
+ const PROP_DYNAMIC = "dynamic";
+ const PROP_STATE = "state";*/
 
 class PJSIPPeer extends Peer {
 
@@ -19,20 +19,20 @@ class PJSIPPeer extends Peer {
     constructor(attributes: IDfiAstModelAttribsPJSIPPeer, options?: IDfiAstModelOptions) {
         // TODO define interface
 
-        let attr: IDfiAstModelAttribsPeer = Object.assign(attributes,
-            {
-                ChanObjectType: "",
-                Channeltype: "",
-                Dynamic: "",
-                ObjectName: "",
-                Status: attributes.DeviceState,
-                ip: new Ip({
-                    ipAddress: null,
-                    mask: null,
-                    port: null
-                }),
-                technology: "PJSIP"
-            });
+        const attr: IDfiAstModelAttribsPeer = {
+            ...attributes,
+            ChanObjectType: "",
+            Channeltype: "",
+            Dynamic: "",
+            ObjectName: "",
+            Status: attributes.DeviceState,
+            ip: new Ip({
+                ipAddress: null,
+                mask: null,
+                port: null
+            }),
+            technology: "PJSIP"
+        };
 
         super(attr, options);
     }

@@ -18,22 +18,11 @@ const PROP_REAL_TIME_DEVICE = "realtimeDevice";
 const PROP_DESCRIPTION = "description";
 class SIPPeer extends Peer {
     constructor(attributes, options) {
-        let attr = Object.assign(attributes, {
-            ACL: AstUtil.isTrue(attributes.ACL) ? true : false,
-            AutoComedia: AstUtil.isTrue(attributes.AutoComedia) ? true : false,
-            AutoForcerport: AstUtil.isTrue(attributes.AutoForcerport) ? true : false,
-            Comedia: AstUtil.isTrue(attributes.Comedia) ? true : false,
-            Forcerport: AstUtil.isTrue(attributes.Forcerport) ? true : false,
-            RealtimeDevice: AstUtil.isTrue(attributes.RealtimeDevice) ? true : false,
-            TextSupport: AstUtil.isTrue(attributes.TextSupport) ? true : false,
-            VideoSupport: AstUtil.isTrue(attributes.VideoSupport) ? true : false,
-            ip: new Ip({
+        const attr = Object.assign({}, attributes, { ACL: AstUtil.isTrue(attributes.ACL) ? true : false, AutoComedia: AstUtil.isTrue(attributes.AutoComedia) ? true : false, AutoForcerport: AstUtil.isTrue(attributes.AutoForcerport) ? true : false, Comedia: AstUtil.isTrue(attributes.Comedia) ? true : false, Forcerport: AstUtil.isTrue(attributes.Forcerport) ? true : false, RealtimeDevice: AstUtil.isTrue(attributes.RealtimeDevice) ? true : false, TextSupport: AstUtil.isTrue(attributes.TextSupport) ? true : false, VideoSupport: AstUtil.isTrue(attributes.VideoSupport) ? true : false, ip: new Ip({
                 ipAddress: AstUtil.isNull(attributes.IPaddress) ? null : attributes.IPaddress,
                 mask: "255.255.255.255",
                 port: parseInt(attributes.IPport, 10)
-            }),
-            technology: "SIP"
-        });
+            }), technology: "SIP" });
         super(attr, options);
     }
 }

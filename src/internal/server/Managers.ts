@@ -34,10 +34,10 @@ class ServerManagers extends DfiObject {
         this.setProp(PROP_MANAGERS, new Map());
         this.setProp(PROP_SERVER, server);
 
-        let managers: Map<string, AsteriskManager<AsteriskModel, AsteriskCollection<AsteriskModel>>> = this.getProp(PROP_MANAGERS);
-        let managerOptions = {managers: this, server};
+        const managers: Map<string, AsteriskManager<AsteriskModel, AsteriskCollection<AsteriskModel>>> = this.getProp(PROP_MANAGERS);
+        const managerOptions = {managers: this, server};
 
-        let state: IDfiAstConfigAstManager = server.managerConfig;
+        const state: IDfiAstConfigAstManager = server.managerConfig;
 
         managers.set(DEVICE, new DeviceManager(managerOptions, state.device));
         managers.set(PEER, new PeerManager(managerOptions, state.peer));
@@ -77,7 +77,7 @@ class ServerManagers extends DfiObject {
     }
 
     public restart(callbackFn: IDfiCallbackResult, context?) {
-        let self = this;
+        const self = this;
         async.series([
             self.device.restart.bind(self.device),
             self.peer.restart.bind(self.peer),
@@ -92,7 +92,7 @@ class ServerManagers extends DfiObject {
     }
 
     public start(callbackFn: IDfiCallbackResult, context?) {
-        let self = this;
+        const self = this;
         try {
 
             async.series([

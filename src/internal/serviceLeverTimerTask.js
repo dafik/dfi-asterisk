@@ -21,7 +21,6 @@ class ServiceLevelTimerTask extends DfiObject {
     run() {
         this.getProp(PROP_QUEUE).fireServiceLevelExceeded(this.getProp(PROP_ENTRY));
     }
-    ;
 }
 module.exports = ServiceLevelTimerTask;
 //# sourceMappingURL=serviceLeverTimerTask.js.map

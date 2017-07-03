@@ -14,12 +14,12 @@ class VoiceMailServerAction extends BaseServerAction {
                     AstUtil.maybeCallback(callbackFn, context, err);
                     return;
                 }
-                let voicemailboxes = [];
+                const voicemailboxes = [];
                 if (!commandResponse.$content) {
                     this._server.logger.error("Response to CommandAction(\"" + SHOW_VOICEMAIL_USERS_COMMAND + "\") " + commandResponse.Message);
                     return voicemailboxes;
                 }
-                let result = commandResponse.$content.split("\n");
+                const result = commandResponse.$content.split("\n");
                 if (result == null || result.length < 1) {
                     return voicemailboxes;
                 }
@@ -41,8 +41,8 @@ class VoiceMailServerAction extends BaseServerAction {
                 // get message count for each mailbox
                 let pending = voicemailboxes.length;
                 voicemailboxes.forEach((voicemailbox) => {
-                    let fullName = voicemailbox.mailbox + "@" + voicemailbox.context;
-                    let action = {
+                    const fullName = voicemailbox.mailbox + "@" + voicemailbox.context;
+                    const action = {
                         Action: AST_ACTION.MAILBOX_COUNT, Mailbox: fullName
                     };
                     this._server.sendAction(action, (err1, response) => {

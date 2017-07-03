@@ -7,7 +7,7 @@ class DialedChannelHistoryEntry extends AsteriskHistoryEntry {
      */
     get channel(): Channel {
         return this.entry;
-    };
+    }
 
     public toString() {
         let sb;
@@ -16,7 +16,7 @@ class DialedChannelHistoryEntry extends AsteriskHistoryEntry {
         sb += "date=" + this.date.toString() + ",";
         sb += "channel=" + this.channel + "]";
         return sb;
-    };
+    }
 
     public toJSON() {
         return this.channel.id;
