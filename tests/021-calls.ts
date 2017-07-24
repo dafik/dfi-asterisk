@@ -4,12 +4,15 @@ import Linphone = require("local-dfi-linphone/src/linphone");
 
 import EndpointManger = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
 import manager = require("local-dfi-linphone-endpoint-manager");
-
+import AST_ACTION = require("../src/internal/asterisk/actionNames");
+import DebugLogger from "local-dfi-debug-logger/debugLogger";
 import {IDfiAsOriginateCallback, IDfiCallbackResult} from "../src/definitions/interfaces";
 import {IAstActionDialplanExtensionAdd, IAstActionDialplanExtensionRemove, IAstActionOriginate} from "../src/internal/asterisk/actions";
 
-import DebugLogger = require("local-dfi-debug-logger/debugLogger");
-import AST_ACTION = require("../src/internal/asterisk/actionNames");
+process.on("unhandledRejection", (reason, p) => {
+    console.log("Unhandled Rejection at: Promise", p, "reason:", reason);
+    // application specific logging, throwing an error, or other logic here
+});
 
 const endpointManger = manager.getInstance(asterisk);
 

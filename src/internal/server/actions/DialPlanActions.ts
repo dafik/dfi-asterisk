@@ -1,14 +1,14 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiGetDialplanCallback, IDfiGetDialplansCallback} from "../../../definitions/interfaces";
-
-import {IAstActionShowDialPlan} from "../../asterisk/actions";
-import {IAstEventListDialplan} from "../../asterisk/events";
 
 import AstUtil = require("../../astUtil");
 import DialplanContext = require("../../../models/dialplans/DialplanContextModel");
 import DialplanExtension = require("../../../models/dialplans/DialplanExtensionModel");
 import DialplanPriority = require("../../../models/dialplans/DialplanPriorityModel");
 import AST_ACTION = require("../../asterisk/actionNames");
+import {IDfiGetDialplanCallback, IDfiGetDialplansCallback} from "../../../definitions/interfaces";
+
+import {IAstActionShowDialPlan} from "../../asterisk/actions";
+import {IAstEventListDialplan} from "../../asterisk/events";
 
 class DialPlanServerAction extends BaseServerAction {
 
@@ -27,10 +27,9 @@ class DialPlanServerAction extends BaseServerAction {
                     AstUtil.maybeCallbackOnce(callbackFn, context, null, dialplans);
                 });
             })
-            .catch((error) => error)
-            .then((err) => {
-                if (err) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+                if (error) {
+                    AstUtil.maybeCallbackOnce(callbackFn, context, error);
                 }
             });
     }
@@ -50,10 +49,9 @@ class DialPlanServerAction extends BaseServerAction {
                     AstUtil.maybeCallbackOnce(callbackFn, context, null, dialplan);
                 });
             })
-            .catch((error) => error)
-            .then((err) => {
-                if (err) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) =>  {
+                if (error) {
+                    AstUtil.maybeCallbackOnce(callbackFn, context, error);
                 }
             });
     }
@@ -84,4 +82,5 @@ class DialPlanServerAction extends BaseServerAction {
         return dialplans;
     }
 }
+
 export = DialPlanServerAction;

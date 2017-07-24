@@ -5,13 +5,17 @@ const asterisk = require("./mock/asterisk-real");
 const Linphone = require("local-dfi-linphone/src/linphone");
 const EndpointManger = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
 const manager = require("local-dfi-linphone-endpoint-manager");
-const DebugLogger = require("local-dfi-debug-logger/debugLogger");
 const AST_ACTION = require("../src/internal/asterisk/actionNames");
+const debugLogger_1 = require("local-dfi-debug-logger/debugLogger");
+process.on("unhandledRejection", (reason, p) => {
+    console.log("Unhandled Rejection at: Promise", p, "reason:", reason);
+    // application specific logging, throwing an error, or other logic here
+});
 const endpointManger = manager.getInstance(asterisk);
 let answerTimeout = 0;
 let endCallTimeout = 0;
 const eventTimeout = 30000;
-const logger = new DebugLogger("test:calls");
+const logger = new debugLogger_1.default("test:calls");
 function getTimeout(name, done) {
     return setTimeout(() => {
         assert(false, 'Event never fired in time: "' + eventTimeout + 'ms" for timeout: "' + name + '"');

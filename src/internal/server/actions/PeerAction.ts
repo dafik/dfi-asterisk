@@ -1,10 +1,10 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiCallbackResult} from "../../../definitions/interfaces";
-import {IAstActionSIPpeers} from "../../asterisk/actions";
-import {IAstEventPeerSIPEntry} from "../../asterisk/events";
 import AstUtil = require("../../astUtil");
 import AST_ACTION = require("../../asterisk/actionNames");
 import AST_EVENT = require("../../asterisk/eventNames");
+import {IDfiCallbackResult} from "../../../definitions/interfaces";
+import {IAstActionSIPpeers} from "../../asterisk/actions";
+import {IAstEventPeerSIPEntry} from "../../asterisk/events";
 
 class PeersServerAction extends BaseServerAction {
 
@@ -28,13 +28,13 @@ class PeersServerAction extends BaseServerAction {
                 });
 
             })
-            .catch((error) => error)
-            .then((err) => {
-                if (err) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+                if (error) {
+                    AstUtil.maybeCallbackOnce(callbackFn, context, error);
                 }
             });
 
     }
 }
+
 export = PeersServerAction;

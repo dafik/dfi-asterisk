@@ -1,6 +1,6 @@
 "use strict";
 const _ = require("lodash");
-const DebugLogger = require("local-dfi-debug-logger/debugLogger");
+const local_dfi_debug_logger_1 = require("local-dfi-debug-logger");
 const TRUE_LITERALS = [
     "yes",
     "true",
@@ -158,7 +158,7 @@ class AstUtil {
     }
 }
 const CRLF = "\r\n";
-const logger = new DebugLogger("dfi:as:AstUtil");
+const logger = new local_dfi_debug_logger_1.default("dfi:as:AstUtil");
 const uniqueActionID = (() => {
     let nextId = 1;
     return () => {

@@ -169,10 +169,9 @@ class OriginateServerAction extends BaseServerAction {
                 }
             });
         })
-            .catch((error) => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn.onFailure, callbackFn, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn.onFailure, callbackFn, error);
             }
         });
     }
@@ -210,10 +209,9 @@ class OriginateServerAction extends BaseServerAction {
                 }
             }, this);
         })
-            .catch((error) => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }

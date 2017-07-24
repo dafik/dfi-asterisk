@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import {IDfiCallbackResult} from "../definitions/interfaces";
 import {IAstAction} from "./asterisk/actions";
-import DebugLogger = require("local-dfi-debug-logger/debugLogger");
+import DebugLogger from "local-dfi-debug-logger";
 
 const TRUE_LITERALS = [
     "yes",
@@ -58,7 +58,7 @@ class AstUtil {
      * @param {string} s the string to parse
      * @returns string[] a String[] with name (index 0) and number (index 1)
      */
-    public static  parseCallerId(s: string): string[] {
+    public static parseCallerId(s: string): string[] {
         const result: string[] = [];
         let lbPosition: number;
         let rbPosition: number;
@@ -180,6 +180,7 @@ class AstUtil {
         return logger;
     }
 }
+
 const CRLF = "\r\n";
 
 const logger = new DebugLogger("dfi:as:AstUtil");

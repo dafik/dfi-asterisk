@@ -1,10 +1,10 @@
 import BaseServerAction = require("./BaseAction");
 import Channel = require("../../../models/ChannelModel");
+import AstUtil = require("../../astUtil");
+import AST_ACTION = require("../../asterisk/actionNames");
 import {IDfiCallbackResult} from "../../../definitions/interfaces";
 
 import {IAstActionPlayDTMF} from "../../asterisk/actions";
-import AstUtil = require("../../astUtil");
-import AST_ACTION = require("../../asterisk/actionNames");
 
 class DTMFServerAction extends BaseServerAction {
 
@@ -22,7 +22,7 @@ class DTMFServerAction extends BaseServerAction {
                     Digit: digit,
                     Duration: "1000"
                 };
-                this._server.sendAction(action, (err, response) => {
+                this._server.sendEventGeneratingAction(action, (err, response) => {
                     if (err) {
                         AstUtil.maybeCallback(callbackFn, context, err);
                         return;
@@ -31,12 +31,12 @@ class DTMFServerAction extends BaseServerAction {
                     AstUtil.maybeCallback(callbackFn, context, null, dbgre);
                 }, context);
             })
-            .catch((error) => error)
-            .then((err) => {
-                if (err) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+                if (error) {
+                    AstUtil.maybeCallbackOnce(callbackFn, context, error);
                 }
             });
     }
 }
+
 export = DTMFServerAction;

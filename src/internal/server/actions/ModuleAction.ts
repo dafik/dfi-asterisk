@@ -1,10 +1,10 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiCallbackResult} from "../../../definitions/interfaces";
-
-import {IAstActionModuleCheck, IAstActionModuleLoad} from "../../asterisk/actions";
 import AstUtil = require("../../astUtil");
 import ManagerCommunication = require("../../../errors/ManagerCommunication");
 import AST_ACTION = require("../../asterisk/actionNames");
+import {IDfiCallbackResult} from "../../../definitions/interfaces";
+
+import {IAstActionModuleCheck, IAstActionModuleLoad} from "../../asterisk/actions";
 
 class ModuleServerAction extends BaseServerAction {
 
@@ -27,10 +27,9 @@ class ModuleServerAction extends BaseServerAction {
                     AstUtil.maybeCallback(callbackFn, context, null, loaded);
                 });
             })
-            .catch((error) => error)
-            .then((err) => {
-                if (err) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+                if (error) {
+                    AstUtil.maybeCallbackOnce(callbackFn, context, error);
                 }
             });
     }
@@ -66,10 +65,9 @@ class ModuleServerAction extends BaseServerAction {
                     }
                 });
             })
-            .catch((error) => error)
-            .then((err) => {
-                if (err) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+                if (error) {
+                    AstUtil.maybeCallbackOnce(callbackFn, context, error);
                 }
             });
 

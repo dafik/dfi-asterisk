@@ -1,9 +1,6 @@
 import AsteriskManager = require("../internal/server/Manager");
 import Peers = require("../collections/PeersCollection");
 import Peer = require("../models/peers/PeerModel");
-import {IDfiAMIMultiCallback, IDfiCallbackResult} from "../definitions/interfaces";
-import {IAstActionIAXpeerlist, IAstActionPJSIPShowEndpoints, IAstActionSIPpeers} from "../internal/asterisk/actions";
-import {IAstEventEndpointList, IAstEventPeerEntry, IAstEventPeerIAXEntry, IAstEventPeerSIPEntry, IAstEventPeerStatus} from "../internal/asterisk/events";
 
 import AstUtil = require("../internal/astUtil");
 import IAXPeer = require("../models/peers/IAXPeerModel");
@@ -12,6 +9,9 @@ import SIPPeer = require("../models/peers/SIPPeerModel");
 import Ip = require("../models/IpAddressModel");
 import AST_EVENT = require("../internal/asterisk/eventNames");
 import AST_ACTION = require("../internal/asterisk/actionNames");
+import {IDfiAMIMultiCallback, IDfiCallbackResult} from "../definitions/interfaces";
+import {IAstActionIAXpeerlist, IAstActionPJSIPShowEndpoints, IAstActionSIPpeers} from "../internal/asterisk/actions";
+import {IAstEventEndpointList, IAstEventPeerEntry, IAstEventPeerIAXEntry, IAstEventPeerSIPEntry, IAstEventPeerStatus} from "../internal/asterisk/events";
 
 /**
  * Manages all events related to peers on Asterisk server. For correct work
@@ -53,7 +53,7 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
             }
         }
 
-        const handlePeers: IDfiAMIMultiCallback<IAstEventPeerEntry | IAstEventEndpointList> = (err, response) => {
+        const handlePeers: IDfiAMIMultiCallback<IAstEventPeerEntry | IAstEventEndpointList, IAstActionIAXpeerlist | IAstActionSIPpeers | IAstActionPJSIPShowEndpoints> = (err, response) => {
             if (err && err.message !== "No endpoints found") {
                 AstUtil.maybeCallback(callbackFn, context, err);
                 return;

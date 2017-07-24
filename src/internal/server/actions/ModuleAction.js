@@ -23,10 +23,9 @@ class ModuleServerAction extends BaseServerAction {
                 AstUtil.maybeCallback(callbackFn, context, null, loaded);
             });
         })
-            .catch((error) => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
@@ -56,10 +55,9 @@ class ModuleServerAction extends BaseServerAction {
                 }
             });
         })
-            .catch((error) => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }

@@ -19,10 +19,9 @@ class DialPlanServerAction extends BaseServerAction {
                 AstUtil.maybeCallbackOnce(callbackFn, context, null, dialplans);
             });
         })
-            .catch((error) => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
@@ -39,10 +38,9 @@ class DialPlanServerAction extends BaseServerAction {
                 AstUtil.maybeCallbackOnce(callbackFn, context, null, dialplan);
             });
         })
-            .catch((error) => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }

@@ -21,10 +21,9 @@ class PeersServerAction extends BaseServerAction {
                 AstUtil.maybeCallback(callbackFn, context, null, peerEntries);
             });
         })
-            .catch((error) => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }

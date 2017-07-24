@@ -1,8 +1,8 @@
 "use strict";
 const BaseServerAction = require("./BaseAction");
-const util_1 = require("util");
 const AstUtil = require("../../astUtil");
 const AST_ACTION = require("../../asterisk/actionNames");
+const util_1 = require("util");
 class VariableServerAction extends BaseServerAction {
     getGlobalVariable(variable, callbackFn, context) {
         this._server.start()
@@ -18,10 +18,9 @@ class VariableServerAction extends BaseServerAction {
                 AstUtil.maybeCallback(callbackFn, context, null, response.Value);
             });
         })
-            .catch((error) => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
@@ -47,10 +46,9 @@ class VariableServerAction extends BaseServerAction {
                 AstUtil.maybeCallback(callbackFn, context);
             });
         })
-            .catch((error) => error)
-            .then((err) => {
-            if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            .catch((error) => {
+            if (error) {
+                AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
