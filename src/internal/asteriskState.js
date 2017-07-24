@@ -1,5 +1,5 @@
 "use strict";
-const DebugLogger = require("local-dfi-debug-logger");
+const local_dfi_debug_logger_1 = require("local-dfi-debug-logger");
 class AsteriskState {
     constructor(status, name) {
         this.status = status;
@@ -60,7 +60,7 @@ class AsteriskState {
         return sb;
     }
 }
-AsteriskState.logger = new DebugLogger("dfi:as:state");
+AsteriskState.logger = new local_dfi_debug_logger_1.default("dfi:as:state");
 AsteriskState.unknown = [];
 module.exports = AsteriskState;
 //# sourceMappingURL=asteriskState.js.map

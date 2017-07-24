@@ -1,4 +1,4 @@
-import DebugLogger = require("local-dfi-debug-logger");
+import DebugLogger from "local-dfi-debug-logger";
 
 abstract class AsteriskState {
 
@@ -83,4 +83,5 @@ abstract class AsteriskState {
         return sb;
     }
 }
+
 export = AsteriskState;
