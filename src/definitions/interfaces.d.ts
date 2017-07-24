@@ -1,65 +1,78 @@
 import QueueEntry = require("../models/queues/QueueEntryModel");
 import QueueMember = require("../models/queues/QueueMemberModel");
-
-import {IAstAction, IAstActionOriginate} from "../internal/asterisk/actions";
-import {IAstEvent} from "../internal/asterisk/events";
 import Channel = require("../models/ChannelModel");
 import AsteriskVersion = require("../internal/server/Version");
 import DialplanContext = require("../models/dialplans/DialplanContextModel");
+import {IAstAction, IAstActionCommand, IAstActionDBGet, IAstActionGetvar, IAstActionOriginate, IAstActionShowDialPlan} from "../internal/asterisk/actions";
+import {IAstEvent} from "../internal/asterisk/events";
 
 export interface IDfiCallbackError extends Function {
     (error?: Error): void;
+
     fired?: boolean;
 }
 
-export interface IDfiAMIResponseError extends Error {
-    action: IAstAction;
+export interface IDfiAMIResponseError<A extends IAstAction> extends Error {
+    action: A;
 }
 
-export interface IDfiAMICallbackError extends Function {
-    (error?: IDfiAMIResponseError): void;
+export interface IDfiAMICallbackError<A extends IAstAction> extends Function {
+    (error?: IDfiAMIResponseError<A>): void;
+
     fired?: boolean;
 }
 
 export interface IDfiCallbackResult extends IDfiCallbackError {
     (error?: Error, result?): void;
+
     fired?: boolean;
 }
 
-export interface IDfiAMICallbackResult extends IDfiCallbackError {
+/*export interface IDfiAMICallbackResult<A extends IAstAction> extends IDfiCallbackError {
     (error?: IDfiAMIResponseError, result?): void;
+
+    fired?: boolean;
+}*/
+
+export interface IDfiActionCallback<R extends IDfiAMIResponse, A extends IAstAction> extends Function {
+    (error?: IDfiAMIResponseError<IAstAction | IAstActionGetvar | IAstActionCommand>, result?: R): void;
+
     fired?: boolean;
 }
 
-export interface IDfiActionCallback<R extends IDfiAMIResponse> extends Function {
-    (error?: IDfiAMIResponseError, result?: R): void;
-    fired?: boolean;
-}
-export interface IDfiAMIMultiCallback<E extends IAstEvent> extends Function {
-    (error?: IDfiAMIResponseError, result?: IDfiAMIResponseMessageMulti<E>): void;
+export interface IDfiAMIMultiCallback<E extends IAstEvent, A extends IAstAction> extends Function {
+    (error?: IDfiAMIResponseError<IAstAction | IAstActionCommand>, result?: IDfiAMIResponseMessageMulti<E>): void;
+
     fired?: boolean;
 }
 
 export interface IDfiGetAsteriskVersionCallback extends Function {
-    (error?: IDfiAMIResponseError, result?: AsteriskVersion): void;
+    (error?: IDfiAMIResponseError<IAstActionCommand>, result?: AsteriskVersion): void;
+
     fired?: boolean;
 }
 
 export interface IDfiDBGetCallback extends Function {
-    (error?: IDfiAMIResponseError, result?: {Family: string; Key: string; Val: string; }): void;
+    (error?: IDfiAMIResponseError<IAstActionDBGet>, result?: { Family: string; Key: string; Val: string; }): void;
+
     fired?: boolean;
 }
+
 export interface IDfiGetDialplansCallback extends Function {
-    (error?: IDfiAMIResponseError, result?: DialplanContext[]): void;
+    (error?: IDfiAMIResponseError<IAstActionShowDialPlan>, result?: DialplanContext[]): void;
+
     fired?: boolean;
 }
+
 export interface IDfiGetDialplanCallback extends Function {
-    (error?: IDfiAMIResponseError, result?: DialplanContext): void;
+    (error?: IDfiAMIResponseError<IAstActionShowDialPlan>, result?: DialplanContext): void;
+
     fired?: boolean;
 }
 
 export interface IDfiGetFileVersionCallback extends Function {
-    (error?: IDfiAMIResponseError, result?: string[]): void;
+    (error?: IDfiAMIResponseError<IAstActionCommand>, result?: string[]): void;
+
     fired?: boolean;
 }
 
@@ -86,12 +99,14 @@ export interface IDfiAsOriginateCallback {
      * @param channel the channel created.
      */
     onBusy(channel: Channel): void;
+
     /**
      * Called when the channel has been created and before it starts ringing.
      *
      * @param channel the channel created.
      */
     onDialing(channel: Channel): void;
+
     /**
      * Called if the originate failed for example due to an invalid channel name
      * or an originate to an unregistered SIP or IAX peer.
@@ -124,25 +139,30 @@ interface IDfiAstQueueListener {
      * @param entry the new entry.
      */
     onNewEntry(entry: QueueEntry);
+
     /**
      * Called whenever an entry leaves the queue.
      * @param entry the entry that leaves the queue.
      */
     onEntryLeave(entry: QueueEntry) ;
+
     /**
      * Called whenever a member changes his state.
      * @param member the member that changes his state.
      */
     onMemberStateChange(member: QueueMember) ;
+
     /**
      * @param entry
      */
     onEntryServiceLevelExceeded(entry: QueueMember) ;
+
     /**
      * Called whenever a new member is added to the queue.
      * @param member the new member.
      */
     onMemberAdded(member: QueueMember) ;
+
     /**
      * Called whenever a member is removed from this queue.
      * @param member the member that has been removed from the queue.
@@ -158,6 +178,7 @@ export interface IDfiAMIResponseMessageMulti<E extends IAstEvent> extends IAstEv
     fn: IDfiCallbackResult;
     ctx?: any;
 }
+
 export interface IDfiAstResponseMessageMulti<E extends IAstEvent> {
     events: E[];
     fn: IDfiCallbackResult;
@@ -178,9 +199,11 @@ export interface IDfiAMIResponseMessage extends IDfiAMIResponse {
     $content?: string;
     Privilege?: string;
 }
+
 export interface IDfiAMIResponseSuccess extends IDfiAMIResponseMessage {
     Privilege: string;
 }
+
 export interface IDfiAMIResponseCommand extends IDfiAMIResponseSuccess {
     $content: string;
 }
@@ -191,6 +214,7 @@ export interface IDfiAMIResponseMailboxCount extends IDfiAMIResponseSuccess {
     NewMessages: string;
     OldMessages: string;
 }
+
 export interface IDfiAMIResponseGetvar extends IDfiAMIResponse {
     Variable: string;
     Value: string;

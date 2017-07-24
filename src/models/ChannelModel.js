@@ -512,7 +512,12 @@ class Channel extends AsteriskModel {
                         });
                         return;
                     }
-                    response = { $time: Date.now(), Response: err.message, Value: null, Variable: err.action.Variable };
+                    response = {
+                        $time: Date.now(),
+                        Response: err.message,
+                        Value: null,
+                        Variable: err.action.Variable
+                    };
                     this.logger.debug("discarding varGet error because channel was hangup earlier with ", this.hangupCause);
                 }
                 else {

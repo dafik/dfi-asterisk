@@ -1,11 +1,11 @@
 import BaseServerAction = require("./BaseAction");
+import AstUtil = require("../../astUtil");
+import AST_ACTION = require("../../asterisk/actionNames");
 import {IDfiAMICallbackError, IDfiDBGetCallback} from "../../../definitions/interfaces";
 
 import {format} from "util";
 import {IAstActionDBDel, IAstActionDBDelTree, IAstActionDBGet, IAstActionDBPut} from "../../asterisk/actions";
 import {IAstEventDBGetResponse} from "../../asterisk/events";
-import AstUtil = require("../../astUtil");
-import AST_ACTION = require("../../asterisk/actionNames");
 
 class DBServerAction extends BaseServerAction {
 
@@ -40,7 +40,7 @@ class DBServerAction extends BaseServerAction {
             });
     }
 
-    public dbDel(family: string, variable: string, callbackFn: IDfiAMICallbackError, context?) {
+    public dbDel(family: string, variable: string, callbackFn: IDfiAMICallbackError<IAstActionDBDel>, context?) {
         this._server.start()
             .then(() => {
                 const action: IAstActionDBDel = {
@@ -71,7 +71,7 @@ class DBServerAction extends BaseServerAction {
             });
     }
 
-    public dbDelTree(family: string, variable: string, callbackFn: IDfiAMICallbackError, context?) {
+    public dbDelTree(family: string, variable: string, callbackFn: IDfiAMICallbackError<IAstActionDBDelTree>, context?) {
         this._server.start()
             .then(() => {
                 const action: IAstActionDBDelTree = {
@@ -103,7 +103,7 @@ class DBServerAction extends BaseServerAction {
             });
     }
 
-    public dbPut(family: string, variable: string, value: string, callbackFn: IDfiAMICallbackError, context?) {
+    public dbPut(family: string, variable: string, value: string, callbackFn: IDfiAMICallbackError<IAstActionDBPut>, context?) {
         this._server.start()
             .then(() => {
                 const action: IAstActionDBPut = {
@@ -135,4 +135,5 @@ class DBServerAction extends BaseServerAction {
             });
     }
 }
+
 export = DBServerAction;

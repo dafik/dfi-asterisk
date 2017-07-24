@@ -1,12 +1,12 @@
 import BaseServerAction = require("./BaseAction");
-import {IDfiActionCallback, IDfiAMIResponse, IDfiAMIResponseCommand, IDfiCallbackError, IDfiGetAsteriskVersionCallback, IDfiGetFileVersionCallback} from "../../../definitions/interfaces";
-
-import {IAstActionCommand, IAstActionFilter} from "../../asterisk/actions";
 import AsteriskVersion = require("../Version");
 import AstUtil = require("../../astUtil");
 import ManagerCommunication = require("../../../errors/ManagerCommunication");
 import ManagerError = require("../../../errors/ManagerError");
 import AST_ACTION = require("../../asterisk/actionNames");
+import {IDfiActionCallback, IDfiAMIResponse, IDfiAMIResponseCommand, IDfiCallbackError, IDfiGetAsteriskVersionCallback, IDfiGetFileVersionCallback} from "../../../definitions/interfaces";
+
+import {IAstActionCommand, IAstActionFilter} from "../../asterisk/actions";
 
 const SHOW_VERSION_FILES_COMMAND = "core show file version";
 const SHOW_VERSION_FILES_PATTERN = /^([\S]+)\s+([0-9.]+)/;
@@ -44,7 +44,7 @@ class CoreServerAction extends BaseServerAction {
         }, this);
     }
 
-    public filterRTCP(callbackFn: IDfiActionCallback<IDfiAMIResponse>, context?) {
+    public filterRTCP(callbackFn: IDfiActionCallback<IDfiAMIResponse, IAstActionFilter>, context?) {
         this._server.logger.debug("on onAvailableActions");
         const action: IAstActionFilter = {
             Action: AST_ACTION.FILTER,
@@ -145,7 +145,7 @@ class CoreServerAction extends BaseServerAction {
             });
     }
 
-    public executeCliCommand(command, callbackFn: IDfiActionCallback<IDfiAMIResponseCommand>, context?) {
+    public executeCliCommand(command, callbackFn: IDfiActionCallback<IDfiAMIResponseCommand, IAstActionCommand>, context?) {
         this._server.start()
             .then(
                 () => {
@@ -170,4 +170,5 @@ class CoreServerAction extends BaseServerAction {
             );
     }
 }
+
 export = CoreServerAction;

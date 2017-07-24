@@ -31,6 +31,10 @@ import ManagerCommunication = require("./errors/ManagerCommunication");
 import AsteriskVersion = require("./internal/server/Version");
 import AST_ACTION = require("./internal/asterisk/actionNames");
 import AST_EVENT = require("./internal/asterisk/eventNames");
+import DfiAMIResponseError = require("./errors/DfiAMIResponseError");
+
+type AsteriskActionType1 = IAstAction | IAstActionGetvar | IAstActionCommand;
+type AsteriskActionType2 = IAstAction | IAstActionCommand;
 
 const PROP_AMI = "ami";
 const PROP_AMI_HANDLERS = "amiHandlers";
@@ -132,7 +136,7 @@ class AsteriskServer extends DfiEventObject {
         return this._ami && this._ami.isConnected;
     }
 
-    public sendAction<R extends IDfiAMIResponse>(action: IAstAction | IAstActionGetvar | IAstActionCommand, callbackFn?: IDfiActionCallback<R> | IDfiAMICallbackError, context?: any) {
+    public sendAction<R extends IDfiAMIResponse>(action: AsteriskActionType1, callbackFn?: IDfiActionCallback<R, AsteriskActionType1> | IDfiAMICallbackError<AsteriskActionType1>, context?: any) {
         if (!this.allowedActions.has(action.Action)) {
             AstUtil.maybeCallbackOnce(callbackFn, context, "Not Allowed Action: " + action.Action);
             return;
@@ -175,7 +179,7 @@ class AsteriskServer extends DfiEventObject {
             .catch((response: IDfiAMIResponseMessage | Error) => {
                 if (response instanceof Error || response.Response === "Error") {
                     const message: string = (response as IDfiAMIResponse).Response === "Error" ? (response as IDfiAMIResponseMessage).Message : (response as Error).message;
-                    const errorLocal: IDfiAMIResponseError = response instanceof Error ?
+                    const errorLocal: IDfiAMIResponseError<AsteriskActionType1> = response instanceof Error ?
                         Object.assign(response, {action}) :
                         Object.assign(new Error(message), {action});
 
@@ -184,7 +188,7 @@ class AsteriskServer extends DfiEventObject {
             });
     }
 
-    public sendActions<R extends IDfiAMIResponse>(actions: IAstAction[], callbackFn?: IDfiActionCallback<R>, context?: any) {
+    public sendActions<R extends IDfiAMIResponse>(actions: IAstAction[], callbackFn?: IDfiActionCallback<R, IAstAction>, context?: any) {
         let wait = actions.length;
         const errors = [];
         const responses = [];
@@ -205,7 +209,7 @@ class AsteriskServer extends DfiEventObject {
         });
     }
 
-    public  sendEventGeneratingAction<E extends IAstEvent>(action: IAstAction | IAstActionCommand, callbackFn: IDfiAMIMultiCallback<E>, context?) {
+    public sendEventGeneratingAction<E extends IAstEvent>(action: AsteriskActionType2, callbackFn: IDfiAMIMultiCallback<E, AsteriskActionType2>, context?) {
         if (!this.allowedActions.has(action.Action)) {
             AstUtil.maybeCallback(callbackFn, context, "Not Allowed Action: " + action.Action);
             return;
@@ -234,7 +238,7 @@ class AsteriskServer extends DfiEventObject {
         (this._ami.send(action, true) as Promise<IDfiAMIResponse>)
             .then((response: IDfiAMIResponse) => {
                 if (response.Response && response.Response === "Error") {
-                    let error: IDfiAMIResponseError = Object.assign(new Error(response.Message), {action});
+                    const error: IDfiAMIResponseError<AsteriskActionType2> = new DfiAMIResponseError(response.Message, action);
 
                     this.logger.warn("sendEventGeneratingAction error:%j %j ", error.message, error.action);
 
@@ -256,8 +260,7 @@ class AsteriskServer extends DfiEventObject {
                 }
                 this.getProp(PROP_MULTIPART_RESPONSE_HANDLER)(response);
             })
-            .catch((error) => error)
-            .then((error) => {
+            .catch((error) => {
                 if (error instanceof Error) {
                     AstUtil.maybeCallback(callbackFn, context, error);
                 }
@@ -453,6 +456,7 @@ class AsteriskServer extends DfiEventObject {
             this.logger.info("onINITIALIZED");
 
             process.nextTick(run.bind(this));
+
             /**
              * @this AsteriskServer
              */

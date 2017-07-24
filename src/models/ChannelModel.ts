@@ -1,4 +1,4 @@
-import {IDfiAMIResponseGetvar, IDfiCallbackResult, IDfiVariableCallback} from "../definitions/interfaces";
+import {IDfiAMIResponseError, IDfiAMIResponseGetvar, IDfiCallbackResult, IDfiVariableCallback} from "../definitions/interfaces";
 import {IDfiAstModelAttribsChannel, IDfiAstModelOptions} from "../definitions/models";
 import {
     IAstActionAbsoluteTimeout,
@@ -13,7 +13,6 @@ import {
     IAstActionStopMonitor,
     IAstActionUnpauseMonitor
 } from "../internal/asterisk/actions";
-
 import AsteriskModel = require("../internal/asteriskModel");
 import AstUtil = require("../internal/astUtil");
 import Bridge = require("./BridgeModel");
@@ -651,7 +650,7 @@ class Channel extends AsteriskModel {
                 Channel: this.name,
                 Variable: name
             };
-            this._server.sendAction(action, (err, response: IDfiAMIResponseGetvar) => {
+            this._server.sendAction(action, (err: IDfiAMIResponseError<IAstActionGetvar>, response: IDfiAMIResponseGetvar) => {
                 // TODO check callback and getVarsCallbacks
 
                 if (this.destroyed) {
@@ -668,7 +667,12 @@ class Channel extends AsteriskModel {
                         });
                         return;
                     }
-                    response = {$time: Date.now(), Response: err.message, Value: null, Variable: err.action.Variable};
+                    response = {
+                        $time: Date.now(),
+                        Response: err.message,
+                        Value: null,
+                        Variable: err.action.Variable
+                    };
                     this.logger.debug("discarding varGet error because channel was hangup earlier with ", this.hangupCause);
                 } else {
                     this.updateVariable(name, response.Value, "ActionGetvar");

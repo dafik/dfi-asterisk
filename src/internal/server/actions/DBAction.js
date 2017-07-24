@@ -1,8 +1,8 @@
 "use strict";
 const BaseServerAction = require("./BaseAction");
-const util_1 = require("util");
 const AstUtil = require("../../astUtil");
 const AST_ACTION = require("../../asterisk/actionNames");
+const util_1 = require("util");
 class DBServerAction extends BaseServerAction {
     dbGet(family, key, callbackFn, context) {
         this._server.start()
