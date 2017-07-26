@@ -16,10 +16,10 @@ import {
 
 import {IAstAction, IAstActionCommand, IAstActionGetvar} from "./internal/asterisk/actions";
 
+import AmiClient from "local-asterisk-ami-client";
 import * as _ from "lodash";
 import {IAstEvent} from "./internal/asterisk/events";
 import async = require("async");
-import AmiClient = require("asterisk-ami-client");
 
 import DfiEventObject = require("local-dfi-base/src/dfiEventObject");
 import EventDispatcher = require("./internal/server/EventDispatcher");

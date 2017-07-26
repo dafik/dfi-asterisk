@@ -171,4 +171,4 @@ export {
     PeerState,
     QueueEntryState,
     QueueMemberState
-}
+};

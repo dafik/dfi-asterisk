@@ -1,6 +1,6 @@
 "use strict";
-const _ = require("lodash");
 const local_dfi_debug_logger_1 = require("local-dfi-debug-logger");
+const _ = require("lodash");
 const TRUE_LITERALS = [
     "yes",
     "true",

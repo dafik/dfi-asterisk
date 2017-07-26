@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const AmiClient = require("asterisk-ami-client");
+const local_asterisk_ami_client_1 = require("local-asterisk-ami-client");
 describe("Core actions", () => {
     it("getAvailableActions", (done) => {
-        const ami = new AmiClient({
+        const ami = new local_asterisk_ami_client_1.default({
             addTime: true,
             attemptsDelay: 1000,
             emitEventsByTypes: false,

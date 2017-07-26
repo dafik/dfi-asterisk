@@ -1,7 +1,7 @@
 "use strict";
+const local_asterisk_ami_client_1 = require("local-asterisk-ami-client");
 const _ = require("lodash");
 const async = require("async");
-const AmiClient = require("asterisk-ami-client");
 const DfiEventObject = require("local-dfi-base/src/dfiEventObject");
 const EventDispatcher = require("./internal/server/EventDispatcher");
 const ServerActions = require("./internal/server/Actions");
@@ -254,7 +254,7 @@ class AsteriskServer extends DfiEventObject {
         this.setProp(PROP_CONFIG, config);
     }
     _initializeEventConnection() {
-        const eventConnection = new AmiClient({
+        const eventConnection = new local_asterisk_ami_client_1.default({
             addTime: true,
             attemptsDelay: 1000,
             emitEventsByTypes: false,

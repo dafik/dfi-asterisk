@@ -67,7 +67,7 @@ describe("calls", () => {
                         endpointManger.on(EndpointManger.events.ERROR, error);
                         endpointManger.on(EndpointManger.events.ENDPOINTS_SET, finishEndpoints);
 
-                        endpointManger.setupEndpoints(2, "udp", "sip", "wszystkie-test");
+                        endpointManger.setupEndpoints(2, "pbx", "udp", "sip", "wszystkie-test");
 
                         function error(err) {
                             endpointManger.removeListener(EndpointManger.events.ERROR, error);

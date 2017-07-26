@@ -1,7 +1,7 @@
+import DebugLogger from "local-dfi-debug-logger";
 import * as _ from "lodash";
 import {IDfiCallbackResult} from "../definitions/interfaces";
 import {IAstAction} from "./asterisk/actions";
-import DebugLogger from "local-dfi-debug-logger";
 
 const TRUE_LITERALS = [
     "yes",

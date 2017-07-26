@@ -1,4 +1,4 @@
-import AmiClient = require("asterisk-ami-client");
+import AmiClient from "local-asterisk-ami-client";
 
 describe("Core actions", () => {
 
