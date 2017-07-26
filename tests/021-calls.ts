@@ -10,7 +10,7 @@ import {IDfiAsOriginateCallback, IDfiCallbackResult} from "../src/definitions/in
 import {IAstActionDialplanExtensionAdd, IAstActionDialplanExtensionRemove, IAstActionOriginate} from "../src/internal/asterisk/actions";
 
 process.on("unhandledRejection", (reason, p) => {
-    console.log("Unhandled Rejection at: Promise", p, "reason:", reason);
+    new DebugLogger("test").debug("Unhandled Rejection at: Promise", p, "reason:", reason);
     // application specific logging, throwing an error, or other logic here
 });
 

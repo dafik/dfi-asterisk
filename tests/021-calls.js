@@ -8,7 +8,7 @@ const manager = require("local-dfi-linphone-endpoint-manager");
 const AST_ACTION = require("../src/internal/asterisk/actionNames");
 const debugLogger_1 = require("local-dfi-debug-logger/debugLogger");
 process.on("unhandledRejection", (reason, p) => {
-    console.log("Unhandled Rejection at: Promise", p, "reason:", reason);
+    new debugLogger_1.default("test").debug("Unhandled Rejection at: Promise", p, "reason:", reason);
     // application specific logging, throwing an error, or other logic here
 });
 const endpointManger = manager.getInstance(asterisk);
