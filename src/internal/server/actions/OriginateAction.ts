@@ -6,7 +6,7 @@ import NoSuchChannel = require("../../../errors/NoSuchChannel");
 import ChannelState = require("../../../states/channelState");
 import CallerId = require("../../../models/CallerIdModel");
 import AST_ACTION = require("../../asterisk/actionNames");
-import {IDfiAsOriginateCallback, IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../../../definitions/interfaces";
+import {IDfiAMIResponseOriginate, IDfiAsOriginateCallback, IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../../../definitions/interfaces";
 import {IAstActionOriginate} from "../../asterisk/actions";
 import {IAstEventOriginateResponse} from "../../asterisk/events";
 
@@ -222,7 +222,7 @@ class OriginateServerAction extends BaseServerAction {
                 // TODO check
                 // must set async to true to receive OriginateEvents.
                 // originateAction.Async = false.toString(); ?
-                this._server.sendAction(originateAction, (err, response) => {
+                this._server.sendAction<IDfiAMIResponseOriginate>(originateAction, (err, response) => {
                     if (err) {
                         AstUtil.maybeCallback(callbackFn, context, err);
                         return;

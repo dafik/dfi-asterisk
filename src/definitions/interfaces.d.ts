@@ -220,6 +220,11 @@ export interface IDfiAMIResponseGetvar extends IDfiAMIResponse {
     Value: string;
 }
 
+export interface IDfiAMIResponseOriginate extends IDfiAMIResponse {
+    Uniqueid: string;
+    Event: string;
+}
+
 export interface IEventHandlersMap {
     [key: string]: IEventHandle;
 }

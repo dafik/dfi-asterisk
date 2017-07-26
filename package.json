@@ -15,18 +15,18 @@
     "local-dfi-base": "*",
     "local-dfi-debug-logger": "^0.1.5",
     "lodash": "^4.13.1",
-    "moment": "^2.16.0",
-    "@types/asterisk-ami-client": "^0.0.2",
-    "@types/async": "^2.0.32",
-    "@types/moment": "^2.13.0"
+    "moment": "^2.16.0"
   },
   "devDependencies": {
+    "@types/async": "^2.0.32",
+    "@types/moment": "^2.13.0",
     "@types/include-path": "^0.4.7",
     "@types/json-stringify-safe": "^5.0.1",
     "@types/lodash": "^4.14.36",
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.16",
     "heapdump": "latest",
+    "include-path": "^0.4.7",
     "json-stringify-safe": "^5.0.1",
     "local-dfi-debug-logger": "^0.1.5",
     "local-dfi-linphone": "*",

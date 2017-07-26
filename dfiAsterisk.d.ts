@@ -65,7 +65,6 @@ import Channel = require("./src/models/ChannelModel");
 import CallerId = require("./src/models/CallerIdModel");
 import IpAddress = require("./src/models/IpAddressModel");
 
-
 import AST_ACTION  = require("./src/internal/asterisk/actionNames");
 import AST_EVENT = require("./src/internal/asterisk/eventNames");
 
@@ -79,7 +78,6 @@ declare module "local-dfi-asterisk" {
     export * from "./src/definitions/interfaces";
     export * from "./src/definitions/models";
     export * from "./src/definitions/types";
-
 
     export {
         AST_ACTION,
@@ -176,5 +174,5 @@ declare module "local-dfi-asterisk" {
         PeerState,
         QueueEntryState,
         QueueMemberState
-    }
+    };
 }
