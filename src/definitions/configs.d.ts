@@ -1,3 +1,4 @@
+import {IAmiClientOptions} from "local-asterisk-ami-client/lib/Interfaces";
 import {IDfiBaseObjectConfig} from "local-dfi-base/src/dfiInterfaces";
 import AsteriskServer = require("../asteriskServer");
 import ServerManagers = require("../internal/server/Managers");
@@ -16,12 +17,15 @@ export interface IDfiAstConfigServer extends Object {
     server: IDfiAstConfigAstServer;
     managers?: IDfiAstConfigAstManagerConfig;
 }
+
 export interface IDfiAstConfigAstServer extends Object {
     host: string;
     port: string;
     username: string;
     secret: string;
+    amiOptions?: IAmiClientOptions;
 }
+
 export interface IDfiAstConfigAstManagerConfig extends Object {
     channel?: boolean;
     peer?: boolean;
@@ -31,6 +35,7 @@ export interface IDfiAstConfigAstManagerConfig extends Object {
     queue?: boolean;
     agent?: boolean;
 }
+
 export interface IDfiAstConfigAstManager extends Object {
     channel: boolean;
     peer: boolean;
@@ -40,6 +45,7 @@ export interface IDfiAstConfigAstManager extends Object {
     queue: boolean;
     agent: boolean;
 }
+
 export interface IDfiAstManagerOptions extends IDfiBaseObjectConfig {
     managers: ServerManagers;
     server: AsteriskServer;

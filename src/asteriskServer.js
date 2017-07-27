@@ -254,18 +254,8 @@ class AsteriskServer extends DfiEventObject {
         this.setProp(PROP_CONFIG, config);
     }
     _initializeEventConnection() {
-        const eventConnection = new local_asterisk_ami_client_1.default({
-            addTime: true,
-            attemptsDelay: 1000,
-            emitEventsByTypes: false,
-            emitResponsesById: false,
-            eventFilter: null,
-            eventTypeToLowerCase: false,
-            keepAlive: false,
-            keepAliveDelay: 10000,
-            maxAttemptsCount: 30,
-            reconnect: true
-        });
+        const config = this.getProp(PROP_CONFIG);
+        const eventConnection = new local_asterisk_ami_client_1.default(Object.assign({ addTime: true, attemptsDelay: 1000, emitEventsByTypes: false, emitResponsesById: false, eventFilter: null, eventTypeToLowerCase: false, keepAlive: false, keepAliveDelay: 10000, maxAttemptsCount: 30, reconnect: true }, config.server.amiOptions || {}));
         this.setProp(PROP_AMI, eventConnection);
         // AsteriskServer.registerResponseClasses(eventConnection);
     }

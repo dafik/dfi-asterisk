@@ -329,6 +329,9 @@ class AsteriskServer extends DfiEventObject {
     }
 
     private _initializeEventConnection() {
+
+        const config = this.getProp(PROP_CONFIG);
+
         const eventConnection = new AmiClient({
             addTime: true,
             attemptsDelay: 1000,
@@ -339,7 +342,8 @@ class AsteriskServer extends DfiEventObject {
             keepAlive: false,
             keepAliveDelay: 10000,
             maxAttemptsCount: 30,
-            reconnect: true
+            reconnect: true,
+            ...config.server.amiOptions || {}
         });
 
         this.setProp(PROP_AMI, eventConnection);
