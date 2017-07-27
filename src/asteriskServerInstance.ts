@@ -3,8 +3,10 @@ import {IDfiAstConfigServerOptions} from "./definitions/configs";
 
 let instance: AsteriskServer = null;
 
-function getServerInstance(options?: IDfiAstConfigServerOptions): AsteriskServer {
-    if (instance === null) {
+function getServerInstance(options?: IDfiAstConfigServerOptions, fresh?: boolean): AsteriskServer {
+    fresh = fresh || false;
+
+    if (instance === null && !fresh) {
         if (options) {
             instance = new AsteriskServer(options);
         } else {
@@ -13,4 +15,5 @@ function getServerInstance(options?: IDfiAstConfigServerOptions): AsteriskServer
     }
     return instance;
 }
+
 export = getServerInstance;

@@ -1,8 +1,9 @@
 "use strict";
 const AsteriskServer = require("./asteriskServer");
 let instance = null;
-function getServerInstance(options) {
-    if (instance === null) {
+function getServerInstance(options, fresh) {
+    fresh = fresh || false;
+    if (instance === null && !fresh) {
         if (options) {
             instance = new AsteriskServer(options);
         }
