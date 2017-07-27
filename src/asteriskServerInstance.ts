@@ -6,7 +6,7 @@ let instance: AsteriskServer = null;
 function getServerInstance(options?: IDfiAstConfigServerOptions, fresh?: boolean): AsteriskServer {
     fresh = fresh || false;
 
-    if (instance === null && !fresh) {
+    if (instance === null || fresh) {
         if (options) {
             instance = new AsteriskServer(options);
         } else {
