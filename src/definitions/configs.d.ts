@@ -10,6 +10,7 @@ export interface IDfiAstConfigCollection<M extends AsteriskModel> extends IDfiBa
 }
 
 export interface IDfiAstConfigServerOptions extends IDfiBaseObjectConfig {
+    fresh?: boolean;
     config: IDfiAstConfigServer;
 }
 
