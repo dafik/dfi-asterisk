@@ -250,7 +250,7 @@ class AsteriskServer extends DfiEventObject {
     }
     _initializeManagersOptions(options) {
         const config = this.getProp(PROP_CONFIG);
-        Object.assign(config.managers, Object.assign({ agent: true, bridge: true, channel: true, dahdi: true, device: true, meetMe: true, peer: true, queue: true }, options));
+        config.managers = Object.assign({ agent: true, bridge: true, channel: true, dahdi: true, device: true, meetMe: true, peer: true, queue: true }, options || {});
         this.setProp(PROP_CONFIG, config);
     }
     _initializeEventConnection() {
