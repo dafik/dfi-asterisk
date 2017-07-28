@@ -1,7 +1,7 @@
 "use strict";
-const DfiObject = require("local-dfi-base/src/dfiObject");
+const dfiObject_1 = require("local-dfi-base/src/dfiObject");
 const AST_EVENT = require("../asterisk/eventNames");
-class EventDispatcher extends DfiObject {
+class EventDispatcher extends dfiObject_1.default {
     constructor(server) {
         super({ loggerName: "dfi:as:" });
         this.setProp("server", server);

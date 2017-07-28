@@ -19,9 +19,9 @@ import {IAstAction, IAstActionCommand, IAstActionGetvar} from "./internal/asteri
 import AmiClient from "local-asterisk-ami-client";
 import * as _ from "lodash";
 import {IAstEvent} from "./internal/asterisk/events";
-import async = require("async");
 
-import DfiEventObject = require("local-dfi-base/src/dfiEventObject");
+import {DfiEventObject} from "local-dfi-base";
+import async = require("async");
 import EventDispatcher = require("./internal/server/EventDispatcher");
 import ServerActions = require("./internal/server/Actions");
 import ServerManagers = require("./internal/server/Managers");

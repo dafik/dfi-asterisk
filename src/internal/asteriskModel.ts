@@ -1,7 +1,8 @@
 import {IDfiAstModelAttribs, IDfiAstModelOptions} from "../definitions/models";
-import DfiModel = require("local-dfi-base/src/dfiModel");
+import {DfiModel} from "local-dfi-base";
 import AsteriskServer = require("../asteriskServer");
 import AsteriskState = require("./asteriskState");
+
 let getServerInstance;
 
 abstract class AsteriskModel extends DfiModel {

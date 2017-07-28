@@ -1,8 +1,8 @@
 "use strict";
-const DfiModel = require("local-dfi-base/src/dfiModel");
+const local_dfi_base_1 = require("local-dfi-base");
 const AsteriskState = require("./asteriskState");
 let getServerInstance;
-class AsteriskModel extends DfiModel {
+class AsteriskModel extends local_dfi_base_1.DfiModel {
     get sourceEvent() {
         return this.getProp("sourceEvent");
     }

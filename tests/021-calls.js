@@ -1,21 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
+const local_dfi_debug_logger_1 = require("local-dfi-debug-logger");
+const local_dfi_linphone_1 = require("local-dfi-linphone");
+const local_dfi_linphone_endpoint_manager_1 = require("local-dfi-linphone-endpoint-manager");
+const endpointManager_1 = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
 const asterisk = require("./mock/asterisk-real");
-const Linphone = require("local-dfi-linphone/src/linphone");
-const EndpointManger = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
-const manager = require("local-dfi-linphone-endpoint-manager");
 const AST_ACTION = require("../src/internal/asterisk/actionNames");
-const debugLogger_1 = require("local-dfi-debug-logger/debugLogger");
 process.on("unhandledRejection", (reason, p) => {
-    new debugLogger_1.default("test").debug("Unhandled Rejection at: Promise", p, "reason:", reason);
+    new local_dfi_debug_logger_1.default("test").debug("Unhandled Rejection at: Promise", p, "reason:", reason);
     // application specific logging, throwing an error, or other logic here
 });
-const endpointManger = manager.getInstance(asterisk);
+const endpointManger = local_dfi_linphone_endpoint_manager_1.getInstance(asterisk);
 let answerTimeout = 0;
 let endCallTimeout = 0;
 const eventTimeout = 30000;
-const logger = new debugLogger_1.default("test:calls");
+const logger = new local_dfi_debug_logger_1.default("test:calls");
 function getTimeout(name, done) {
     return setTimeout(() => {
         assert(false, 'Event never fired in time: "' + eventTimeout + 'ms" for timeout: "' + name + '"');
@@ -49,12 +49,12 @@ describe("calls", () => {
                 let dial2 = false;
                 asterisk.start()
                     .then(() => {
-                    endpointManger.on(EndpointManger.events.ERROR, error);
-                    endpointManger.on(EndpointManger.events.ENDPOINTS_SET, finishEndpoints);
+                    endpointManger.on(endpointManager_1.default.events.ERROR, error);
+                    endpointManger.on(endpointManager_1.default.events.ENDPOINTS_SET, finishEndpoints);
                     endpointManger.setupEndpoints(2, "pbx", "udp", "sip", "wszystkie-test");
                     function error(err) {
-                        endpointManger.removeListener(EndpointManger.events.ERROR, error);
-                        endpointManger.removeListener(EndpointManger.events.ENDPOINTS_SET, finishEndpoints);
+                        endpointManger.removeListener(endpointManager_1.default.events.ERROR, error);
+                        endpointManger.removeListener(endpointManager_1.default.events.ENDPOINTS_SET, finishEndpoints);
                         finishInit(err);
                     }
                     function createDialplan(technology) {
@@ -134,8 +134,8 @@ describe("calls", () => {
                         });
                     }
                     function finishEndpoints(technology) {
-                        endpointManger.removeListener(EndpointManger.events.ERROR, error);
-                        endpointManger.removeListener(EndpointManger.events.ENDPOINTS_SET, finishEndpoints);
+                        endpointManger.removeListener(endpointManager_1.default.events.ERROR, error);
+                        endpointManger.removeListener(endpointManager_1.default.events.ENDPOINTS_SET, finishEndpoints);
                         createDialplan(technology);
                     }
                 })
@@ -166,14 +166,14 @@ describe("calls", () => {
         const keys = [...linPhones.keys()];
         const endpoint1 = linPhones.get(keys.shift());
         const endpoint2 = linPhones.get(keys.shift());
-        endpoint1.on(Linphone.events.ANSWERED, () => {
+        endpoint1.on(local_dfi_linphone_1.default.events.ANSWERED, () => {
             waitEndCall = waitEndCall + 2;
             setTimeout(() => {
                 endCall(endpoint1);
                 endCall(endpoint2);
             }, 200);
         });
-        endpoint2.on(Linphone.events.INCOMING, (line, id) => {
+        endpoint2.on(local_dfi_linphone_1.default.events.INCOMING, (line, id) => {
             endpoint2.answer(id);
         });
         makeCall(endpoint1, endpoint2);
@@ -182,7 +182,7 @@ describe("calls", () => {
         }
         function endCall(linphone) {
             linphone.endCall();
-            linphone.on(Linphone.events.END_CALL, checkEnd);
+            linphone.on(local_dfi_linphone_1.default.events.END_CALL, checkEnd);
         }
         function checkEnd() {
             waitEndCall--;
@@ -206,29 +206,29 @@ describe("calls", () => {
             const keys = [...linPhones.keys()];
             const endpoint1 = linPhones.get(keys.shift());
             const endpoint2 = linPhones.get(keys.shift());
-            endpoint1.on(Linphone.events.INCOMING, (line, id) => {
+            endpoint1.on(local_dfi_linphone_1.default.events.INCOMING, (line, id) => {
                 clearTimeout(endpoint1IncomingTimeout);
                 setTimeout(() => {
                     endpoint1AnswerTimeout = getTimeout("endpoint1Answer", done);
                     endpoint1.answer(id);
                 }, answerTimeout);
             });
-            endpoint1.on(Linphone.events.ANSWERED, () => {
+            endpoint1.on(local_dfi_linphone_1.default.events.ANSWERED, () => {
                 clearTimeout(endpoint1AnswerTimeout);
                 waitEndCall++;
             });
-            endpoint1.on(Linphone.events.END_CALL, () => {
+            endpoint1.on(local_dfi_linphone_1.default.events.END_CALL, () => {
                 clearTimeout(endpoint1EndCallTimeout);
                 checkEnd();
             });
-            endpoint2.on(Linphone.events.INCOMING, (line, id) => {
+            endpoint2.on(local_dfi_linphone_1.default.events.INCOMING, (line, id) => {
                 clearTimeout(endpoint2IncomingTimeout);
                 setTimeout(() => {
                     endpoint2AnswerTimeout = getTimeout("endpoint2Answer", done);
                     endpoint2.answer(id);
                 }, answerTimeout);
             });
-            endpoint2.on(Linphone.events.ANSWERED, (line, id) => {
+            endpoint2.on(local_dfi_linphone_1.default.events.ANSWERED, (line, id) => {
                 clearTimeout(endpoint2AnswerTimeout);
                 waitEndCall++;
                 setTimeout(() => {
@@ -237,7 +237,7 @@ describe("calls", () => {
                     endpoint2.endCall(id);
                 }, endCallTimeout);
             });
-            endpoint2.on(Linphone.events.END_CALL, () => {
+            endpoint2.on(local_dfi_linphone_1.default.events.END_CALL, () => {
                 clearTimeout(endpoint2EndCallTimeout);
                 checkEnd();
             });

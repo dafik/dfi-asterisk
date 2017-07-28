@@ -1,9 +1,9 @@
 "use strict";
-const DfiModel = require("local-dfi-base/src/dfiModel");
+const dfiModel_1 = require("local-dfi-base/src/dfiModel");
 const PROP_IP = "ipAddress";
 const PROP_MASK = "mask";
 const PROP_PORT = "port";
-class IpAddress extends DfiModel {
+class IpAddress extends dfiModel_1.default {
     constructor(attributes, options) {
         super(attributes, options);
         const ipReg = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;

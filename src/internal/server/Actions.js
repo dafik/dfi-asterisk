@@ -1,5 +1,5 @@
 "use strict";
-const DfiObject = require("local-dfi-base/src/dfiObject");
+const dfiObject_1 = require("local-dfi-base/src/dfiObject");
 const ModuleAction = require("./actions/ModuleAction");
 const VoiceMailServerAction = require("./actions/VoicemailAction");
 const VariableServerAction = require("./actions/VariableAction");
@@ -20,7 +20,7 @@ const PROP_DB = "db";
 const PROP_CORE = "core";
 const PROP_CONFIG = "config";
 const PROP_DIALPLAN = "dialplan";
-class ServerActions extends DfiObject {
+class ServerActions extends dfiObject_1.default {
     constructor(server) {
         super();
         this.setProp(PROP_VOICEMAIL, new VoiceMailServerAction(server));

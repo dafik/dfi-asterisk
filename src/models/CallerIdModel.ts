@@ -1,5 +1,5 @@
 import AstUtil = require("../internal/astUtil");
-import DfiObject = require("local-dfi-base/src/dfiObject");
+import DfiObject from "local-dfi-base/src/dfiObject";
 
 const P_PROP_NAME = "name";
 const P_PROP_NUMBER = "number";

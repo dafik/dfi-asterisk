@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
 const asterisk = require("./mock/asterisk-real");
 const AsteriskVersion = require("../src/internal/server/Version");
+const local_dfi_linphone_endpoint_manager_1 = require("local-dfi-linphone-endpoint-manager");
+local_dfi_linphone_endpoint_manager_1.default.toString();
 describe("Core actions", () => {
     function onBefore(done) {
         this.timeout(20000);

@@ -1,12 +1,12 @@
 "use strict";
-const DfiEventObject = require("local-dfi-base/src/dfiEventObject");
+const dfiEventObject_1 = require("local-dfi-base/src/dfiEventObject");
 const AstUtil = require("../astUtil");
 const P_PROP_COLLECTION = "collection";
 const P_PROP_MANAGERS = "managers";
 const P_PROP_EVENTSMAP = "eventsMap";
 const P_PROP_ENABLED = "enabled";
 const P_PROP_SERVER = "server";
-class AsteriskManager extends DfiEventObject {
+class AsteriskManager extends dfiEventObject_1.default {
     constructor(options, enabled, collection) {
         options.loggerName = "dfi:as:";
         super(options);
@@ -63,6 +63,6 @@ class AsteriskManager extends DfiEventObject {
         }, this);
     }
 }
-const EVENTS = Object.assign({}, DfiEventObject.events, { ADD: Symbol("manager:add"), UPDATE: Symbol("manager:update") });
+const EVENTS = Object.assign({}, dfiEventObject_1.default.events, { ADD: Symbol("manager:add"), UPDATE: Symbol("manager:update") });
 module.exports = AsteriskManager;
 //# sourceMappingURL=Manager.js.map

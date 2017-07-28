@@ -1,8 +1,8 @@
 "use strict";
-const DfiCollection = require("local-dfi-base/src/dfiCollection");
+const local_dfi_base_1 = require("local-dfi-base");
 const ID_FIELD = "id";
 const COLLECTION = "collection";
-class AsteriskCollection extends DfiCollection {
+class AsteriskCollection extends local_dfi_base_1.DfiCollection {
     constructor(opts) {
         opts.loggerName = "dfi:as:";
         opts.idField = opts.idField || ID_FIELD;

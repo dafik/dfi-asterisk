@@ -1,4 +1,4 @@
-import DfiObject = require("local-dfi-base/src/dfiObject");
+import DfiObject from "local-dfi-base/src/dfiObject";
 import ModuleAction = require("./actions/ModuleAction");
 import VoiceMailServerAction = require("./actions/VoicemailAction");
 import VariableServerAction = require("./actions/VariableAction");

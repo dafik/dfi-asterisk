@@ -1,8 +1,8 @@
 "use strict";
 const local_asterisk_ami_client_1 = require("local-asterisk-ami-client");
 const _ = require("lodash");
+const local_dfi_base_1 = require("local-dfi-base");
 const async = require("async");
-const DfiEventObject = require("local-dfi-base/src/dfiEventObject");
 const EventDispatcher = require("./internal/server/EventDispatcher");
 const ServerActions = require("./internal/server/Actions");
 const ServerManagers = require("./internal/server/Managers");
@@ -24,7 +24,7 @@ const PROP_ACTIONS = "actions";
 const PROP_MANAGERS = "managers";
 const PROP_VERSION = "version";
 const PROP_CONFIG = "config";
-class AsteriskServer extends DfiEventObject {
+class AsteriskServer extends local_dfi_base_1.DfiEventObject {
     static get events() {
         return EVENTS;
     }
@@ -428,6 +428,6 @@ const amiHandlers = {
         }
     }
 };
-const EVENTS = Object.assign({}, DfiEventObject.events, { BEFORE_INIT: Symbol("astBeforeInitialized"), BEFORE_REINIT: Symbol("astBeforeReInitialized"), CONNECTED: Symbol("astConnected"), INIT: Symbol("astInitialized"), REINIT: Symbol("astReInitialized") });
+const EVENTS = Object.assign({}, local_dfi_base_1.DfiEventObject.events, { BEFORE_INIT: Symbol("astBeforeInitialized"), BEFORE_REINIT: Symbol("astBeforeReInitialized"), CONNECTED: Symbol("astConnected"), INIT: Symbol("astInitialized"), REINIT: Symbol("astReInitialized") });
 module.exports = AsteriskServer;
 //# sourceMappingURL=asteriskServer.js.map

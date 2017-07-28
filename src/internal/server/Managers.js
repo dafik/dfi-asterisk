@@ -1,5 +1,5 @@
 "use strict";
-const DfiObject = require("local-dfi-base/src/dfiObject");
+const dfiObject_1 = require("local-dfi-base/src/dfiObject");
 const async = require("async");
 const ChannelManager = require("../../managers/ChannelManager");
 const PeerManager = require("../../managers/PeerManager");
@@ -18,7 +18,7 @@ const CHANNEL = "channel";
 const DAHDI = "dahdi";
 const QUEUE = "queue";
 const AGENT = "agent";
-class ServerManagers extends DfiObject {
+class ServerManagers extends dfiObject_1.default {
     constructor(server) {
         super();
         this.setProp(PROP_MANAGERS, new Map());

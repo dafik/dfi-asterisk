@@ -1,5 +1,5 @@
 import {IDfiAstModelAttribsIpAddress} from "../definitions/models";
-import DfiModel = require("local-dfi-base/src/dfiModel");
+import DfiModel from "local-dfi-base/src/dfiModel";
 
 const PROP_IP = "ipAddress";
 const PROP_MASK = "mask";

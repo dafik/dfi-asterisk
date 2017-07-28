@@ -1,20 +1,19 @@
-import assert = require("assert");
-import asterisk = require("./mock/asterisk-real");
-import Linphone = require("local-dfi-linphone/src/linphone");
-
-import EndpointManger = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
-import manager = require("local-dfi-linphone-endpoint-manager");
-import AST_ACTION = require("../src/internal/asterisk/actionNames");
-import DebugLogger from "local-dfi-debug-logger/debugLogger";
+import * as assert from "assert";
+import DebugLogger from "local-dfi-debug-logger";
+import Linphone from "local-dfi-linphone";
+import {getInstance as manager} from "local-dfi-linphone-endpoint-manager";
+import EndpointManger from "local-dfi-linphone-endpoint-manager/src/endpointManager";
 import {IDfiAsOriginateCallback, IDfiCallbackResult} from "../src/definitions/interfaces";
 import {IAstActionDialplanExtensionAdd, IAstActionDialplanExtensionRemove, IAstActionOriginate} from "../src/internal/asterisk/actions";
+import asterisk = require("./mock/asterisk-real");
+import AST_ACTION = require("../src/internal/asterisk/actionNames");
 
 process.on("unhandledRejection", (reason, p) => {
     new DebugLogger("test").debug("Unhandled Rejection at: Promise", p, "reason:", reason);
     // application specific logging, throwing an error, or other logic here
 });
 
-const endpointManger = manager.getInstance(asterisk);
+const endpointManger = manager(asterisk);
 
 let answerTimeout = 0;
 let endCallTimeout = 0;

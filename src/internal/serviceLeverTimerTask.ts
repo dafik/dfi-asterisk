@@ -1,7 +1,7 @@
 "use strict";
 import QueueEntry = require("../models/queues/QueueEntryModel");
-import DfiObject = require("local-dfi-base/src/dfiObject");
 import Queue = require("../models/queues/QueueModel");
+import DfiObject from "local-dfi-base/src/dfiObject";
 
 const PROP_ENTRY = Symbol("entry");
 const PROP_QUEUE = Symbol("queue");
@@ -30,4 +30,5 @@ class ServiceLevelTimerTask extends DfiObject {
         (this.getProp(PROP_QUEUE) as Queue).fireServiceLevelExceeded(this.getProp(PROP_ENTRY));
     }
 }
+
 export = ServiceLevelTimerTask;

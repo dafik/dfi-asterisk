@@ -1,9 +1,9 @@
 "use strict";
 const AstUtil = require("../internal/astUtil");
-const DfiObject = require("local-dfi-base/src/dfiObject");
+const dfiObject_1 = require("local-dfi-base/src/dfiObject");
 const P_PROP_NAME = "name";
 const P_PROP_NUMBER = "number";
-class CallerId extends DfiObject {
+class CallerId extends dfiObject_1.default {
     /**
      * Parses a caller id string in the form
      * <code>"Some Name" &lt;1234&gt;</code> to a AsteriskCallerId object.

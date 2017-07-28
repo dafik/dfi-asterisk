@@ -1,6 +1,10 @@
 import assert = require("assert");
 import asterisk = require("./mock/asterisk-real");
 import AsteriskVersion = require("../src/internal/server/Version");
+import aaaaa from "local-dfi-linphone-endpoint-manager";
+
+
+aaaaa.toString();
 
 describe("Core actions", () => {
     function onBefore(done) {

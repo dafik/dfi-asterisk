@@ -1,9 +1,8 @@
-import DfiEventObject = require("local-dfi-base/src/dfiEventObject");
+import DfiEventObject from "local-dfi-base/src/dfiEventObject";
 import {IDfiAstManagerOptions} from "../../definitions/configs";
 import {IDfiAstEventsManager, IDfiAstEventsServer} from "../../definitions/events";
 import {IDfiCallbackResult, IEventHandle, IEventHandlersMap} from "../../definitions/interfaces";
 import {IAstEvent} from "../asterisk/events";
-
 import AsteriskServer = require("../../asteriskServer");
 import AsteriskCollection = require("../asteriskCollection");
 import AsteriskModel = require("../asteriskModel");
@@ -89,6 +88,7 @@ abstract class AsteriskManager<M extends AsteriskModel, C extends AsteriskCollec
         }, this);
     }
 }
+
 const EVENTS = {
     ...DfiEventObject.events,
 

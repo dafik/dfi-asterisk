@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
+const local_dfi_debug_logger_1 = require("local-dfi-debug-logger");
+const local_dfi_linphone_endpoint_manager_1 = require("local-dfi-linphone-endpoint-manager");
+const endpointManager_1 = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
+const index_1 = require("../index");
 const asterisk = require("./mock/asterisk-real");
-const EndpointManger = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
-const manager = require("local-dfi-linphone-endpoint-manager");
 const PeerStates = require("../src/enums/peerStates");
 const DeviceStates = require("../src/enums/deviceStates");
-const local_dfi_debug_logger_1 = require("local-dfi-debug-logger");
-const index_1 = require("../index");
 const logger = new local_dfi_debug_logger_1.default("sip:factory");
-const endpointManger = manager.getInstance(asterisk);
+const endpointManger = local_dfi_linphone_endpoint_manager_1.getInstance(asterisk);
 describe("peers", () => {
     function onAfter(done) {
         this.timeout(1000000);
@@ -27,18 +27,18 @@ describe("peers", () => {
                     done(new Error("peer manager is not enabled but required"));
                     return;
                 }
-                endpointManger.on(EndpointManger.events.ERROR, error);
-                endpointManger.on(EndpointManger.events.ENDPOINTS_SET, finish);
+                endpointManger.on(endpointManager_1.default.events.ERROR, error);
+                endpointManger.on(endpointManager_1.default.events.ENDPOINTS_SET, finish);
                 endpointManger.setupEndpoints(1, "pbx", "udp", "sip", "wszystkie-test");
                 function error(err) {
-                    endpointManger.removeListener(EndpointManger.events.ERROR, error);
-                    endpointManger.removeListener(EndpointManger.events.ENDPOINTS_SET, finish);
+                    endpointManger.removeListener(endpointManager_1.default.events.ERROR, error);
+                    endpointManger.removeListener(endpointManager_1.default.events.ENDPOINTS_SET, finish);
                     done();
                     throw err;
                 }
                 function finish() {
-                    endpointManger.removeListener(EndpointManger.events.ERROR, error);
-                    endpointManger.removeListener(EndpointManger.events.ENDPOINTS_SET, finish);
+                    endpointManger.removeListener(endpointManager_1.default.events.ERROR, error);
+                    endpointManger.removeListener(endpointManager_1.default.events.ENDPOINTS_SET, finish);
                     done();
                 }
             })

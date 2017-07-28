@@ -1,16 +1,16 @@
-import assert = require("assert");
-import asterisk = require("./mock/asterisk-real");
-import Linphone = require("local-dfi-linphone/src/linphone");
+import * as assert from "assert";
+import Linphone from "local-dfi-linphone";
 
-import EndpointManger = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
-import manager = require("local-dfi-linphone-endpoint-manager");
+import DebugLogger from "local-dfi-debug-logger";
+import {getInstance as manager} from "local-dfi-linphone-endpoint-manager";
+import EndpointManger from "local-dfi-linphone-endpoint-manager/src/endpointManager";
+import {AST_ACTION} from "../index";
+import asterisk = require("./mock/asterisk-real");
 import PeerStates = require("../src/enums/peerStates");
 import DeviceStates = require("../src/enums/deviceStates");
-import DebugLogger from "local-dfi-debug-logger";
-import {AST_ACTION} from "../index";
 
 const logger = new DebugLogger("sip:factory");
-const endpointManger = manager.getInstance(asterisk);
+const endpointManger = manager(asterisk);
 
 describe("peers", () => {
     function onAfter(done) {

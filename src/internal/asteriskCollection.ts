@@ -1,5 +1,5 @@
 import AsteriskModel = require("./asteriskModel");
-import DfiCollection = require("local-dfi-base/src/dfiCollection");
+import {DfiCollection} from "local-dfi-base";
 import {IDfiAstConfigCollection} from "../definitions/configs";
 
 const ID_FIELD = "id";
@@ -26,4 +26,5 @@ abstract class AsteriskCollection<M extends AsteriskModel> extends DfiCollection
         return new Map([...collection.entries()]);
     }
 }
+
 export = AsteriskCollection;

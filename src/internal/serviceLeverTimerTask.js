@@ -1,12 +1,12 @@
 "use strict";
-const DfiObject = require("local-dfi-base/src/dfiObject");
+const dfiObject_1 = require("local-dfi-base/src/dfiObject");
 const PROP_ENTRY = Symbol("entry");
 const PROP_QUEUE = Symbol("queue");
 const PROP_TIMER = Symbol("timer");
 /**
  * TimerTask that monitors exceeding service levels.
  */
-class ServiceLevelTimerTask extends DfiObject {
+class ServiceLevelTimerTask extends dfiObject_1.default {
     constructor(queue, entry) {
         super();
         this.setProp(PROP_ENTRY, entry);

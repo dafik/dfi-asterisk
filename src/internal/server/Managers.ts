@@ -1,4 +1,6 @@
-import DfiObject = require("local-dfi-base/src/dfiObject");
+import DfiObject from "local-dfi-base/src/dfiObject";
+import {IDfiAstConfigAstManager} from "../../definitions/configs";
+import {IDfiCallbackResult} from "../../definitions/interfaces";
 import async = require("async");
 import ChannelManager = require("../../managers/ChannelManager");
 import PeerManager = require("../../managers/PeerManager");
@@ -8,8 +10,6 @@ import DahdiManager = require("../../managers/DahdiManager");
 import QueueManager = require("../../managers/QueueManager");
 import AgentManager = require("../../managers/AgentManager");
 import AstUtil = require("../astUtil");
-import {IDfiAstConfigAstManager} from "../../definitions/configs";
-import {IDfiCallbackResult} from "../../definitions/interfaces";
 import AsteriskManager = require("./Manager");
 import AsteriskModel = require("../asteriskModel");
 import AsteriskCollection = require("../asteriskCollection");
@@ -111,7 +111,7 @@ class ServerManagers extends DfiObject {
         }
     }
 
-    public  managers<T extends AsteriskManager<AsteriskModel, AsteriskCollection<AsteriskModel>>>(): Map<string, T> {
+    public managers<T extends AsteriskManager<AsteriskModel, AsteriskCollection<AsteriskModel>>>(): Map<string, T> {
         return new Map([...(this.getProp(PROP_MANAGERS) as Map<string, T>).entries()]);
     }
 }
