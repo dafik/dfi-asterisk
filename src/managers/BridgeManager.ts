@@ -2,6 +2,10 @@ import AsteriskManager = require("../internal/server/Manager");
 import Bridges = require("../collections/BridgesCollection");
 import Bridge = require("../models/BridgeModel");
 import ChannelManager = require("./ChannelManager");
+
+import AstUtil = require("../internal/astUtil");
+import AST_EVENT = require("../internal/asterisk/eventNames");
+import AST_ACTION = require("../internal/asterisk/actionNames");
 import {IDfiAMIResponseMessageMulti, IDfiCallbackResult} from "../definitions/interfaces";
 import {IDfiAstModelAttribsBridge} from "../definitions/models";
 import {
@@ -14,10 +18,6 @@ import {
     IAstEventHangup,
     IAstEventLocalBridge
 } from "../internal/asterisk/events";
-
-import AstUtil = require("../internal/astUtil");
-import AST_EVENT = require("../internal/asterisk/eventNames");
-import AST_ACTION = require("../internal/asterisk/actionNames");
 
 const PROP_LOCAL_MAP = "localMap";
 const PROP_CHANNEL_MANAGER = "channelManager";
@@ -63,7 +63,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
         return this.bridges.get(bridgeId);
     }
 
-    public hasBridge(bridge: string|Bridge): boolean {
+    public hasBridge(bridge: string | Bridge): boolean {
         return this.bridges.has(bridge);
     }
 
@@ -180,7 +180,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
         }
         // event.WasInBridgeManager = true;
 
-        let attrs: IDfiAstModelAttribsBridge = {
+        const attrs: IDfiAstModelAttribsBridge = {
             BridgeCreator: "asterisk",
             BridgeName: id,
             BridgeNumChannels: 2,
@@ -190,10 +190,8 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
             id,
             isHangupFirst: false,
             isHangupSecond: false
-
+            // ...event
         };
-
-        attrs = {...attrs, ...event};
         const bridge = new Bridge(attrs);
         this._addLocalBridge(bridge);
 
@@ -286,4 +284,5 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
         this.bridges.add(bridge);
     }
 }
+
 export = BridgeManager;

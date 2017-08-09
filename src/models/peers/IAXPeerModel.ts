@@ -29,7 +29,7 @@ class IAXPeer extends Peer {
 
     constructor(attributes: IDfiAstModelAttribsIAXPeer, options?: IDfiAstModelOptions) {
 
-        const attr: IDfiAstModelAttribsPeer = {
+        const attr: IDfiAstModelAttribsIAXPeer = {
             ...attributes,
             Encryption: AstUtil.isTrue(attributes.Encryption) ? true : false,
             Trunk: AstUtil.isTrue(attributes.Trunk) ? true : false,
@@ -43,4 +43,5 @@ class IAXPeer extends Peer {
         super(attr, options);
     }
 }
+
 export = IAXPeer;

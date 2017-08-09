@@ -140,7 +140,7 @@ class BridgeManager extends AsteriskManager {
             return;
         }
         // event.WasInBridgeManager = true;
-        let attrs = {
+        const attrs = {
             BridgeCreator: "asterisk",
             BridgeName: id,
             BridgeNumChannels: 2,
@@ -150,8 +150,8 @@ class BridgeManager extends AsteriskManager {
             id,
             isHangupFirst: false,
             isHangupSecond: false
+            // ...event
         };
-        attrs = Object.assign({}, attrs, event);
         const bridge = new Bridge(attrs);
         this._addLocalBridge(bridge);
         if (this.server.managers.channel.enabled) {

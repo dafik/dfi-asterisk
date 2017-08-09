@@ -1,7 +1,7 @@
 import Peer = require("./PeerModel");
-import {IDfiAstModelAttribsPeer, IDfiAstModelAttribsSipPeer, IDfiAstModelOptions} from "../../definitions/models";
 import Ip = require("../IpAddressModel");
 import AstUtil = require("../../internal/astUtil");
+import {IDfiAstModelAttribsSipPeer, IDfiAstModelOptions} from "../../definitions/models";
 
 const PROP_CHANNEL_TYPE = "channelType";
 const PROP_OBJECT_NAME = "objectName";
@@ -42,18 +42,18 @@ class SIPPeer extends Peer {
 
     constructor(attributes: IDfiAstModelAttribsSipPeer, options?: IDfiAstModelOptions) {
 
-        const attr: IDfiAstModelAttribsPeer = {
+        const attr: IDfiAstModelAttribsSipPeer = {
             ...attributes,
 
-            ACL: AstUtil.isTrue(attributes.ACL) ? true : false,
+            ACL: !!AstUtil.isTrue(attributes.ACL),
 
-            AutoComedia: AstUtil.isTrue(attributes.AutoComedia) ? true : false,
-            AutoForcerport: AstUtil.isTrue(attributes.AutoForcerport) ? true : false,
-            Comedia: AstUtil.isTrue(attributes.Comedia) ? true : false,
-            Forcerport: AstUtil.isTrue(attributes.Forcerport) ? true : false,
-            RealtimeDevice: AstUtil.isTrue(attributes.RealtimeDevice) ? true : false,
-            TextSupport: AstUtil.isTrue(attributes.TextSupport) ? true : false,
-            VideoSupport: AstUtil.isTrue(attributes.VideoSupport) ? true : false,
+            AutoComedia: !!AstUtil.isTrue(attributes.AutoComedia),
+            AutoForcerport: !!AstUtil.isTrue(attributes.AutoForcerport),
+            Comedia: !!AstUtil.isTrue(attributes.Comedia),
+            Forcerport: !!AstUtil.isTrue(attributes.Forcerport),
+            RealtimeDevice: !!AstUtil.isTrue(attributes.RealtimeDevice),
+            TextSupport: !!AstUtil.isTrue(attributes.TextSupport),
+            VideoSupport: !!AstUtil.isTrue(attributes.VideoSupport),
 
             ip: new Ip({
                 ipAddress: AstUtil.isNull(attributes.IPaddress) ? null : attributes.IPaddress,

@@ -19,7 +19,7 @@ class PJSIPPeer extends Peer {
     constructor(attributes: IDfiAstModelAttribsPJSIPPeer, options?: IDfiAstModelOptions) {
         // TODO define interface
 
-        const attr: IDfiAstModelAttribsPeer = {
+        const attr: IDfiAstModelAttribsPJSIPPeer = {
             ...attributes,
             ChanObjectType: "",
             Channeltype: "",

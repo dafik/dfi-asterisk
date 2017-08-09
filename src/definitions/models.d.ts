@@ -35,6 +35,7 @@ export interface IDfiAstModelAttribsDialplanPriority extends IDfiAstModelAttribs
     Application: string;
     AppData: string;
 }
+
 export interface IDfiAstModelOptionsDialplanPriority extends IDfiAstModelOptions {
     context?: DialplanContext;
     extension?: DialplanExtension;
@@ -43,10 +44,12 @@ export interface IDfiAstModelOptionsDialplanPriority extends IDfiAstModelOptions
 export interface IDfiAstModelAttribsDialplanExtension extends IDfiAstModelAttribs {
     Extension: string;
 }
+
 export interface IDfiAstModelOptionsDialplanExtension extends IDfiAstModelOptions {
     context?: DialplanContext;
 
 }
+
 export interface IDfiAstModelAttribsDialplanContext extends IDfiAstModelAttribs {
     Context: string;
     Registrar: string;
@@ -73,56 +76,45 @@ export interface IDfiAstModelAttribsExtension extends IDfiAstModelAttribs {
 }
 
 export interface IDfiAstModelAttribsPeer extends IDfiAstModelAttribs {
-    technology: string;
-    ip: Ip;
+    technology?: string;
+    ip?: Ip;
 
-    Channeltype: string;
+    Channeltype?: string;
+    ChanObjectType?: string;
     ObjectName: string;
-    ChanObjectType: string;
-    Dynamic: string|boolean;
-    Status: string;
+
+    Dynamic?: string | boolean;
+    Status?: string;
 
     state?: PeerState;
 }
 
-export interface IDfiAstModelAttribsIAXPeer extends IDfiAstModelAttribs {
-    Channeltype: string;
-    ObjectName: string;
-    ChanObjectType: string;
-    Dynamic: string|boolean;
-    Status: string;
-
+export interface IDfiAstModelAttribsIAXPeer extends IDfiAstModelAttribsPeer {
     ObjectUsername: string;
-    Trunk: string;
-    Encryption: string;
+    Trunk: boolean | string;
+    Encryption: boolean | string;
 
     IPaddress: string;
     Mask: string;
     Port: string;
 }
 
-export interface IDfiAstModelAttribsSipPeer extends IDfiAstModelAttribs {
-    Channeltype: string;
-    ObjectName: string;
-    ChanObjectType: string;
-    Dynamic: string|boolean;
-    Status: string;
-
-    AutoForcerport: string;
-    Forcerport: string;
-    AutoComedia: string;
-    Comedia: string;
-    VideoSupport: string;
-    TextSupport: string;
-    ACL: string;
-    RealtimeDevice: string;
+export interface IDfiAstModelAttribsSipPeer extends IDfiAstModelAttribsPeer {
+    AutoForcerport: boolean | string;
+    Forcerport: boolean | string;
+    AutoComedia: boolean | string;
+    Comedia: boolean | string;
+    VideoSupport: boolean | string;
+    TextSupport: boolean | string;
+    ACL: boolean | string;
+    RealtimeDevice: boolean | string;
     Description: string;
 
     IPaddress: string;
     IPport: string;
 }
 
-export interface IDfiAstModelAttribsPJSIPPeer extends IDfiAstModelAttribs {
+export interface IDfiAstModelAttribsPJSIPPeer extends IDfiAstModelAttribsPeer {
     DeviceState: string;
 }
 
@@ -139,6 +131,7 @@ export interface IDfiAstModelAttribsBridge extends IDfiAstModelAttribs {
     isHangupSecond?: boolean;
 
 }
+
 export interface IDfiAstModelAttribsChannel extends IDfiAstModelAttribs {
 
     Channel: string;
@@ -180,7 +173,7 @@ export interface IDfiAstModelAttribsDAHDI extends IDfiAstModelAttribs {
     Uniqueid?: string;
     AccountCode?: string;
 
-    channel?: Channel| IDfiAstDAHDIOnChannel;
+    channel?: Channel | IDfiAstDAHDIOnChannel;
 
 }
 
@@ -231,8 +224,8 @@ export interface IDfiAstModelAttribsQueue extends IDfiAstModelAttribs {
     Holdtime: string;
     TalkTime: string;
     Completed: string;
-    Abandoned: string|number;
-    ServiceLevel: string|number;
+    Abandoned: string | number;
+    ServiceLevel: string | number;
     ServicelevelPerf: string;
     Weight: string;
 }
@@ -249,12 +242,12 @@ export interface IDfiAstModelAttribsQueueMember extends IDfiAstModelAttribs {
     StateInterface: string;
     Membership: string;
 
-    Penalty: string|number;
-    CallsTaken: string|number;
-    LastCall: string|number;
-    InCall: string|boolean;
+    Penalty: string | number;
+    CallsTaken: string | number;
+    LastCall: string | number;
+    InCall: string | boolean;
     Status: string;
-    Paused: string|boolean;
+    Paused: string | boolean;
     PausedReason: string;
 
     state?: QueueMemberState;
@@ -263,7 +256,7 @@ export interface IDfiAstModelAttribsQueueMember extends IDfiAstModelAttribs {
 }
 
 export interface IDfiAstModelAttribsQueueEntry extends IDfiAstModelAttribs {
-    ReportedPosition: string|number;
+    ReportedPosition: string | number;
     Position?: string;
 
     queue: Queue;
