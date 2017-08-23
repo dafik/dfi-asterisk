@@ -1,14 +1,15 @@
 "use strict";
-const BaseServerAction = require("./BaseAction");
-const AstUtil = require("../../astUtil");
-const ManagerCommunication = require("../../../errors/ManagerCommunication");
-const AST_ACTION = require("../../asterisk/actionNames");
-class ModuleServerAction extends BaseServerAction {
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseAction_1 = require("./BaseAction");
+const astUtil_1 = require("../../astUtil");
+const ManagerCommunication_1 = require("../../../errors/ManagerCommunication");
+const actionNames_1 = require("../../asterisk/actionNames");
+class ModuleServerAction extends BaseAction_1.default {
     isModuleLoaded(module, callbackFn, context) {
         this._server.start()
             .then(() => {
             const action = {
-                Action: AST_ACTION.MODULE_CHECK,
+                Action: actionNames_1.default.MODULE_CHECK,
                 Module: module
             };
             this._server.sendAction(action, (err, xxx) => {
@@ -16,16 +17,16 @@ class ModuleServerAction extends BaseServerAction {
                 if (err) {
                     loaded = false;
                     if (err.message !== "Module not loaded") {
-                        AstUtil.maybeCallback(callbackFn, context, err);
+                        astUtil_1.default.maybeCallback(callbackFn, context, err);
                         return;
                     }
                 }
-                AstUtil.maybeCallback(callbackFn, context, null, loaded);
+                astUtil_1.default.maybeCallback(callbackFn, context, null, loaded);
             });
         })
             .catch((error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
@@ -45,23 +46,23 @@ class ModuleServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             const action = {
-                Action: AST_ACTION.MODULE_LOAD,
+                Action: actionNames_1.default.MODULE_LOAD,
                 LoadType: loadType,
                 Module: module
             };
             this._server.sendAction(action, (err, response) => {
                 if (err) {
-                    AstUtil.maybeCallback(callbackFn, context, new ManagerCommunication(response.Message ? response.Message : response.Response));
+                    astUtil_1.default.maybeCallback(callbackFn, context, new ManagerCommunication_1.default(response.Message ? response.Message : response.Response));
                 }
             });
         })
             .catch((error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
 }
 const MODULE_LOAD_TYPES = Object.assign({}, Object.create(null), { LOAD_TYPE_LOAD: "load", LOAD_TYPE_RELOAD: "reload", LOAD_TYPE_UNLOAD: "unload" });
-module.exports = ModuleServerAction;
+exports.default = ModuleServerAction;
 //# sourceMappingURL=ModuleAction.js.map

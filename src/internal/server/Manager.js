@@ -1,6 +1,7 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const dfiEventObject_1 = require("local-dfi-base/src/dfiEventObject");
-const AstUtil = require("../astUtil");
+const astUtil_1 = require("../astUtil");
 const P_PROP_COLLECTION = "collection";
 const P_PROP_MANAGERS = "managers";
 const P_PROP_EVENTSMAP = "eventsMap";
@@ -37,7 +38,7 @@ class AsteriskManager extends dfiEventObject_1.default {
     }
     restart(callbackFn, context) {
         this.server.logger.info("manager %s restarted", this.constructor.name);
-        AstUtil.maybeCallbackOnce(callbackFn, context, null, this.constructor.name);
+        astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, this.constructor.name);
     }
     handleEvent(event) {
         this.logger.debug("handle from %s : %s", this.constructor.name, event.Event);
@@ -64,5 +65,5 @@ class AsteriskManager extends dfiEventObject_1.default {
     }
 }
 const EVENTS = Object.assign({}, dfiEventObject_1.default.events, { ADD: Symbol("manager:add"), UPDATE: Symbol("manager:update") });
-module.exports = AsteriskManager;
+exports.default = AsteriskManager;
 //# sourceMappingURL=Manager.js.map

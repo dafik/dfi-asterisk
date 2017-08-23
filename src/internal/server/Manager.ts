@@ -3,11 +3,11 @@ import {IDfiAstManagerOptions} from "../../definitions/configs";
 import {IDfiAstEventsManager, IDfiAstEventsServer} from "../../definitions/events";
 import {IDfiCallbackResult, IEventHandle, IEventHandlersMap} from "../../definitions/interfaces";
 import {IAstEvent} from "../asterisk/events";
-import AsteriskServer = require("../../asteriskServer");
-import AsteriskCollection = require("../asteriskCollection");
-import AsteriskModel = require("../asteriskModel");
-import AstUtil = require("../astUtil");
-import ServerManagers = require("./Managers");
+import AsteriskServer from "../../asteriskServer";
+import AsteriskCollection from "../asteriskCollection";
+import AsteriskModel from "../asteriskModel";
+import AstUtil from "../astUtil";
+import ServerManagers from "./Managers";
 
 const P_PROP_COLLECTION = "collection";
 const P_PROP_MANAGERS = "managers";
@@ -96,4 +96,4 @@ const EVENTS = {
     UPDATE: Symbol("manager:update")
 };
 
-export = AsteriskManager;
+export default AsteriskManager;

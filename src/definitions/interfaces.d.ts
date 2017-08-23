@@ -1,8 +1,8 @@
-import QueueEntry = require("../models/queues/QueueEntryModel");
-import QueueMember = require("../models/queues/QueueMemberModel");
-import Channel = require("../models/ChannelModel");
-import AsteriskVersion = require("../internal/server/Version");
-import DialplanContext = require("../models/dialplans/DialplanContextModel");
+import QueueEntry from "../models/queues/QueueEntryModel";
+import QueueMember from "../models/queues/QueueMemberModel";
+import Channel from "../models/ChannelModel";
+import AsteriskVersion from "../internal/server/Version";
+import DialplanContext from "../models/dialplans/DialplanContextModel";
 import {IAstAction, IAstActionCommand, IAstActionDBGet, IAstActionGetvar, IAstActionOriginate, IAstActionShowDialPlan} from "../internal/asterisk/actions";
 import {IAstEvent} from "../internal/asterisk/events";
 

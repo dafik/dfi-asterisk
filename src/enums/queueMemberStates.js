@@ -1,8 +1,9 @@
 "use strict";
-const DeviceStates = require("./deviceStates");
+Object.defineProperty(exports, "__esModule", { value: true });
+const deviceStates_1 = require("./deviceStates");
 var QueueMemberStates;
 (function (QueueMemberStates) {
-    QueueMemberStates[QueueMemberStates["DEVICE_UNKNOWN"] = DeviceStates.UNKNOWN] = "DEVICE_UNKNOWN";
+    QueueMemberStates[QueueMemberStates["DEVICE_UNKNOWN"] = deviceStates_1.default.UNKNOWN] = "DEVICE_UNKNOWN";
     /**
      * Queue member is available, eg. Agent is logged in but idle.
      */
@@ -21,5 +22,5 @@ var QueueMemberStates;
     QueueMemberStates[QueueMemberStates["DEVICE_RINGINUSE"] = 7] = "DEVICE_RINGINUSE";
     QueueMemberStates[QueueMemberStates["DEVICE_ONHOLD"] = 8] = "DEVICE_ONHOLD";
 })(QueueMemberStates || (QueueMemberStates = {}));
-module.exports = QueueMemberStates;
+exports.default = QueueMemberStates;
 //# sourceMappingURL=queueMemberStates.js.map

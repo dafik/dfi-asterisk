@@ -1,23 +1,24 @@
 "use strict";
-const AsteriskManager = require("../internal/server/Manager");
-const Agents = require("../collections/AgentsCollection");
-const Agent = require("../models/AgentModel");
-const QueueManager = require("./QueueManager");
-const AstUtil = require("../internal/astUtil");
-const AgentState = require("../states/agentState");
-const AgentStates = require("../enums/agentStates");
-const AST_ACTION = require("../internal/asterisk/actionNames");
-const AST_EVENT = require("../internal/asterisk/eventNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const Manager_1 = require("../internal/server/Manager");
+const AgentsCollection_1 = require("../collections/AgentsCollection");
+const AgentModel_1 = require("../models/AgentModel");
+const QueueManager_1 = require("./QueueManager");
+const astUtil_1 = require("../internal/astUtil");
+const agentState_1 = require("../states/agentState");
+const agentStates_1 = require("../enums/agentStates");
+const actionNames_1 = require("../internal/asterisk/actionNames");
+const eventNames_1 = require("../internal/asterisk/eventNames");
 const RINGING_AGENTS = "ringingAgents";
-class AgentManager extends AsteriskManager {
+class AgentManager extends Manager_1.default {
     constructor(options, state) {
-        super(options, state, new Agents());
+        super(options, state, new AgentsCollection_1.default());
         this.setProp(RINGING_AGENTS, new Map());
         this.server.once(this.serverEvents.BEFORE_INIT, () => {
             if (this.server.managers.queue.enabled) {
                 const queueManager = this.server.managers.queue;
-                queueManager.on(QueueManager.events.MEMBER_ADD, this._handleQueueAddMember, this);
-                queueManager.on(QueueManager.events.MEMBER_REMOVE, this._handleQueueRemoveMember, this);
+                queueManager.on(QueueManager_1.default.events.MEMBER_ADD, this._handleQueueAddMember, this);
+                queueManager.on(QueueManager_1.default.events.MEMBER_REMOVE, this._handleQueueRemoveMember, this);
             }
         }, this);
         if (!this.enabled) {
@@ -27,13 +28,13 @@ class AgentManager extends AsteriskManager {
             this.logger.error("unhandled event %s", event.Event);
         }
         const map = {};
-        map[AST_EVENT.AGENT_CALLED] = this._handleAgentCalledEvent;
-        map[AST_EVENT.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
-        map[AST_EVENT.AGENT_CONNECT] = this._handleAgentConnectEvent;
-        map[AST_EVENT.AGENT_DUMP] = onUnhandledEvent.bind(this);
-        map[AST_EVENT.AGENT_LOGIN] = this._handleAgentLoginEvent;
-        map[AST_EVENT.AGENT_LOGOFF] = this._handleAgentLogoffEvent;
-        map[AST_EVENT.AGENT_RING_NO_ANSWER] = onUnhandledEvent.bind(this);
+        map[eventNames_1.default.AGENT_CALLED] = this._handleAgentCalledEvent;
+        map[eventNames_1.default.AGENT_COMPLETE] = this._handleAgentCompleteEvent;
+        map[eventNames_1.default.AGENT_CONNECT] = this._handleAgentConnectEvent;
+        map[eventNames_1.default.AGENT_DUMP] = onUnhandledEvent.bind(this);
+        map[eventNames_1.default.AGENT_LOGIN] = this._handleAgentLoginEvent;
+        map[eventNames_1.default.AGENT_LOGOFF] = this._handleAgentLogoffEvent;
+        map[eventNames_1.default.AGENT_RING_NO_ANSWER] = onUnhandledEvent.bind(this);
         this._mapEvents(map);
     }
     get agents() {
@@ -51,22 +52,22 @@ class AgentManager extends AsteriskManager {
     start(callbackFn, context) {
         function finish() {
             this.server.logger.info('manager "AgentManager" started');
-            AstUtil.maybeCallbackOnce(callbackFn, context, null, "agentManager");
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, "agentManager");
         }
         this.server.logger.info('starting manager "AgentManager"');
         if (!this.enabled) {
             finish.call(this);
             return;
         }
-        const action = { Action: AST_ACTION.AGENTS };
+        const action = { Action: actionNames_1.default.AGENTS };
         this.server.sendEventGeneratingAction(action, (err, re) => {
             if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
                 return;
             }
             if (typeof re !== "undefined") {
                 re.events.forEach((event) => {
-                    if (event.Event === AST_EVENT.AGENTS) {
+                    if (event.Event === eventNames_1.default.AGENTS) {
                         this._getOrCreateAgent(event);
                     }
                 }, this);
@@ -89,9 +90,9 @@ class AgentManager extends AsteriskManager {
                 Event: "agentManager:_getOrCreateAgent",
                 Name: name,
                 Peer: this.server.managers.peer.peers.get(name),
-                State: AgentState.byName(AgentStates.AGENT_UNKNOWN)
+                State: agentState_1.default.byName(agentStates_1.default.AGENT_UNKNOWN)
             };
-            agent = new Agent(options);
+            agent = new AgentModel_1.default(options);
             this._addAgent(agent);
         }
         return agent;
@@ -107,7 +108,7 @@ class AgentManager extends AsteriskManager {
             return;
         }
         this._updateRingingAgents(event.Channel, agent);
-        this._updateAgentState(agent, AgentState.byValue(AgentStates.AGENT_RINGING), event.Channel);
+        this._updateAgentState(agent, agentState_1.default.byValue(agentStates_1.default.AGENT_RINGING), event.Channel);
     }
     /**
      * Update state if agent was connected to channel.
@@ -119,7 +120,7 @@ class AgentManager extends AsteriskManager {
             this.logger.error("Ignored AgentConnectEvent for unknown agent %j", event.Interface, event.Channel);
             return;
         }
-        this._updateAgentState(agent, AgentState.byValue(AgentStates.AGENT_ONCALL), event.Channel);
+        this._updateAgentState(agent, agentState_1.default.byValue(agentStates_1.default.AGENT_ONCALL), event.Channel);
     }
     /**
      * Change state if agent logs in.
@@ -131,7 +132,7 @@ class AgentManager extends AsteriskManager {
             this.logger.error("Ignored AgentLoginEvent for unknown agent %s ", event.Agent);
             return;
         }
-        this._updateAgentState(agent, AgentState.byValue(AgentStates.AGENT_IDLE), event.Channel);
+        this._updateAgentState(agent, agentState_1.default.byValue(agentStates_1.default.AGENT_IDLE), event.Channel);
     }
     /**
      * Change state if agent logs out.
@@ -143,7 +144,7 @@ class AgentManager extends AsteriskManager {
             this.logger.error("Ignored AgentLogoffEvent for unknown agent %s ", event.Agent);
             return;
         }
-        this._updateAgentState(agent, AgentState.byValue(AgentStates.AGENT_LOGGEDOFF));
+        this._updateAgentState(agent, agentState_1.default.byValue(agentStates_1.default.AGENT_LOGGEDOFF));
     }
     _handleAgentCompleteEvent(event) {
         this.logger.debug("handle  AgentComplete agent %j", event.Interface);
@@ -153,7 +154,7 @@ class AgentManager extends AsteriskManager {
             return;
         }
         // remove form ringings ?
-        this._updateAgentState(agent, AgentState.byValue(AgentStates.AGENT_IDLE), event.Channel);
+        this._updateAgentState(agent, agentState_1.default.byValue(agentStates_1.default.AGENT_IDLE), event.Channel);
     }
     _handleQueueAddMember(member, queue) {
         this.logger.debug("handle  QueueAddMember agent %j", member.id);
@@ -164,9 +165,9 @@ class AgentManager extends AsteriskManager {
                 Event: "agentManager:_handleQueueAddMember",
                 Name: member.id,
                 Peer: this.server.managers.peer.peers.get(member.id),
-                State: AgentState.byName("agent_unknown")
+                State: agentState_1.default.byName("agent_unknown")
             };
-            agent = new Agent(options);
+            agent = new AgentModel_1.default(options);
             agent.addQueue(queue);
             member.agent = agent;
             this._addAgent(agent);
@@ -188,7 +189,7 @@ class AgentManager extends AsteriskManager {
      *  Set state of agent.
      */
     _updateAgentState(agent, newState, channel) {
-        if (channel && this.ringingAgents.size > 0 && newState.status !== AgentStates.AGENT_RINGING) {
+        if (channel && this.ringingAgents.size > 0 && newState.status !== agentStates_1.default.AGENT_RINGING) {
             if (this.ringingAgents.has(channel)) {
                 this.ringingAgents.delete(channel);
             }
@@ -203,10 +204,10 @@ class AgentManager extends AsteriskManager {
      */
     _updateRingingAgents(channelCalling, agent) {
         if (this.ringingAgents.has(channelCalling)) {
-            this._updateAgentState(this.ringingAgents.get(channelCalling), AgentState.byValue(AgentStates.AGENT_IDLE));
+            this._updateAgentState(this.ringingAgents.get(channelCalling), agentState_1.default.byValue(agentStates_1.default.AGENT_IDLE));
         }
         this.ringingAgents.set(channelCalling, agent);
     }
 }
-module.exports = AgentManager;
+exports.default = AgentManager;
 //# sourceMappingURL=AgentManager.js.map

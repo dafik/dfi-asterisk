@@ -1,8 +1,7 @@
-import assert = require("assert");
-import asterisk = require("./mock/asterisk-real");
-import AsteriskVersion = require("../src/internal/server/Version");
+import * as assert from "assert";
 import aaaaa from "local-dfi-linphone-endpoint-manager";
-
+import AsteriskVersion from "../src/internal/server/Version";
+import asterisk from "./mock/asterisk-real";
 
 aaaaa.toString();
 
@@ -39,7 +38,7 @@ describe("Core actions", () => {
     it("getAsteriskVersion", (done) => {
         asterisk.actions.core.getAsteriskVersion((err, response) => {
             assert.ifError(err);
-            assert.equal(response instanceof AsteriskVersion, true, "response not Asterisk version");
+            assert.equal((response instanceof AsteriskVersion), true, "response not Asterisk version");
             done();
         });
     });

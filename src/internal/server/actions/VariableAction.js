@@ -1,26 +1,27 @@
 "use strict";
-const BaseServerAction = require("./BaseAction");
-const AstUtil = require("../../astUtil");
-const AST_ACTION = require("../../asterisk/actionNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseAction_1 = require("./BaseAction");
+const astUtil_1 = require("../../astUtil");
+const actionNames_1 = require("../../asterisk/actionNames");
 const util_1 = require("util");
-class VariableServerAction extends BaseServerAction {
+class VariableServerAction extends BaseAction_1.default {
     getGlobalVariable(variable, callbackFn, context) {
         this._server.start()
             .then(() => {
             const action = {
-                Action: AST_ACTION.GET_VAR,
+                Action: actionNames_1.default.GET_VAR,
                 Variable: variable
             };
             this._server.sendAction(action, (err, response) => {
                 if (err) {
-                    AstUtil.maybeCallback(callbackFn, context, err);
+                    astUtil_1.default.maybeCallback(callbackFn, context, err);
                 }
-                AstUtil.maybeCallback(callbackFn, context, null, response.Value);
+                astUtil_1.default.maybeCallback(callbackFn, context, null, response.Value);
             });
         })
             .catch((error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
@@ -28,30 +29,30 @@ class VariableServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             const action = {
-                Action: AST_ACTION.SET_VAR,
+                Action: actionNames_1.default.SET_VAR,
                 Value: value,
                 Variable: variable
             };
             this._server.sendAction(action, (err, response) => {
                 if (err) {
                     this._server.logger.error("Unable to set global variable %s to %s %j", variable, value, err);
-                    AstUtil.maybeCallback(callbackFn, context, err);
+                    astUtil_1.default.maybeCallback(callbackFn, context, err);
                     return;
                 }
                 if (response.Response !== "Success") {
                     this._server.logger.error("Unable to set global variable %s to %s response %s", variable, value, response.Response);
-                    AstUtil.maybeCallback(callbackFn, context, new Error(util_1.format("Unable to set global variable %s to %s response %s", variable, value, response.Response)));
+                    astUtil_1.default.maybeCallback(callbackFn, context, new Error(util_1.format("Unable to set global variable %s to %s response %s", variable, value, response.Response)));
                     return;
                 }
-                AstUtil.maybeCallback(callbackFn, context);
+                astUtil_1.default.maybeCallback(callbackFn, context);
             });
         })
             .catch((error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
 }
-module.exports = VariableServerAction;
+exports.default = VariableServerAction;
 //# sourceMappingURL=VariableAction.js.map

@@ -20,18 +20,18 @@ import AmiClient from "local-asterisk-ami-client";
 import * as _ from "lodash";
 import {IAstEvent} from "./internal/asterisk/events";
 
+import * as async from "async";
 import {DfiEventObject} from "local-dfi-base";
-import async = require("async");
-import EventDispatcher = require("./internal/server/EventDispatcher");
-import ServerActions = require("./internal/server/Actions");
-import ServerManagers = require("./internal/server/Managers");
+import ServerActions from "./internal/server/Actions";
+import EventDispatcher from "./internal/server/EventDispatcher";
+import ServerManagers from "./internal/server/Managers";
 
-import AstUtil = require("./internal/astUtil");
-import ManagerCommunication = require("./errors/ManagerCommunication");
-import AsteriskVersion = require("./internal/server/Version");
-import AST_ACTION = require("./internal/asterisk/actionNames");
-import AST_EVENT = require("./internal/asterisk/eventNames");
-import DfiAMIResponseError = require("./errors/DfiAMIResponseError");
+import DfiAMIResponseError from "./errors/DfiAMIResponseError";
+import ManagerCommunication from "./errors/ManagerCommunication";
+import AST_ACTION from "./internal/asterisk/actionNames";
+import AST_EVENT from "./internal/asterisk/eventNames";
+import AstUtil from "./internal/astUtil";
+import AsteriskVersion from "./internal/server/Version";
 
 type AsteriskActionType1 = IAstAction | IAstActionGetvar | IAstActionCommand;
 type AsteriskActionType2 = IAstAction | IAstActionCommand;
@@ -556,4 +556,4 @@ const EVENTS: IDfiAstEventsServer = {
     REINIT: Symbol("astReInitialized")
 };
 
-export = AsteriskServer;
+export default AsteriskServer;

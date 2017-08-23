@@ -1,5 +1,5 @@
-import AsteriskCollection = require("../../internal/asteriskCollection");
-import Channel = require("../../models/ChannelModel");
+import AsteriskCollection from "../../internal/asteriskCollection";
+import Channel from "../../models/ChannelModel";
 
 let channelClass;
 
@@ -17,7 +17,7 @@ class BridgeChannels extends AsteriskCollection<Channel> {
         return super.destroy();
     }
 
-    public has(element: any|Channel): boolean {
+    public has(element: any | Channel): boolean {
         return super.has(element);
     }
 
@@ -25,7 +25,7 @@ class BridgeChannels extends AsteriskCollection<Channel> {
         return super.add(element);
     }
 
-    public remove(element: any|Channel): boolean {
+    public remove(element: any | Channel): boolean {
         return super.remove(element);
     }
 
@@ -33,4 +33,5 @@ class BridgeChannels extends AsteriskCollection<Channel> {
         return super.clear();
     }
 }
-export = BridgeChannels;
+
+export default BridgeChannels;

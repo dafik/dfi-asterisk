@@ -5,4 +5,4 @@ class IllegalArgument extends Error {
         this.name = "IllegalArgumentError";
     }
 }
-export = IllegalArgument;
+export default IllegalArgument;

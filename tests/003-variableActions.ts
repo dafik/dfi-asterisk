@@ -1,5 +1,5 @@
-import assert = require("assert");
-import asterisk = require("./mock/asterisk-real");
+import * as assert from "assert";
+import asterisk from "./mock/asterisk-real";
 
 describe("variable actions", () => {
     function onBefore(done) {

@@ -1,6 +1,6 @@
-import BaseServerAction = require("./BaseAction");
-import AstUtil = require("../../astUtil");
-import AST_ACTION = require("../../asterisk/actionNames");
+import BaseServerAction from "./BaseAction";
+import AstUtil from "../../astUtil";
+import AST_ACTION from "../../asterisk/actionNames";
 import {IDfiAMICallbackError, IDfiDBGetCallback} from "../../../definitions/interfaces";
 
 import {format} from "util";
@@ -136,4 +136,4 @@ class DBServerAction extends BaseServerAction {
     }
 }
 
-export = DBServerAction;
+export default DBServerAction;

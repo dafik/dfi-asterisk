@@ -5,11 +5,11 @@ const local_dfi_debug_logger_1 = require("local-dfi-debug-logger");
 const local_dfi_linphone_endpoint_manager_1 = require("local-dfi-linphone-endpoint-manager");
 const endpointManager_1 = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
 const index_1 = require("../index");
-const asterisk = require("./mock/asterisk-real");
-const PeerStates = require("../src/enums/peerStates");
-const DeviceStates = require("../src/enums/deviceStates");
+const deviceStates_1 = require("../src/enums/deviceStates");
+const peerStates_1 = require("../src/enums/peerStates");
+const asterisk_real_1 = require("./mock/asterisk-real");
 const logger = new local_dfi_debug_logger_1.default("sip:factory");
-const endpointManger = local_dfi_linphone_endpoint_manager_1.getInstance(asterisk);
+const endpointManger = local_dfi_linphone_endpoint_manager_1.getInstance(asterisk_real_1.default);
 describe("peers", () => {
     function onAfter(done) {
         this.timeout(1000000);
@@ -21,9 +21,9 @@ describe("peers", () => {
         this.timeout(0);
         assert.doesNotThrow(init, "asterisk init failed");
         function init() {
-            asterisk.start()
+            asterisk_real_1.default.start()
                 .then(() => {
-                if (!asterisk.managers.peer.enabled) {
+                if (!asterisk_real_1.default.managers.peer.enabled) {
                     done(new Error("peer manager is not enabled but required"));
                     return;
                 }
@@ -56,29 +56,29 @@ describe("peers", () => {
         const keys = [...linPhones.keys()];
         const endpoint1 = linPhones.get(keys[0]);
         const id = endpoint1.getInterface();
-        const peer = asterisk.managers.peer.peers.get(id);
+        const peer = asterisk_real_1.default.managers.peer.peers.get(id);
         assert.notEqual(peer, undefined);
-        if (peer.state.status !== PeerStates.REGISTERED) {
+        if (peer.state.status !== peerStates_1.default.REGISTERED) {
             const x = peer.stateHistory;
             // console.log("%j", x);
         }
-        const device = asterisk.managers.device.devices.get(id);
+        const device = asterisk_real_1.default.managers.device.devices.get(id);
         assert.notEqual(device, undefined);
-        if (device.state.status !== DeviceStates.NOT_INUSE) {
+        if (device.state.status !== deviceStates_1.default.NOT_INUSE) {
             setTimeout(() => {
-                assert.equal(device.state.status, DeviceStates.NOT_INUSE);
+                assert.equal(device.state.status, deviceStates_1.default.NOT_INUSE);
                 done();
             }, 1000);
         }
         else {
-            assert.equal(device.state.status, DeviceStates.NOT_INUSE);
+            assert.equal(device.state.status, deviceStates_1.default.NOT_INUSE);
             done();
         }
     }
     before(onBefore);
     it("check presense", onCheckPresence);
     it("chcek sip show users + sip show peer", (done) => {
-        const endpointsToReturn = asterisk.managers.peer.peers.getPeersByTech("SIP");
+        const endpointsToReturn = asterisk_real_1.default.managers.peer.peers.getPeersByTech("SIP");
         function addTransports(foundEndpointsTmp) {
             const tmpMap = new Map();
             Array.from(foundEndpointsTmp.keys()).slice(0, 3).forEach((key) => {
@@ -89,7 +89,7 @@ describe("peers", () => {
             const waitForEndpoint = new Set(foundEndpointsTmp.keys());
             foundEndpointsTmp.forEach((endpoint1) => {
                 logger.debug("sending ast: sip show peer " + endpoint1.objectName);
-                asterisk.sendEventGeneratingAction({ Action: index_1.AST_ACTION.COMMAND, Command: "sip show peer " + endpoint1.objectName }, onSipShowPeer.bind(this));
+                asterisk_real_1.default.sendEventGeneratingAction({ Action: index_1.AST_ACTION.COMMAND, Command: "sip show peer " + endpoint1.objectName }, onSipShowPeer.bind(this));
             });
             function onSipShowPeer(err1, resp) {
                 if (err1) {
@@ -122,7 +122,7 @@ describe("peers", () => {
                 }
             }
         }
-        asterisk.sendAction({ Action: index_1.AST_ACTION.COMMAND, Command: "sip show users" }, (err, response) => {
+        asterisk_real_1.default.sendAction({ Action: index_1.AST_ACTION.COMMAND, Command: "sip show users" }, (err, response) => {
             let match;
             const foundEndpointsTmp = new Map();
             const lines = response.$content.split("\n");

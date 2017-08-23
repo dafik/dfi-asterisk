@@ -1,5 +1,5 @@
-import AsteriskState = require("../internal/asteriskState");
-import QueueMemberStates = require("../enums/queueMemberStates");
+import AsteriskState from "../internal/asteriskState";
+import QueueMemberStates from "../enums/queueMemberStates";
 
 class QueueMemberState extends AsteriskState {
 
@@ -18,4 +18,4 @@ class QueueMemberState extends AsteriskState {
     protected static STATES = QueueMemberStates;
 }
 
-export = QueueMemberState;
+export default QueueMemberState;

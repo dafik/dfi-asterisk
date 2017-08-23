@@ -1,5 +1,5 @@
-import AsteriskCollection = require("../internal/asteriskCollection");
-import Variable = require("../models/VariableModel");
+import AsteriskCollection from "../internal/asteriskCollection";
+import Variable from "../models/VariableModel";
 
 class Variables extends AsteriskCollection<Variable> {
     constructor() {
@@ -22,4 +22,4 @@ class Variables extends AsteriskCollection<Variable> {
 
 }
 
-export = Variables;
+export default Variables;

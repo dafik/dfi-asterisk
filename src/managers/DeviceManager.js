@@ -1,19 +1,20 @@
 "use strict";
-const AsteriskManager = require("../internal/server/Manager");
-const Devices = require("../collections/DevicesCollection");
-const Device = require("../models/DeviceModel");
-const AstUtil = require("../internal/astUtil");
-const DeviceState = require("../states/deviceState");
-const AST_EVENT = require("../internal/asterisk/eventNames");
-const AST_ACTION = require("../internal/asterisk/actionNames");
-class DeviceManager extends AsteriskManager {
+Object.defineProperty(exports, "__esModule", { value: true });
+const Manager_1 = require("../internal/server/Manager");
+const DevicesCollection_1 = require("../collections/DevicesCollection");
+const DeviceModel_1 = require("../models/DeviceModel");
+const astUtil_1 = require("../internal/astUtil");
+const deviceState_1 = require("../states/deviceState");
+const eventNames_1 = require("../internal/asterisk/eventNames");
+const actionNames_1 = require("../internal/asterisk/actionNames");
+class DeviceManager extends Manager_1.default {
     constructor(options, state) {
-        super(options, state, new Devices());
+        super(options, state, new DevicesCollection_1.default());
         if (!this.enabled) {
             return;
         }
         const map = {};
-        map[AST_EVENT.DEVICE_STATE_CHANGE] = this._handleDeviceStateChangeEvent;
+        map[eventNames_1.default.DEVICE_STATE_CHANGE] = this._handleDeviceStateChangeEvent;
         this._mapEvents(map);
     }
     get devices() {
@@ -22,28 +23,28 @@ class DeviceManager extends AsteriskManager {
     start(callbackFn, context) {
         function finish() {
             this.server.logger.info('manager "DeviceManager" started');
-            AstUtil.maybeCallbackOnce(callbackFn, context, null, "DeviceManager");
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, "DeviceManager");
         }
         this.server.logger.info('starting manager "DeviceManager"');
         if (!this.enabled) {
             finish.call(this);
         }
         else {
-            this.server.sendEventGeneratingAction({ Action: AST_ACTION.DEVICE_STATE_LIST }, (err, re) => {
+            this.server.sendEventGeneratingAction({ Action: actionNames_1.default.DEVICE_STATE_LIST }, (err, re) => {
                 if (err) {
                     if (!err.message.match("Not Allowed Action")) {
-                        AstUtil.maybeCallbackOnce(callbackFn, context, err);
+                        astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
                         return;
                     }
                 }
                 if (typeof re !== "undefined") {
                     re.events.forEach((event) => {
-                        if (event.Event === AST_EVENT.DEVICE_STATE_CHANGE) {
+                        if (event.Event === eventNames_1.default.DEVICE_STATE_CHANGE) {
                             if (event.Device.match(/Queue|Local|DAHDI/)) {
                                 // skip queue devices
                                 return;
                             }
-                            const device = new Device(event);
+                            const device = new DeviceModel_1.default(event);
                             this._addDevice(device);
                         }
                     }, this);
@@ -65,21 +66,21 @@ class DeviceManager extends AsteriskManager {
         let oldState;
         if (device) {
             oldState = device.state.name;
-            device.state = DeviceState.byName(event.State);
+            device.state = deviceState_1.default.byName(event.State);
             device.setLastUpdate(event.$time);
         }
         else {
-            device = new Device(event);
+            device = new DeviceModel_1.default(event);
             this.logger.info("Adding device %s (%s)", device.device, device.state.name);
             this._addDevice(device);
         }
-        this.emit(AsteriskManager.events.UPDATE, device, event.State, oldState);
+        this.emit(Manager_1.default.events.UPDATE, device, event.State, oldState);
     }
     _addDevice(device) {
         this.logger.debug("Adding device %s %j", device.device, device.state.name);
         this.devices.add(device);
-        this.emit(AsteriskManager.events.ADD, device);
+        this.emit(Manager_1.default.events.ADD, device);
     }
 }
-module.exports = DeviceManager;
+exports.default = DeviceManager;
 //# sourceMappingURL=DeviceManager.js.map

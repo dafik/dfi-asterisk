@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = require("assert");
-const asterisk = require("./mock/asterisk-real");
+const asterisk_real_1 = require("./mock/asterisk-real");
 describe("variable actions", () => {
     function onBefore(done) {
         this.timeout(20000);
-        asterisk.start()
+        asterisk_real_1.default.start()
             .then(() => {
             done();
         })
@@ -19,9 +19,9 @@ describe("variable actions", () => {
     it("variable put", (done) => {
         const variable = "test";
         const value = "value";
-        asterisk.actions.variable.setGlobalVariable(variable, value, (errSet) => {
+        asterisk_real_1.default.actions.variable.setGlobalVariable(variable, value, (errSet) => {
             assert.ifError(errSet);
-            asterisk.actions.variable.getGlobalVariable(variable, (errGet, responseGet) => {
+            asterisk_real_1.default.actions.variable.getGlobalVariable(variable, (errGet, responseGet) => {
                 assert.ifError(errGet);
                 assert.equal(responseGet, value);
                 done();

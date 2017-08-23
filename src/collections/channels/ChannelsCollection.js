@@ -1,23 +1,24 @@
 "use strict";
-const AsteriskCollection = require("../../internal/asteriskCollection");
-const Channel = require("../../models/ChannelModel");
-const AST_EVENT = require("../../internal/asterisk/eventNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskCollection_1 = require("../../internal/asteriskCollection");
+const ChannelModel_1 = require("../../models/ChannelModel");
+const eventNames_1 = require("../../internal/asterisk/eventNames");
 const SEPARATOR = "/";
 const P_PROP_CHANNELS_BY_NAME = "byName";
 const P_PROP_CHANNELS_BY_TECH = "byTech";
-class Channels extends AsteriskCollection {
+class Channels extends asteriskCollection_1.default {
     constructor() {
         super({
-            model: Channel
+            model: ChannelModel_1.default
         });
         this.setProp(P_PROP_CHANNELS_BY_NAME, new Map());
         this.setProp(P_PROP_CHANNELS_BY_TECH, new Map());
-        this.on(AsteriskCollection.events.ADD, this._onChannelAdd, this);
-        this.on(AsteriskCollection.events.REMOVE, this._onChannelRemove, this);
+        this.on(asteriskCollection_1.default.events.ADD, this._onChannelAdd, this);
+        this.on(asteriskCollection_1.default.events.REMOVE, this._onChannelRemove, this);
     }
     destroy() {
-        this.off(AsteriskCollection.events.ADD, this._onChannelAdd, this);
-        this.off(AsteriskCollection.events.REMOVE, this._onChannelRemove, this);
+        this.off(asteriskCollection_1.default.events.ADD, this._onChannelAdd, this);
+        this.off(asteriskCollection_1.default.events.REMOVE, this._onChannelRemove, this);
         this.getProp(P_PROP_CHANNELS_BY_NAME).clear();
         this.removeProp(P_PROP_CHANNELS_BY_NAME);
         this.getProp(P_PROP_CHANNELS_BY_TECH).clear();
@@ -43,7 +44,7 @@ class Channels extends AsteriskCollection {
         return super.toArray();
     }
     _onChannelAdd(channel) {
-        if (channel.sourceEvent === AST_EVENT.DAHDI_SHOW_CHANNELS) {
+        if (channel.sourceEvent === eventNames_1.default.DAHDI_SHOW_CHANNELS) {
             return;
         }
         const name = channel.name;
@@ -66,5 +67,5 @@ class Channels extends AsteriskCollection {
         }
     }
 }
-module.exports = Channels;
+exports.default = Channels;
 //# sourceMappingURL=ChannelsCollection.js.map

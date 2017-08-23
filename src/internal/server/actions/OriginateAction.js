@@ -1,13 +1,14 @@
 "use strict";
-const BaseServerAction = require("./BaseAction");
-const Channel = require("../../../models/ChannelModel");
-const AstUtil = require("../../astUtil");
-const ChannelStates = require("../../../enums/channelStates");
-const NoSuchChannel = require("../../../errors/NoSuchChannel");
-const AST_ACTION = require("../../asterisk/actionNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseAction_1 = require("./BaseAction");
+const ChannelModel_1 = require("../../../models/ChannelModel");
+const astUtil_1 = require("../../astUtil");
+const channelStates_1 = require("../../../enums/channelStates");
+const NoSuchChannel_1 = require("../../../errors/NoSuchChannel");
+const actionNames_1 = require("../../asterisk/actionNames");
 const VARIABLE_TRACE_ID = "AJ_TRACE_ID";
 const ACTION_ID_PREFIX_ORIGINATE = "AJ_ORIGINATE_";
-class OriginateServerAction extends BaseServerAction {
+class OriginateServerAction extends BaseAction_1.default {
     constructor(server) {
         super(server);
         this._originateCallbacks = new Map();
@@ -21,9 +22,9 @@ class OriginateServerAction extends BaseServerAction {
         let onRingingTimeout;
         let otherChannel;
         function onRingingWait(model, attribute, value, old) {
-            if (attribute === "state" && value.status === ChannelStates.RINGING) {
+            if (attribute === "state" && value.status === channelStates_1.default.RINGING) {
                 clearTimeout(onRingingTimeout);
-                channel.off(Channel.events.UPDATE, onRingingWait);
+                channel.off(ChannelModel_1.default.events.UPDATE, onRingingWait);
                 if (channel.wasBusy()) {
                     cb.onBusy(channel);
                     return;
@@ -38,7 +39,7 @@ class OriginateServerAction extends BaseServerAction {
                         return;
                     }
                 }
-                if (channel.wasInState(ChannelStates.UP)) {
+                if (channel.wasInState(channelStates_1.default.UP)) {
                     cb.onSuccess(channel);
                     return;
                 }
@@ -58,7 +59,7 @@ class OriginateServerAction extends BaseServerAction {
         channel = originateEvent.Uniqueid ? this._server.managers.channel.channels.get(originateEvent.Uniqueid) : this._server.managers.channel.getChannelByName(callbackData.channel);
         try {
             if (channel == null) {
-                const cause = new NoSuchChannel("Channel '" + callbackData.action.Channel + "' is not available");
+                const cause = new NoSuchChannel_1.default("Channel '" + callbackData.action.Channel + "' is not available");
                 cb.onFailure(cause);
                 return;
             }
@@ -88,7 +89,7 @@ class OriginateServerAction extends BaseServerAction {
                     return;
                 }
             }
-            if (channel.wasInState(ChannelStates.UP)) {
+            if (channel.wasInState(channelStates_1.default.UP)) {
                 cb.onSuccess(channel);
                 return;
             }
@@ -109,9 +110,9 @@ class OriginateServerAction extends BaseServerAction {
                 });
             }
             // sometimes originate is first than up on channel.
-            if (channel.state.status === ChannelStates.RINGING) {
+            if (channel.state.status === channelStates_1.default.RINGING) {
                 onRingingTimeout = setTimeout(onRingingWait, 1000);
-                channel.on(Channel.events.UPDATE, onRingingWait);
+                channel.on(ChannelModel_1.default.events.UPDATE, onRingingWait);
             }
             else {
                 cb.onNoAnswer(channel);
@@ -136,7 +137,7 @@ class OriginateServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             // TODO check OCB cb
-            const traceId = ACTION_ID_PREFIX_ORIGINATE + AstUtil.uniqueActionID();
+            const traceId = ACTION_ID_PREFIX_ORIGINATE + astUtil_1.default.uniqueActionID();
             if (originateAction.Variable) {
                 if (!Array.isArray(originateAction.Variable)) {
                     originateAction.Variable = [originateAction.Variable];
@@ -165,13 +166,13 @@ class OriginateServerAction extends BaseServerAction {
                 if (err) {
                     err.action = originateAction;
                     this._server.logger.error(err);
-                    AstUtil.maybeCallbackOnce(callbackFn.onFailure, callbackFn, err);
+                    astUtil_1.default.maybeCallbackOnce(callbackFn.onFailure, callbackFn, err);
                 }
             });
         })
             .catch((error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn.onFailure, callbackFn, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn.onFailure, callbackFn, error);
             }
         });
     }
@@ -184,10 +185,10 @@ class OriginateServerAction extends BaseServerAction {
     originate(originateAction, callbackFn, context) {
         function onChannel(err, channel) {
             if (err || channel == null) {
-                const error = new NoSuchChannel("Channel '" + originateAction.Channel + "' is not available");
-                AstUtil.maybeCallback(callbackFn, context, error);
+                const error = new NoSuchChannel_1.default("Channel '" + originateAction.Channel + "' is not available");
+                astUtil_1.default.maybeCallback(callbackFn, context, error);
             }
-            AstUtil.maybeCallback(callbackFn, context, null, channel);
+            astUtil_1.default.maybeCallback(callbackFn, context, null, channel);
         }
         this._server.start()
             .then(() => {
@@ -196,7 +197,7 @@ class OriginateServerAction extends BaseServerAction {
             // originateAction.Async = false.toString(); ?
             this._server.sendAction(originateAction, (err, response) => {
                 if (err) {
-                    AstUtil.maybeCallback(callbackFn, context, err);
+                    astUtil_1.default.maybeCallback(callbackFn, context, err);
                     return;
                 }
                 if (response.Response === "Success") {
@@ -211,7 +212,7 @@ class OriginateServerAction extends BaseServerAction {
         })
             .catch((error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
@@ -230,7 +231,7 @@ class OriginateServerAction extends BaseServerAction {
         callerId = callerId || null;
         variables = variables || null;
         const originateAction = {
-            Action: AST_ACTION.ORIGINATE,
+            Action: actionNames_1.default.ORIGINATE,
             Application: application,
             Channel: channel,
             Data: data,
@@ -258,7 +259,7 @@ class OriginateServerAction extends BaseServerAction {
         callerId = callerId || null;
         variables = variables || null;
         const originateAction = {
-            Action: AST_ACTION.ORIGINATE,
+            Action: actionNames_1.default.ORIGINATE,
             Application: application,
             Channel: channel,
             Data: data,
@@ -287,7 +288,7 @@ class OriginateServerAction extends BaseServerAction {
         callerId = callerId || null;
         variables = variables || null;
         const action = {
-            Action: AST_ACTION.ORIGINATE,
+            Action: actionNames_1.default.ORIGINATE,
             Channel: channel,
             Context: ctx,
             Exten: exten,
@@ -316,7 +317,7 @@ class OriginateServerAction extends BaseServerAction {
         callerId = callerId || null;
         variables = variables || null;
         const action = {
-            Action: AST_ACTION.ORIGINATE,
+            Action: actionNames_1.default.ORIGINATE,
             Channel: channel,
             Context: ctx,
             Exten: exten,
@@ -330,5 +331,5 @@ class OriginateServerAction extends BaseServerAction {
         this.async(action, callbackFn, context);
     }
 }
-module.exports = OriginateServerAction;
+exports.default = OriginateServerAction;
 //# sourceMappingURL=OriginateAction.js.map

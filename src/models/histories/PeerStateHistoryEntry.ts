@@ -1,5 +1,5 @@
-import AsteriskHistoryEntry = require("../../internal/asteriskHistoryEntry");
-import PeerState = require("../../states/peerState");
+import AsteriskHistoryEntry from "../../internal/asteriskHistoryEntry";
+import PeerState from "../../states/peerState";
 /**
  * An entry in the channel state history of an AsteriskChannel
  * Creates a new instance.
@@ -29,4 +29,4 @@ class PeerStateHistoryEntry extends AsteriskHistoryEntry {
 
 }
 
-export = PeerStateHistoryEntry;
+export default PeerStateHistoryEntry;

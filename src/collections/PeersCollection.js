@@ -1,15 +1,16 @@
 "use strict";
-const AsteriskCollection = require("../internal/asteriskCollection");
-const Peer = require("../models/peers/PeerModel");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskCollection_1 = require("../internal/asteriskCollection");
+const PeerModel_1 = require("../models/peers/PeerModel");
 const P_PROP_PEERS_BY_TECH = "byTech";
-class Peers extends AsteriskCollection {
+class Peers extends asteriskCollection_1.default {
     constructor() {
         super({
-            model: Peer
+            model: PeerModel_1.default
         });
         this.setProp(P_PROP_PEERS_BY_TECH, new Map());
-        this.on(AsteriskCollection.events.ADD, this._onPeerAdd, this);
-        this.on(AsteriskCollection.events.REMOVE, this._onPeerRemove, this);
+        this.on(asteriskCollection_1.default.events.ADD, this._onPeerAdd, this);
+        this.on(asteriskCollection_1.default.events.REMOVE, this._onPeerRemove, this);
     }
     get(id) {
         return super.get(id);
@@ -49,5 +50,5 @@ class Peers extends AsteriskCollection {
         }
     }
 }
-module.exports = Peers;
+exports.default = Peers;
 //# sourceMappingURL=PeersCollection.js.map

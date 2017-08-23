@@ -1,16 +1,16 @@
-import AsteriskModel = require("../../internal/asteriskModel");
+import AsteriskModel from "../../internal/asteriskModel";
 import {IDfiAstModelAttribsQueueMember, IDfiAstModelOptions} from "../../definitions/models";
 import {IAstActionQueuePause, IAstActionQueuePenalty} from "../../internal/asterisk/actions";
 import {IAstEventQueueMemberStatus} from "../../internal/asterisk/events";
-import QueueMemberState = require("../../states/queueMemberState");
-import AstUtil = require("../../internal/astUtil");
-import ManagerError = require("../../errors/ManagerError");
-import IllegalArgumentError = require("../../errors/IllegalArgument");
-import InvalidPenalty = require("../../errors/InvalidPenatly");
-import QueueMemberStates = require("../../enums/queueMemberStates");
-import NoSuchInterface = require("../../errors/NoSuchInterface");
-import Agent = require("../AgentModel");
-import AST_ACTION = require("../../internal/asterisk/actionNames");
+import QueueMemberState from "../../states/queueMemberState";
+import AstUtil from "../../internal/astUtil";
+import ManagerError from "../../errors/ManagerError";
+import IllegalArgumentError from "../../errors/IllegalArgument";
+import InvalidPenalty from "../../errors/InvalidPenatly";
+import QueueMemberStates from "../../enums/queueMemberStates";
+import NoSuchInterface from "../../errors/NoSuchInterface";
+import Agent from "../AgentModel";
+import AST_ACTION from "../../internal/asterisk/actionNames";
 
 const PROP_QUEUE = "queue";
 const PROP_NAME = "name";
@@ -236,4 +236,4 @@ class QueueMember extends AsteriskModel {
     }
 }
 
-export = QueueMember;
+export default QueueMember;

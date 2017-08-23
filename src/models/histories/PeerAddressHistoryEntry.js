@@ -1,6 +1,7 @@
 "use strict";
-const AsteriskHistoryEntry = require("../../internal/asteriskHistoryEntry");
-class PeerAddressHistoryEntry extends AsteriskHistoryEntry {
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskHistoryEntry_1 = require("../../internal/asteriskHistoryEntry");
+class PeerAddressHistoryEntry extends asteriskHistoryEntry_1.default {
     get ip() {
         return this.entry;
     }
@@ -15,5 +16,5 @@ class PeerAddressHistoryEntry extends AsteriskHistoryEntry {
         return this.ip;
     }
 }
-module.exports = PeerAddressHistoryEntry;
+exports.default = PeerAddressHistoryEntry;
 //# sourceMappingURL=PeerAddressHistoryEntry.js.map

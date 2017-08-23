@@ -1,9 +1,10 @@
 "use strict";
-const AsteriskModel = require("../internal/asteriskModel");
-const AmaFlags = require("../enums/flags/amaFlags");
-const CdrFlags = require("../enums/flags/cdrFlags");
-const DispositionFlags = require("../enums/flags/dispositionFlags");
-class CallDetailRecord extends AsteriskModel {
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../internal/asteriskModel");
+const amaFlags_1 = require("../enums/flags/amaFlags");
+const cdrFlags_1 = require("../enums/flags/cdrFlags");
+const dispositionFlags_1 = require("../enums/flags/dispositionFlags");
+class CallDetailRecord extends asteriskModel_1.default {
     constructor(channel, destinationChannel, cdrEvent) {
         cdrEvent.channel = channel;
         cdrEvent.destinationChannel = destinationChannel;
@@ -34,17 +35,17 @@ CallDetailRecord.map = new Map([
      ["Source","Source"],*/
 ]);
 const DISPOSITION_MAP = new Map([
-    [CdrFlags.DISPOSITION_ANSWERED.toString(), DispositionFlags.ANSWERED],
-    [CdrFlags.DISPOSITION_BUSY.toString(), DispositionFlags.BUSY],
-    [CdrFlags.DISPOSITION_FAILED.toString(), DispositionFlags.FAILED],
-    [CdrFlags.DISPOSITION_NO_ANSWER.toString(), DispositionFlags.NO_ANSWER],
-    [CdrFlags.DISPOSITION_UNKNOWN.toString(), DispositionFlags.UNKNOWN]
+    [cdrFlags_1.default.DISPOSITION_ANSWERED.toString(), dispositionFlags_1.default.ANSWERED],
+    [cdrFlags_1.default.DISPOSITION_BUSY.toString(), dispositionFlags_1.default.BUSY],
+    [cdrFlags_1.default.DISPOSITION_FAILED.toString(), dispositionFlags_1.default.FAILED],
+    [cdrFlags_1.default.DISPOSITION_NO_ANSWER.toString(), dispositionFlags_1.default.NO_ANSWER],
+    [cdrFlags_1.default.DISPOSITION_UNKNOWN.toString(), dispositionFlags_1.default.UNKNOWN]
 ]);
 const AMA_FLAGS_MAP = new Map([
-    [CdrFlags.AMA_FLAG_BILLING.toString(), AmaFlags.BILLING],
-    [CdrFlags.AMA_FLAG_DOCUMENTATION.toString(), AmaFlags.DOCUMENTATION],
-    [CdrFlags.AMA_FLAG_OMIT.toString(), AmaFlags.OMIT],
-    [CdrFlags.AMA_FLAG_UNKNOWN.toString(), AmaFlags.UNKNOWN]
+    [cdrFlags_1.default.AMA_FLAG_BILLING.toString(), amaFlags_1.default.BILLING],
+    [cdrFlags_1.default.AMA_FLAG_DOCUMENTATION.toString(), amaFlags_1.default.DOCUMENTATION],
+    [cdrFlags_1.default.AMA_FLAG_OMIT.toString(), amaFlags_1.default.OMIT],
+    [cdrFlags_1.default.AMA_FLAG_UNKNOWN.toString(), amaFlags_1.default.UNKNOWN]
 ]);
-module.exports = CallDetailRecord;
+exports.default = CallDetailRecord;
 //# sourceMappingURL=CallDetailRecordModel.js.map

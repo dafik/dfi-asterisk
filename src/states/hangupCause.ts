@@ -1,5 +1,5 @@
-import AsteriskState = require("../internal/asteriskState");
-import HangupCauses = require("../enums/hangupCauses");
+import AsteriskState from "../internal/asteriskState";
+import HangupCauses from "../enums/hangupCauses";
 
 class HangupCause extends AsteriskState {
 
@@ -17,4 +17,4 @@ class HangupCause extends AsteriskState {
 
     protected static STATES = HangupCauses;
 }
-export = HangupCause;
+export default HangupCause;

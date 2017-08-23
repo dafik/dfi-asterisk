@@ -1,7 +1,8 @@
 "use strict";
-const AsteriskModel = require("../../internal/asteriskModel");
-const QueueEntry = require("./QueueEntryModel");
-const ServiceLevelTimerTask = require("../../internal/serviceLeverTimerTask");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../../internal/asteriskModel");
+const QueueEntryModel_1 = require("./QueueEntryModel");
+const serviceLeverTimerTask_1 = require("../../internal/serviceLeverTimerTask");
 const PROP_NAME = "name";
 const PROP_MAX = "max";
 const PROP_STRATEGY = "strategy";
@@ -16,7 +17,7 @@ const PROP_WEIGHT = "weight";
 const P_PROP_ENTRIES = "entries";
 const P_PROP_MEMBERS = "members";
 const P_PROP_SERVICE_LEVEL_TIMER_TASKS = "serviceLevelTimerTasks";
-class Queue extends AsteriskModel {
+class Queue extends asteriskModel_1.default {
     constructor(attributes, options) {
         options = options || {};
         options.idAttribute = PROP_NAME;
@@ -88,10 +89,10 @@ class Queue extends AsteriskModel {
             dateJoined: dateReceived,
             queue: this
         };
-        const qe = new QueueEntry(attribs);
+        const qe = new QueueEntryModel_1.default(attribs);
         const delay = this.serviceLevel * 1000;
         if (delay > 0) {
-            const timerTask = new ServiceLevelTimerTask(this, qe);
+            const timerTask = new serviceLeverTimerTask_1.default(this, qe);
             timerTask.schedule(delay);
             this._serviceLevelTimerTasks.set(qe, timerTask);
         }
@@ -247,6 +248,6 @@ Queue.map = new Map([
     ["ServicelevelPerf", PROP_SERVICE_LEVEL_PERF],
     ["Weight", PROP_WEIGHT]
 ]);
-const EVENTS = Object.assign({}, AsteriskModel.events, { ENTRY_ADD: Symbol("entry:add"), ENTRY_LEAVE: Symbol("entry:leave"), MEMBER_ADD: Symbol("member:add"), MEMBER_LEAVE: Symbol("member:leave"), SERVICE_LEVEL_EXCEEDED: Symbol("entry:ServiceLevelExceeded") });
-module.exports = Queue;
+const EVENTS = Object.assign({}, asteriskModel_1.default.events, { ENTRY_ADD: Symbol("entry:add"), ENTRY_LEAVE: Symbol("entry:leave"), MEMBER_ADD: Symbol("member:add"), MEMBER_LEAVE: Symbol("member:leave"), SERVICE_LEVEL_EXCEEDED: Symbol("entry:ServiceLevelExceeded") });
+exports.default = Queue;
 //# sourceMappingURL=QueueModel.js.map

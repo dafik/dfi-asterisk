@@ -1,8 +1,8 @@
-import AsteriskModel = require("../internal/asteriskModel");
+import AsteriskModel from "../internal/asteriskModel";
 import {IDfiAstModelAttribsBridge, IDfiAstModelOptions} from "../definitions/models";
-import Channel = require("./ChannelModel");
-import BridgeChannels = require("../collections/channels/BridgeChannelsCollection");
-import AST_EVENT = require("../internal/asterisk/eventNames");
+import Channel from "./ChannelModel";
+import BridgeChannels from "../collections/channels/BridgeChannelsCollection";
+import AST_EVENT from "../internal/asterisk/eventNames";
 
 const PROP_UNIQUE_ID = "uniqueid";
 const PROP_TYPE = "type";
@@ -122,4 +122,4 @@ class Bridge extends AsteriskModel {
     }
 }
 
-export = Bridge;
+export default Bridge;

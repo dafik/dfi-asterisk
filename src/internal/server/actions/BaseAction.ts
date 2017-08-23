@@ -1,4 +1,4 @@
-import AsteriskServer = require("../../../asteriskServer");
+import AsteriskServer from "../../../asteriskServer";
 
 abstract class BaseServerAction {
     protected _server: AsteriskServer;
@@ -7,7 +7,7 @@ abstract class BaseServerAction {
         this._server = server;
     }
 }
-export = BaseServerAction;
+export default BaseServerAction;
 
 /*
 

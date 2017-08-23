@@ -70,4 +70,4 @@ enum HangupCauses  {
     UNKNOWN = -1
 }
 
-export = HangupCauses;
+export default HangupCauses;

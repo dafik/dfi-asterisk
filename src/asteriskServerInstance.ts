@@ -1,9 +1,9 @@
-import AsteriskServer = require("./asteriskServer");
+import AsteriskServer from "./asteriskServer";
 import {IDfiAstConfigServerOptions} from "./definitions/configs";
 
 let instance: AsteriskServer = null;
 
-function getServerInstance(options?: IDfiAstConfigServerOptions, fresh?: boolean): AsteriskServer {
+export function getServerInstance(options?: IDfiAstConfigServerOptions, fresh?: boolean): AsteriskServer {
     fresh = fresh || false;
 
     if (instance === null || fresh) {
@@ -16,4 +16,4 @@ function getServerInstance(options?: IDfiAstConfigServerOptions, fresh?: boolean
     return instance;
 }
 
-export = getServerInstance;
+export default getServerInstance;

@@ -1,15 +1,15 @@
-import AsteriskModel = require("../../internal/asteriskModel");
-import AstUtil = require("../../internal/astUtil");
-import PeerStateHistoryEntry = require("../histories/PeerStateHistoryEntry");
+import AsteriskModel from "../../internal/asteriskModel";
+import AstUtil from "../../internal/astUtil";
+import PeerStateHistoryEntry from "../histories/PeerStateHistoryEntry";
 import {IDfiAstEventsPeer} from "../../definitions/events";
 import {IDfiAstModelAttribsPeer, IDfiAstModelOptions} from "../../definitions/models";
-import PeerStates = require("../../enums/peerStates");
-import Ip = require("../IpAddressModel");
-import Device = require("../DeviceModel");
-import PeerChannels = require("../../collections/channels/PeerChannelsCollection");
-import PeerState = require("../../states/peerState");
-import Channel = require("../ChannelModel");
-import PeerAddressHistoryEntry = require("../histories/PeerAddressHistoryEntry");
+import PeerStates from "../../enums/peerStates";
+import Ip from "../IpAddressModel";
+import Device from "../DeviceModel";
+import PeerChannels from "../../collections/channels/PeerChannelsCollection";
+import PeerState from "../../states/peerState";
+import Channel from "../ChannelModel";
+import PeerAddressHistoryEntry from "../histories/PeerAddressHistoryEntry";
 
 const PROP_TECHNOLOGY = "technology";
 const PROP_IP = "ip";
@@ -201,4 +201,4 @@ const EVENTS = {
     PROPERTY_STATE: Symbol("peer" + PROP_STATE)
 };
 
-export = Peer;
+export default Peer;

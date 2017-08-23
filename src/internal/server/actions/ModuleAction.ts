@@ -1,7 +1,7 @@
-import BaseServerAction = require("./BaseAction");
-import AstUtil = require("../../astUtil");
-import ManagerCommunication = require("../../../errors/ManagerCommunication");
-import AST_ACTION = require("../../asterisk/actionNames");
+import BaseServerAction from "./BaseAction";
+import AstUtil from "../../astUtil";
+import ManagerCommunication from "../../../errors/ManagerCommunication";
+import AST_ACTION from "../../asterisk/actionNames";
 import {IDfiCallbackResult} from "../../../definitions/interfaces";
 
 import {IAstActionModuleCheck, IAstActionModuleLoad} from "../../asterisk/actions";
@@ -82,4 +82,4 @@ const MODULE_LOAD_TYPES = {
     LOAD_TYPE_UNLOAD: "unload"
 };
 
-export = ModuleServerAction;
+export default ModuleServerAction;

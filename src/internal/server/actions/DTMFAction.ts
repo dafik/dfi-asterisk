@@ -1,7 +1,7 @@
-import BaseServerAction = require("./BaseAction");
-import Channel = require("../../../models/ChannelModel");
-import AstUtil = require("../../astUtil");
-import AST_ACTION = require("../../asterisk/actionNames");
+import BaseServerAction from "./BaseAction";
+import Channel from "../../../models/ChannelModel";
+import AstUtil from "../../astUtil";
+import AST_ACTION from "../../asterisk/actionNames";
 import {IDfiCallbackResult} from "../../../definitions/interfaces";
 
 import {IAstActionPlayDTMF} from "../../asterisk/actions";
@@ -39,4 +39,4 @@ class DTMFServerAction extends BaseServerAction {
     }
 }
 
-export = DTMFServerAction;
+export default DTMFServerAction;

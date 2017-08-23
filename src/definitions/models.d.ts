@@ -1,20 +1,20 @@
 import {IDfiBaseModelAttribs, IDfiBaseModelConfig} from "local-dfi-base/src/dfiInterfaces";
-import Ip = require("../models/IpAddressModel");
-import CallerId = require("../models/CallerIdModel");
-import DeviceState = require("../states/deviceState");
-import PeerState = require("../states/peerState");
-import ChannelState = require("../states/channelState");
-import Channel = require("../models/ChannelModel");
-import DispositionFlag = require("../enums/flags/dispositionFlags");
-import AmaFlags = require("../enums/flags/amaFlags");
-import QueueMemberState = require("../states/queueMemberState");
-import Peer = require("../models/peers/PeerModel");
-import AgentState = require("../states/agentState");
-import Device = require("../models/DeviceModel");
-import Queue = require("../models/queues/QueueModel");
-import QueueEntryState = require("../states/queueEntryState");
-import DialplanContext = require("../models/dialplans/DialplanContextModel");
-import DialplanExtension = require("../models/dialplans/DialplanExtensionModel");
+import Ip from "../models/IpAddressModel";
+import CallerId from "../models/CallerIdModel";
+import DeviceState from "../states/deviceState";
+import PeerState from "../states/peerState";
+import ChannelState from "../states/channelState";
+import Channel from "../models/ChannelModel";
+import DispositionFlag from "../enums/flags/dispositionFlags";
+import AmaFlags from "../enums/flags/amaFlags";
+import QueueMemberState from "../states/queueMemberState";
+import Peer from "../models/peers/PeerModel";
+import AgentState from "../states/agentState";
+import Device from "../models/DeviceModel";
+import Queue from "../models/queues/QueueModel";
+import QueueEntryState from "../states/queueEntryState";
+import DialplanContext from "../models/dialplans/DialplanContextModel";
+import DialplanExtension from "../models/dialplans/DialplanExtensionModel";
 
 export interface IDfiAstModelOptions extends IDfiBaseModelConfig {
     sourceEvent?: string;

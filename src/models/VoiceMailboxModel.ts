@@ -1,4 +1,4 @@
-import AsteriskModel = require("../internal/asteriskModel");
+import AsteriskModel from "../internal/asteriskModel";
 import {IDfiAstModelAttribsVoiceMailbox, IDfiAstModelOptions} from "../definitions/models";
 
 const PROP_CONTEXT = "context";
@@ -61,4 +61,4 @@ class VoiceMailbox extends AsteriskModel {
     }
 }
 
-export = VoiceMailbox;
+export default VoiceMailbox;

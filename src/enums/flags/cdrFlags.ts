@@ -10,4 +10,4 @@ enum CdrFlags {
     AMA_FLAG_DOCUMENTATION =  "DOCUMENTATION" as any,
     AMA_FLAG_UNKNOWN =  "Unknown" as any
 }
-export = CdrFlags;
+export default CdrFlags;

@@ -25,4 +25,4 @@ enum AgentStates {
     AGENT_RINGING =  "agent_ringing" as any
 }
 
-export = AgentStates;
+export default AgentStates;

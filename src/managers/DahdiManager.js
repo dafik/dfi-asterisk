@@ -1,26 +1,27 @@
 "use strict";
-const AsteriskManager = require("../internal/server/Manager");
-const Dahdi = require("../models/DahdiModel");
-const AstUtil = require("../internal/astUtil");
-const DAHDIChannels = require("../collections/channels/DAHDIChannelsCollection");
-const AST_EVENT = require("../internal/asterisk/eventNames");
-const AST_ACTION = require("../internal/asterisk/actionNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const Manager_1 = require("../internal/server/Manager");
+const DahdiModel_1 = require("../models/DahdiModel");
+const astUtil_1 = require("../internal/astUtil");
+const DAHDIChannelsCollection_1 = require("../collections/channels/DAHDIChannelsCollection");
+const eventNames_1 = require("../internal/asterisk/eventNames");
+const actionNames_1 = require("../internal/asterisk/actionNames");
 const P_PROP_CHANNELS_BY_DAHDI_ID = "channelsByDahdiId";
 const P_PROP_ACTIVE_COUNT = "activeCount";
 /**
  * Manages all events related to bridges on Asterisk server
  */
-class DahdiManager extends AsteriskManager {
+class DahdiManager extends Manager_1.default {
     constructor(options, state) {
-        super(options, state, new DAHDIChannels());
+        super(options, state, new DAHDIChannelsCollection_1.default());
         this.setProp(P_PROP_CHANNELS_BY_DAHDI_ID, new Map());
         this.setProp(P_PROP_ACTIVE_COUNT, 0);
         if (!this.enabled) {
             return;
         }
         const map = {};
-        map[AST_EVENT.DAHDI_CHANNEL] = this._handleDahdiChannelEvent;
-        map[AST_EVENT.HANGUP] = this._handleHangupEvent;
+        map[eventNames_1.default.DAHDI_CHANNEL] = this._handleDahdiChannelEvent;
+        map[eventNames_1.default.HANGUP] = this._handleHangupEvent;
         this._mapEvents(map);
     }
     get channels() {
@@ -35,7 +36,7 @@ class DahdiManager extends AsteriskManager {
     start(callbackFn, context) {
         function finish() {
             this.server.logger.info('manager "DahdiManager" started');
-            AstUtil.maybeCallbackOnce(callbackFn, context, null, "DahdiManager");
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, "DahdiManager");
         }
         this.server.logger.info('starting manager "DahdiManager"');
         if (!this.enabled) {
@@ -43,22 +44,22 @@ class DahdiManager extends AsteriskManager {
             return;
         }
         const action = {
-            Action: AST_ACTION.DAHDI_SHOW_CHANNELS,
+            Action: actionNames_1.default.DAHDI_SHOW_CHANNELS,
             DAHDIChannel: 0
         };
         if (!this.server.allowedActions.has(action.Action)) {
             this.server.logger.info('manager "DahdiManager" not started DAHDI command not allowed');
-            AstUtil.maybeCallbackOnce(callbackFn, context, null, "DahdiManager");
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, "DahdiManager");
             return;
         }
         this.server.sendEventGeneratingAction(action, (err, re) => {
             if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err, "DahdiManager");
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, err, "DahdiManager");
                 return;
             }
             if (typeof re !== "undefined") {
                 re.events.forEach((event) => {
-                    if (event.Event === AST_EVENT.DAHDI_SHOW_CHANNELS) {
+                    if (event.Event === eventNames_1.default.DAHDI_SHOW_CHANNELS) {
                         if (event.Channel) {
                             let channel;
                             if (this.server.managers.channel.enabled) {
@@ -78,7 +79,7 @@ class DahdiManager extends AsteriskManager {
                             }
                             event.channel = channel;
                         }
-                        const dahdiChannel = new Dahdi(event);
+                        const dahdiChannel = new DahdiModel_1.default(event);
                         this.logger.info("Adding dahdiChannel " + dahdiChannel.name);
                         this._addChannel(dahdiChannel);
                     }
@@ -124,7 +125,7 @@ class DahdiManager extends AsteriskManager {
         }
         else {
             // TODO Should not happen
-            dahdiChannel = new Dahdi(event);
+            dahdiChannel = new DahdiModel_1.default(event);
             this.logger.info("Adding dahdiChannel " + dahdiChannel.name);
             this._addChannel(dahdiChannel);
         }
@@ -160,5 +161,5 @@ class DahdiManager extends AsteriskManager {
         this.channels.add(dahdiChannel);
     }
 }
-module.exports = DahdiManager;
+exports.default = DahdiManager;
 //# sourceMappingURL=DahdiManager.js.map

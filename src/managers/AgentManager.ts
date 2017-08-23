@@ -1,8 +1,8 @@
-import AsteriskManager = require("../internal/server/Manager");
-import Agents = require("../collections/AgentsCollection");
-import Agent = require("../models/AgentModel");
-import QueueManager = require("./QueueManager");
-import AstUtil = require("../internal/astUtil");
+import AsteriskManager from "../internal/server/Manager";
+import Agents from "../collections/AgentsCollection";
+import Agent from "../models/AgentModel";
+import QueueManager from "./QueueManager";
+import AstUtil from "../internal/astUtil";
 
 import {IDfiCallbackResult, IEventHandlersMap} from "../definitions/interfaces";
 import {IDfiAstModelAttribsAgent} from "../definitions/models";
@@ -12,12 +12,12 @@ import {IAstActionAgents} from "../internal/asterisk/actions";
 
 import {IAstEvent, IAstEventAgentCalled, IAstEventAgentComplete, IAstEventAgentConnect, IAstEventAgentLogin, IAstEventAgentLogoff, IAstEventAgents} from "../internal/asterisk/events";
 
-import AgentState = require("../states/agentState");
-import AgentStates = require("../enums/agentStates");
-import QueueMember = require("../models/queues/QueueMemberModel");
-import Queue = require("../models/queues/QueueModel");
-import AST_ACTION = require("../internal/asterisk/actionNames");
-import AST_EVENT = require("../internal/asterisk/eventNames");
+import AgentState from "../states/agentState";
+import AgentStates from "../enums/agentStates";
+import QueueMember from "../models/queues/QueueMemberModel";
+import Queue from "../models/queues/QueueModel";
+import AST_ACTION from "../internal/asterisk/actionNames";
+import AST_EVENT from "../internal/asterisk/eventNames";
 
 const RINGING_AGENTS = "ringingAgents";
 
@@ -262,4 +262,4 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
         this.ringingAgents.set(channelCalling, agent);
     }
 }
-export = AgentManager;
+export default AgentManager;

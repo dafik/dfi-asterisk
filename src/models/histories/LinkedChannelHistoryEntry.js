@@ -1,10 +1,11 @@
 "use strict";
-const AsteriskHistoryEntry = require("../../internal/asteriskHistoryEntry");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskHistoryEntry_1 = require("../../internal/asteriskHistoryEntry");
 /**
  * An entry in the linked channels history of an AsteriskChannel
  * Creates a new instance.
  */
-class LinkedChannelHistoryEntry extends AsteriskHistoryEntry {
+class LinkedChannelHistoryEntry extends asteriskHistoryEntry_1.default {
     /**
      * Returns the channel that has been linked.
      */
@@ -45,5 +46,5 @@ class LinkedChannelHistoryEntry extends AsteriskHistoryEntry {
         return this.channel.id;
     }
 }
-module.exports = LinkedChannelHistoryEntry;
+exports.default = LinkedChannelHistoryEntry;
 //# sourceMappingURL=LinkedChannelHistoryEntry.js.map

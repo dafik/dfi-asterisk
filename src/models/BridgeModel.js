@@ -1,7 +1,8 @@
 "use strict";
-const AsteriskModel = require("../internal/asteriskModel");
-const BridgeChannels = require("../collections/channels/BridgeChannelsCollection");
-const AST_EVENT = require("../internal/asterisk/eventNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../internal/asteriskModel");
+const BridgeChannelsCollection_1 = require("../collections/channels/BridgeChannelsCollection");
+const eventNames_1 = require("../internal/asterisk/eventNames");
 const PROP_UNIQUE_ID = "uniqueid";
 const PROP_TYPE = "type";
 const PROP_TECHNOLOGY = "technology";
@@ -13,16 +14,16 @@ const PROP_LOCAL_TWO_UNIQUE_ID = "localTwoUniqueId";
 const PROP_IS_HANGUP_FIRST = "isHangupFirst";
 const PROP_IS_HANGUP_SECOND = "isHangupSecond";
 const P_PROP_CHANNELS = "channels";
-class Bridge extends AsteriskModel {
+class Bridge extends asteriskModel_1.default {
     constructor(attributes, options) {
-        if (attributes.Event === AST_EVENT.BRIDGE_CREATE) {
+        if (attributes.Event === eventNames_1.default.BRIDGE_CREATE) {
             attributes.id = attributes.BridgeUniqueid;
         }
-        else if (attributes.Event === AST_EVENT.BRIDGE_LIST_ITEM) {
+        else if (attributes.Event === eventNames_1.default.BRIDGE_LIST_ITEM) {
             attributes.id = attributes.BridgeUniqueid;
         }
         super(attributes, options);
-        this.setProp(P_PROP_CHANNELS, new BridgeChannels());
+        this.setProp(P_PROP_CHANNELS, new BridgeChannelsCollection_1.default());
     }
     get uniqueid() {
         return this.get(PROP_UNIQUE_ID);
@@ -93,5 +94,5 @@ Bridge.map = new Map([
     ["isHangupFirst", PROP_IS_HANGUP_FIRST],
     ["isHangupSecond", PROP_IS_HANGUP_SECOND]
 ]);
-module.exports = Bridge;
+exports.default = Bridge;
 //# sourceMappingURL=BridgeModel.js.map

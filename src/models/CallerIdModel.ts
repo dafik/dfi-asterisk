@@ -1,4 +1,4 @@
-import AstUtil = require("../internal/astUtil");
+import AstUtil from "../internal/astUtil";
 import DfiObject from "local-dfi-base/src/dfiObject";
 
 const P_PROP_NAME = "name";
@@ -45,4 +45,4 @@ class CallerId extends DfiObject {
     }
 }
 
-export = CallerId;
+export default CallerId;

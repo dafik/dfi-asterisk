@@ -1,5 +1,5 @@
-import AsteriskCollection = require("../internal/asteriskCollection");
-import Queue = require("../models/queues/QueueModel");
+import AsteriskCollection from "../internal/asteriskCollection";
+import Queue from "../models/queues/QueueModel";
 
 class Queues extends AsteriskCollection<Queue> {
 
@@ -33,4 +33,4 @@ class Queues extends AsteriskCollection<Queue> {
         return super.toArray();
     }
 }
-export = Queues;
+export default Queues;

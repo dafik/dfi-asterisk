@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var DeviceStates;
 (function (DeviceStates) {
     /* Device is valid but channel didn't know state */
@@ -22,5 +23,5 @@ var DeviceStates;
     /* Total num of device states, used for testing */
     DeviceStates[DeviceStates["TOTAL"] = 9] = "TOTAL";
 })(DeviceStates || (DeviceStates = {}));
-module.exports = DeviceStates;
+exports.default = DeviceStates;
 //# sourceMappingURL=deviceStates.js.map

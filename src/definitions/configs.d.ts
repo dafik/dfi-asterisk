@@ -1,8 +1,8 @@
 import {IAmiClientOptions} from "local-asterisk-ami-client/lib/Interfaces";
 import {IDfiBaseObjectConfig} from "local-dfi-base/src/dfiInterfaces";
-import AsteriskServer = require("../asteriskServer");
-import ServerManagers = require("../internal/server/Managers");
-import AsteriskModel = require("../internal/asteriskModel");
+import AsteriskServer from "../asteriskServer";
+import AsteriskModel from "../internal/asteriskModel";
+import ServerManagers from "../internal/server/Managers";
 
 export interface IDfiAstConfigCollection<M extends AsteriskModel> extends IDfiBaseObjectConfig {
     idField?: string;

@@ -1,19 +1,19 @@
+import * as async from "async";
 import DfiObject from "local-dfi-base/src/dfiObject";
+import AsteriskServer from "../../asteriskServer";
 import {IDfiAstConfigAstManager} from "../../definitions/configs";
 import {IDfiCallbackResult} from "../../definitions/interfaces";
-import async = require("async");
-import ChannelManager = require("../../managers/ChannelManager");
-import PeerManager = require("../../managers/PeerManager");
-import DeviceManager = require("../../managers/DeviceManager");
-import BridgeManager = require("../../managers/BridgeManager");
-import DahdiManager = require("../../managers/DahdiManager");
-import QueueManager = require("../../managers/QueueManager");
-import AgentManager = require("../../managers/AgentManager");
-import AstUtil = require("../astUtil");
-import AsteriskManager = require("./Manager");
-import AsteriskModel = require("../asteriskModel");
-import AsteriskCollection = require("../asteriskCollection");
-import AsteriskServer = require("../../asteriskServer");
+import AgentManager from "../../managers/AgentManager";
+import BridgeManager from "../../managers/BridgeManager";
+import ChannelManager from "../../managers/ChannelManager";
+import DahdiManager from "../../managers/DahdiManager";
+import DeviceManager from "../../managers/DeviceManager";
+import PeerManager from "../../managers/PeerManager";
+import QueueManager from "../../managers/QueueManager";
+import AsteriskCollection from "../asteriskCollection";
+import AsteriskModel from "../asteriskModel";
+import AstUtil from "../astUtil";
+import AsteriskManager from "./Manager";
 
 const PROP_MANAGERS = "managers";
 const PROP_SERVER = "server";
@@ -116,4 +116,4 @@ class ServerManagers extends DfiObject {
     }
 }
 
-export = ServerManagers;
+export default ServerManagers;

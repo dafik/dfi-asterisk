@@ -1,9 +1,10 @@
 "use strict";
-const AsteriskModel = require("../internal/asteriskModel");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../internal/asteriskModel");
 const PROP_NAME = "name";
 const PROP_CONTEXT = "context";
 const PROP_CHANNEL = "channel";
-class Dahdi extends AsteriskModel {
+class Dahdi extends asteriskModel_1.default {
     constructor(attributes, options) {
         options = options || {};
         options.idAttribute = PROP_NAME;
@@ -32,5 +33,5 @@ Dahdi.map = new Map([
     // ["Description", "description"],
     ["channel", PROP_CHANNEL]
 ]);
-module.exports = Dahdi;
+exports.default = Dahdi;
 //# sourceMappingURL=DahdiModel.js.map

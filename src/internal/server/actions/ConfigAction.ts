@@ -1,10 +1,10 @@
-import BaseServerAction = require("./BaseAction");
+import BaseServerAction from "./BaseAction";
 import {IDfiCallbackResult} from "../../../definitions/interfaces";
 import {IAstActionGetConfig} from "../../asterisk/actions";
-import AstUtil = require("../../astUtil");
-import ManagerError = require("../../../errors/ManagerError");
-import ConfigFile = require("../ConfigFile");
-import AST_ACTION = require("../../asterisk/actionNames");
+import AstUtil from "../../astUtil";
+import ManagerError from "../../../errors/ManagerError";
+import ConfigFile from "../ConfigFile";
+import AST_ACTION from "../../asterisk/actionNames";
 class ConfigServerAction extends BaseServerAction {
 
     public getConfig(filename, callbackFn: IDfiCallbackResult, context?) {
@@ -66,4 +66,4 @@ class ConfigServerAction extends BaseServerAction {
     }
 
 }
-export = ConfigServerAction;
+export default ConfigServerAction;

@@ -6,4 +6,4 @@ class InvalidPenalty extends Error {
         this.name = "InvalidPenalty";
     }
 }
-export = InvalidPenalty;
+export default InvalidPenalty;

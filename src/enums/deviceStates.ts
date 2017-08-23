@@ -20,4 +20,4 @@ enum DeviceStates  {
         /* Total num of device states, used for testing */
     TOTAL = 9
 }
-export = DeviceStates;
+export default DeviceStates;

@@ -28,4 +28,4 @@ enum ChannelStates  {
     HANGUP = -1
 
 }
-export = ChannelStates;
+export default ChannelStates;

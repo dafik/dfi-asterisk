@@ -192,4 +192,4 @@ const uniqueActionID = (() => {
     };
 })();
 
-export = AstUtil;
+export default AstUtil;

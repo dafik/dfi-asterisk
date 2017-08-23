@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const local_dfi_base_1 = require("local-dfi-base");
 const ID_FIELD = "id";
 const COLLECTION = "collection";
@@ -19,5 +20,5 @@ class AsteriskCollection extends local_dfi_base_1.DfiCollection {
         return new Map([...collection.entries()]);
     }
 }
-module.exports = AsteriskCollection;
+exports.default = AsteriskCollection;
 //# sourceMappingURL=asteriskCollection.js.map

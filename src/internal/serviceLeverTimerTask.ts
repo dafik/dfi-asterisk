@@ -1,6 +1,6 @@
 "use strict";
-import QueueEntry = require("../models/queues/QueueEntryModel");
-import Queue = require("../models/queues/QueueModel");
+import QueueEntry from "../models/queues/QueueEntryModel";
+import Queue from "../models/queues/QueueModel";
 import DfiObject from "local-dfi-base/src/dfiObject";
 
 const PROP_ENTRY = Symbol("entry");
@@ -31,4 +31,4 @@ class ServiceLevelTimerTask extends DfiObject {
     }
 }
 
-export = ServiceLevelTimerTask;
+export default ServiceLevelTimerTask;

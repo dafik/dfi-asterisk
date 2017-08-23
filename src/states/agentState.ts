@@ -1,5 +1,5 @@
-import AgentStates = require("../enums/agentStates");
-import AsteriskState = require("../internal/asteriskState");
+import AgentStates from "../enums/agentStates";
+import AsteriskState from "../internal/asteriskState";
 
 class AgentState extends AsteriskState {
 
@@ -18,4 +18,4 @@ class AgentState extends AsteriskState {
     protected static STATES = AgentStates;
 
 }
-export = AgentState;
+export default AgentState;

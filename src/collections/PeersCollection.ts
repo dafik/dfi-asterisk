@@ -1,5 +1,5 @@
-import AsteriskCollection = require("../internal/asteriskCollection");
-import Peer = require("../models/peers/PeerModel");
+import AsteriskCollection from "../internal/asteriskCollection";
+import Peer from "../models/peers/PeerModel";
 
 const P_PROP_PEERS_BY_TECH = "byTech";
 
@@ -63,4 +63,4 @@ class Peers extends AsteriskCollection<Peer> {
     }
 }
 
-export = Peers;
+export default Peers;

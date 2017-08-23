@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const local_dfi_debug_logger_1 = require("local-dfi-debug-logger");
 const _ = require("lodash");
 const TRUE_LITERALS = [
@@ -165,5 +166,5 @@ const uniqueActionID = (() => {
         return nextId++;
     };
 })();
-module.exports = AstUtil;
+exports.default = AstUtil;
 //# sourceMappingURL=astUtil.js.map

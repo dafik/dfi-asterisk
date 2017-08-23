@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var AgentStates;
 (function (AgentStates) {
     /**
@@ -22,5 +23,5 @@ var AgentStates;
      */
     AgentStates[AgentStates["AGENT_RINGING"] = "agent_ringing"] = "AGENT_RINGING";
 })(AgentStates || (AgentStates = {}));
-module.exports = AgentStates;
+exports.default = AgentStates;
 //# sourceMappingURL=agentStates.js.map

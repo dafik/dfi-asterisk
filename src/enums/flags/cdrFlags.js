@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var CdrFlags;
 (function (CdrFlags) {
     CdrFlags[CdrFlags["DISPOSITION_NO_ANSWER"] = "NO ANSWER"] = "DISPOSITION_NO_ANSWER";
@@ -11,5 +12,5 @@ var CdrFlags;
     CdrFlags[CdrFlags["AMA_FLAG_DOCUMENTATION"] = "DOCUMENTATION"] = "AMA_FLAG_DOCUMENTATION";
     CdrFlags[CdrFlags["AMA_FLAG_UNKNOWN"] = "Unknown"] = "AMA_FLAG_UNKNOWN";
 })(CdrFlags || (CdrFlags = {}));
-module.exports = CdrFlags;
+exports.default = CdrFlags;
 //# sourceMappingURL=cdrFlags.js.map

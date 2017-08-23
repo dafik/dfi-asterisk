@@ -44,4 +44,4 @@ enum PeerStates  {
         // sip
     REGISTERED = 10
 }
-export = PeerStates;
+export default PeerStates;

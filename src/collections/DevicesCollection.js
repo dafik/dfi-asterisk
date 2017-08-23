@@ -1,10 +1,11 @@
 "use strict";
-const AsteriskCollection = require("../internal/asteriskCollection");
-const Device = require("../models/DeviceModel");
-class Devices extends AsteriskCollection {
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskCollection_1 = require("../internal/asteriskCollection");
+const DeviceModel_1 = require("../models/DeviceModel");
+class Devices extends asteriskCollection_1.default {
     constructor() {
         super({
-            model: Device
+            model: DeviceModel_1.default
         });
     }
     get(id) {
@@ -17,5 +18,5 @@ class Devices extends AsteriskCollection {
         return super.clear();
     }
 }
-module.exports = Devices;
+exports.default = Devices;
 //# sourceMappingURL=DevicesCollection.js.map

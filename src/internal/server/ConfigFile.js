@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * ConfigFile implementation based on the config actions of the Manager API.
  */
@@ -24,5 +25,5 @@ class ConfigFile {
         }
     }
 }
-module.exports = ConfigFile;
+exports.default = ConfigFile;
 //# sourceMappingURL=ConfigFile.js.map

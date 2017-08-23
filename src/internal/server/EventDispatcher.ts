@@ -1,9 +1,9 @@
 import DfiObject from "local-dfi-base/src/dfiObject";
-import AsteriskServer = require("../../asteriskServer");
-import AsteriskManager = require("./Manager");
-import AsteriskModel = require("../asteriskModel");
-import AsteriskCollection = require("../asteriskCollection");
-import AST_EVENT = require("../asterisk/eventNames");
+import AsteriskServer from "../../asteriskServer";
+import AsteriskManager from "./Manager";
+import AsteriskModel from "../asteriskModel";
+import AsteriskCollection from "../asteriskCollection";
+import AST_EVENT from "../asterisk/eventNames";
 
 class EventDispatcher extends DfiObject {
 
@@ -44,4 +44,4 @@ class EventDispatcher extends DfiObject {
 
 }
 
-export = EventDispatcher;
+export default EventDispatcher;

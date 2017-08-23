@@ -4,9 +4,9 @@ import Linphone from "local-dfi-linphone";
 import {getInstance as manager} from "local-dfi-linphone-endpoint-manager";
 import EndpointManger from "local-dfi-linphone-endpoint-manager/src/endpointManager";
 import {IDfiAsOriginateCallback, IDfiCallbackResult} from "../src/definitions/interfaces";
+import {AST_ACTION} from "../src/internal/asterisk/actionNames";
 import {IAstActionDialplanExtensionAdd, IAstActionDialplanExtensionRemove, IAstActionOriginate} from "../src/internal/asterisk/actions";
-import asterisk = require("./mock/asterisk-real");
-import AST_ACTION = require("../src/internal/asterisk/actionNames");
+import asterisk from "./mock/asterisk-real";
 
 process.on("unhandledRejection", (reason, p) => {
     new DebugLogger("test").debug("Unhandled Rejection at: Promise", p, "reason:", reason);

@@ -1,7 +1,8 @@
 "use strict";
-const Peer = require("./PeerModel");
-const Ip = require("../IpAddressModel");
-const AstUtil = require("../../internal/astUtil");
+Object.defineProperty(exports, "__esModule", { value: true });
+const PeerModel_1 = require("./PeerModel");
+const IpAddressModel_1 = require("../IpAddressModel");
+const astUtil_1 = require("../../internal/astUtil");
 const PROP_CHANNEL_TYPE = "channelType";
 const PROP_OBJECT_NAME = "objectName";
 const PROP_CHAN_OBJECT_TYPE = "chanObjectType";
@@ -16,17 +17,17 @@ const PROP_TEXT_SUPPORT = "textSupport";
 const PROP_ACL = "acl";
 const PROP_REAL_TIME_DEVICE = "realtimeDevice";
 const PROP_DESCRIPTION = "description";
-class SIPPeer extends Peer {
+class SIPPeer extends PeerModel_1.default {
     constructor(attributes, options) {
-        const attr = Object.assign({}, attributes, { ACL: !!AstUtil.isTrue(attributes.ACL), AutoComedia: !!AstUtil.isTrue(attributes.AutoComedia), AutoForcerport: !!AstUtil.isTrue(attributes.AutoForcerport), Comedia: !!AstUtil.isTrue(attributes.Comedia), Forcerport: !!AstUtil.isTrue(attributes.Forcerport), RealtimeDevice: !!AstUtil.isTrue(attributes.RealtimeDevice), TextSupport: !!AstUtil.isTrue(attributes.TextSupport), VideoSupport: !!AstUtil.isTrue(attributes.VideoSupport), ip: new Ip({
-                ipAddress: AstUtil.isNull(attributes.IPaddress) ? null : attributes.IPaddress,
+        const attr = Object.assign({}, attributes, { ACL: !!astUtil_1.default.isTrue(attributes.ACL), AutoComedia: !!astUtil_1.default.isTrue(attributes.AutoComedia), AutoForcerport: !!astUtil_1.default.isTrue(attributes.AutoForcerport), Comedia: !!astUtil_1.default.isTrue(attributes.Comedia), Forcerport: !!astUtil_1.default.isTrue(attributes.Forcerport), RealtimeDevice: !!astUtil_1.default.isTrue(attributes.RealtimeDevice), TextSupport: !!astUtil_1.default.isTrue(attributes.TextSupport), VideoSupport: !!astUtil_1.default.isTrue(attributes.VideoSupport), ip: new IpAddressModel_1.default({
+                ipAddress: astUtil_1.default.isNull(attributes.IPaddress) ? null : attributes.IPaddress,
                 mask: "255.255.255.255",
                 port: parseInt(attributes.IPport, 10)
             }), technology: "SIP" });
         super(attr, options);
     }
 }
-SIPPeer.map = new Map([...Peer.map.entries()].concat([
+SIPPeer.map = new Map([...PeerModel_1.default.map.entries()].concat([
     ["Channeltype", PROP_CHANNEL_TYPE],
     ["ObjectName", PROP_OBJECT_NAME],
     ["ChanObjectType", PROP_CHAN_OBJECT_TYPE],
@@ -42,5 +43,5 @@ SIPPeer.map = new Map([...Peer.map.entries()].concat([
     ["RealtimeDevice", PROP_REAL_TIME_DEVICE],
     ["Description", PROP_DESCRIPTION]
 ]));
-module.exports = SIPPeer;
+exports.default = SIPPeer;
 //# sourceMappingURL=SIPPeerModel.js.map

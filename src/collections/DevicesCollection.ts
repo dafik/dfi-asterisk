@@ -1,5 +1,5 @@
-import AsteriskCollection = require("../internal/asteriskCollection");
-import Device = require("../models/DeviceModel");
+import AsteriskCollection from "../internal/asteriskCollection";
+import Device from "../models/DeviceModel";
 
 class Devices extends AsteriskCollection<Device> {
     constructor() {
@@ -20,4 +20,4 @@ class Devices extends AsteriskCollection<Device> {
         return super.clear();
     }
 }
-export = Devices;
+export default Devices;

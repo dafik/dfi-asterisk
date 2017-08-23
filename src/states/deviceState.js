@@ -1,17 +1,18 @@
 "use strict";
-const AsteriskState = require("../internal/asteriskState");
-const DeviceStates = require("../enums/deviceStates");
-class DeviceState extends AsteriskState {
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskState_1 = require("../internal/asteriskState");
+const deviceStates_1 = require("../enums/deviceStates");
+class DeviceState extends asteriskState_1.default {
     static byValue(status) {
-        return AsteriskState.byValue(status, this);
+        return asteriskState_1.default.byValue(status, this);
     }
     static byName(status) {
-        return AsteriskState.byName(status, this);
+        return asteriskState_1.default.byName(status, this);
     }
     static byNameOrValue(status) {
-        return AsteriskState.byNameOrValue(status, this);
+        return asteriskState_1.default.byNameOrValue(status, this);
     }
 }
-DeviceState.STATES = DeviceStates;
-module.exports = DeviceState;
+DeviceState.STATES = deviceStates_1.default;
+exports.default = DeviceState;
 //# sourceMappingURL=deviceState.js.map

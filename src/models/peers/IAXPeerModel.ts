@@ -1,7 +1,7 @@
-import Peer = require("./PeerModel");
-import Ip = require("../IpAddressModel");
+import Peer from "./PeerModel";
+import Ip from "../IpAddressModel";
 import {IDfiAstModelAttribsIAXPeer, IDfiAstModelAttribsPeer, IDfiAstModelOptions} from "../../definitions/models";
-import AstUtil = require("../../internal/astUtil");
+import AstUtil from "../../internal/astUtil";
 
 const PROP_CHANNEL_TYPE = "channelType";
 const PROP_OBJECT_NAME = "objectName";
@@ -44,4 +44,4 @@ class IAXPeer extends Peer {
     }
 }
 
-export = IAXPeer;
+export default IAXPeer;

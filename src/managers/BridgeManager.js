@@ -1,15 +1,16 @@
 "use strict";
-const AsteriskManager = require("../internal/server/Manager");
-const Bridges = require("../collections/BridgesCollection");
-const Bridge = require("../models/BridgeModel");
-const AstUtil = require("../internal/astUtil");
-const AST_EVENT = require("../internal/asterisk/eventNames");
-const AST_ACTION = require("../internal/asterisk/actionNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const Manager_1 = require("../internal/server/Manager");
+const BridgesCollection_1 = require("../collections/BridgesCollection");
+const BridgeModel_1 = require("../models/BridgeModel");
+const astUtil_1 = require("../internal/astUtil");
+const eventNames_1 = require("../internal/asterisk/eventNames");
+const actionNames_1 = require("../internal/asterisk/actionNames");
 const PROP_LOCAL_MAP = "localMap";
 const PROP_CHANNEL_MANAGER = "channelManager";
-class BridgeManager extends AsteriskManager {
+class BridgeManager extends Manager_1.default {
     constructor(options, state) {
-        super(options, state, new Bridges());
+        super(options, state, new BridgesCollection_1.default());
         this.setProp(PROP_LOCAL_MAP, new Map());
         this.server.once(this.serverEvents.BEFORE_INIT, () => {
             this.setProp(PROP_CHANNEL_MANAGER, this.server.managers.channel);
@@ -18,13 +19,13 @@ class BridgeManager extends AsteriskManager {
             return;
         }
         const map = {};
-        map[AST_EVENT.BRIDGE_CREATE] = this._handleBridgeCreateEvent;
-        map[AST_EVENT.BRIDGE_DESTROY] = this._handleBridgeDestroyEvent;
-        map[AST_EVENT.BRIDGE_ENTER] = this._handleBridgeEnterEvent;
-        map[AST_EVENT.BRIDGE_LEAVE] = this._handleBridgeLeaveEvent;
-        map[AST_EVENT.BRIDGE_MERGE] = this._handleBridgeMergeEvent;
-        map[AST_EVENT.HANGUP] = this._handleHangupEvent; // maybe listen to event ?
-        map[AST_EVENT.LOCAL_BRIDGE] = this._handleLocalBridgeEvent;
+        map[eventNames_1.default.BRIDGE_CREATE] = this._handleBridgeCreateEvent;
+        map[eventNames_1.default.BRIDGE_DESTROY] = this._handleBridgeDestroyEvent;
+        map[eventNames_1.default.BRIDGE_ENTER] = this._handleBridgeEnterEvent;
+        map[eventNames_1.default.BRIDGE_LEAVE] = this._handleBridgeLeaveEvent;
+        map[eventNames_1.default.BRIDGE_MERGE] = this._handleBridgeMergeEvent;
+        map[eventNames_1.default.HANGUP] = this._handleHangupEvent; // maybe listen to event ?
+        map[eventNames_1.default.LOCAL_BRIDGE] = this._handleLocalBridgeEvent;
         this._mapEvents(map);
     }
     get bridges() {
@@ -51,22 +52,22 @@ class BridgeManager extends AsteriskManager {
     start(callbackFn, context) {
         function finish() {
             this.server.logger.info('manager "BridgeManager" started');
-            AstUtil.maybeCallbackOnce(callbackFn, context, null, "BridgeManager");
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, "BridgeManager");
         }
         this.server.logger.info('starting manager "BridgeManager"');
         if (!this.enabled) {
             finish.call(this);
             return;
         }
-        this.server.sendEventGeneratingAction({ Action: AST_ACTION.BRIDGE_LIST }, (err, re) => {
+        this.server.sendEventGeneratingAction({ Action: actionNames_1.default.BRIDGE_LIST }, (err, re) => {
             if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
                 return;
             }
             if (typeof re !== "undefined") {
                 re.events.forEach((event) => {
-                    if (event.Event === AST_EVENT.BRIDGE_LIST_ITEM) {
-                        const bridge = new Bridge(event);
+                    if (event.Event === eventNames_1.default.BRIDGE_LIST_ITEM) {
+                        const bridge = new BridgeModel_1.default(event);
                         this._addBridge(bridge);
                     }
                 });
@@ -79,7 +80,7 @@ class BridgeManager extends AsteriskManager {
     }
     _handleBridgeCreateEvent(event) {
         this.logger.info("Handle BridgeCreateEvent %s", event.BridgeUniqueid);
-        const bridge = new Bridge(event);
+        const bridge = new BridgeModel_1.default(event);
         this._addBridge(bridge);
     }
     _handleBridgeDestroyEvent(event) {
@@ -152,7 +153,7 @@ class BridgeManager extends AsteriskManager {
             isHangupSecond: false
             // ...event
         };
-        const bridge = new Bridge(attrs);
+        const bridge = new BridgeModel_1.default(attrs);
         this._addLocalBridge(bridge);
         if (this.server.managers.channel.enabled) {
             const channel1 = this._channelManager.getChannelById(event.LocalOneUniqueid);
@@ -229,5 +230,5 @@ class BridgeManager extends AsteriskManager {
         this.bridges.add(bridge);
     }
 }
-module.exports = BridgeManager;
+exports.default = BridgeManager;
 //# sourceMappingURL=BridgeManager.js.map

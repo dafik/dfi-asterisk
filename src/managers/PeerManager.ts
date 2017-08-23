@@ -1,14 +1,14 @@
-import AsteriskManager = require("../internal/server/Manager");
-import Peers = require("../collections/PeersCollection");
-import Peer = require("../models/peers/PeerModel");
+import AsteriskManager from "../internal/server/Manager";
+import Peers from "../collections/PeersCollection";
+import Peer from "../models/peers/PeerModel";
 
-import AstUtil = require("../internal/astUtil");
-import IAXPeer = require("../models/peers/IAXPeerModel");
-import PJSIPPeer = require("../models/peers/PJSIPPeerModel");
-import SIPPeer = require("../models/peers/SIPPeerModel");
-import Ip = require("../models/IpAddressModel");
-import AST_EVENT = require("../internal/asterisk/eventNames");
-import AST_ACTION = require("../internal/asterisk/actionNames");
+import AstUtil from "../internal/astUtil";
+import IAXPeer from "../models/peers/IAXPeerModel";
+import PJSIPPeer from "../models/peers/PJSIPPeerModel";
+import SIPPeer from "../models/peers/SIPPeerModel";
+import Ip from "../models/IpAddressModel";
+import AST_EVENT from "../internal/asterisk/eventNames";
+import AST_ACTION from "../internal/asterisk/actionNames";
 import {IDfiAMIMultiCallback, IDfiCallbackResult} from "../definitions/interfaces";
 import {IAstActionIAXpeerlist, IAstActionPJSIPShowEndpoints, IAstActionSIPpeers} from "../internal/asterisk/actions";
 import {IAstEventEndpointList, IAstEventPeerEntry, IAstEventPeerIAXEntry, IAstEventPeerSIPEntry, IAstEventPeerStatus} from "../internal/asterisk/events";
@@ -170,4 +170,4 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
     }
 }
 
-export = PeerManager;
+export default PeerManager;

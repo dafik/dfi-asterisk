@@ -1,12 +1,13 @@
 "use strict";
-const AsteriskModel = require("../internal/asteriskModel");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../internal/asteriskModel");
 const PROP_CONTEXT = "context";
 const PROP_MAILBOX = "mailbox";
 const PROP_NEW_MESSAGES = "newMessages";
 const PROP_OLD_MESSAGES = "oldMessages";
 const PROP_URGENT_MESSAGES = "urgMessages";
 const PROP_USER = "user";
-class VoiceMailbox extends AsteriskModel {
+class VoiceMailbox extends asteriskModel_1.default {
     constructor(attributes, options) {
         options = options || {};
         options.idAttribute = "device";
@@ -46,5 +47,5 @@ VoiceMailbox.map = new Map([
     ["newMessages", PROP_NEW_MESSAGES],
     ["user", PROP_USER]
 ]);
-module.exports = VoiceMailbox;
+exports.default = VoiceMailbox;
 //# sourceMappingURL=VoiceMailboxModel.js.map

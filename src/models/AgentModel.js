@@ -1,17 +1,18 @@
 "use strict";
-const AsteriskModel = require("../internal/asteriskModel");
-const Queues = require("../collections/QueuesCollection");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../internal/asteriskModel");
+const QueuesCollection_1 = require("../collections/QueuesCollection");
 const PROP_NAME = "name";
 const PROP_DEVICE = "device";
 const PROP_PEER = "peer";
 const PROP_STATE = "state";
 const P_PROP_QUEUES = "queues";
-class Agent extends AsteriskModel {
+class Agent extends asteriskModel_1.default {
     constructor(attributes, options) {
         options = options || {};
         options.idAttribute = PROP_NAME;
         super(attributes, options);
-        this.setProp(P_PROP_QUEUES, new Queues());
+        this.setProp(P_PROP_QUEUES, new QueuesCollection_1.default());
     }
     get name() {
         return this.get(PROP_NAME);
@@ -44,5 +45,5 @@ Agent.map = new Map([
     ["Peer", PROP_PEER],
     ["State", PROP_STATE]
 ]);
-module.exports = Agent;
+exports.default = Agent;
 //# sourceMappingURL=AgentModel.js.map

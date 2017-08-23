@@ -1,22 +1,23 @@
 "use strict";
-const AsteriskModel = require("../internal/asteriskModel");
-const AstUtil = require("../internal/astUtil");
-const Bridges = require("../collections/BridgesCollection");
-const CallerId = require("./CallerIdModel");
-const ChannelStateHistoryEntry = require("./histories/ChannelStateHistoryEntry");
-const ChannelState = require("../states/channelState");
-const ChannelStates = require("../enums/channelStates");
-const DialedChannelHistoryEntry = require("./histories/DialedChannelHistoryEntry");
-const ExtensionHistoryEntry = require("./histories/ExtensionHistoryEntry");
-const HangupCauses = require("../enums/hangupCauses");
-const IllegalArgumentError = require("../errors/IllegalArgument");
-const LinkedChannelHistoryEntry = require("./histories/LinkedChannelHistoryEntry");
-const ManagerError = require("../errors/ManagerError");
-const NoSuchChannelError = require("../errors/NoSuchChannel");
-const Peers = require("../collections/PeersCollection");
-const Variable = require("./VariableModel");
-const Variables = require("../collections/VariablesCollection");
-const AST_ACTION = require("../internal/asterisk/actionNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../internal/asteriskModel");
+const astUtil_1 = require("../internal/astUtil");
+const BridgesCollection_1 = require("../collections/BridgesCollection");
+const CallerIdModel_1 = require("./CallerIdModel");
+const ChannelStateHistoryEntry_1 = require("./histories/ChannelStateHistoryEntry");
+const channelState_1 = require("../states/channelState");
+const channelStates_1 = require("../enums/channelStates");
+const DialedChannelHistoryEntry_1 = require("./histories/DialedChannelHistoryEntry");
+const ExtensionHistoryEntry_1 = require("./histories/ExtensionHistoryEntry");
+const hangupCauses_1 = require("../enums/hangupCauses");
+const IllegalArgument_1 = require("../errors/IllegalArgument");
+const LinkedChannelHistoryEntry_1 = require("./histories/LinkedChannelHistoryEntry");
+const ManagerError_1 = require("../errors/ManagerError");
+const NoSuchChannel_1 = require("../errors/NoSuchChannel");
+const PeersCollection_1 = require("../collections/PeersCollection");
+const VariableModel_1 = require("./VariableModel");
+const VariablesCollection_1 = require("../collections/VariablesCollection");
+const actionNames_1 = require("../internal/asterisk/actionNames");
 const CAUSE_VARIABLE_NAME = "PRI_CAUSE";
 const ID = "id";
 const PROP_ACCOUNT = "account";
@@ -59,19 +60,19 @@ const P_PROP_HANGUP_REQUEST_METHOD = "hangupRequestMethod";
  * @class
  * @extends AsteriskModel
  */
-class Channel extends AsteriskModel {
+class Channel extends asteriskModel_1.default {
     constructor(attributes, options) {
         options = options || {};
         options.idAttribute = ID;
-        attributes.callerId = new CallerId(attributes.CallerIDName, attributes.CallerIDNum);
-        attributes.state = ChannelState.byValue(parseInt(attributes.ChannelState, 10));
-        attributes.connectedCallerId = new CallerId(attributes.ConnectedLineName, attributes.ConnectedLineNum);
+        attributes.callerId = new CallerIdModel_1.default(attributes.CallerIDName, attributes.CallerIDNum);
+        attributes.state = channelState_1.default.byValue(parseInt(attributes.ChannelState, 10));
+        attributes.connectedCallerId = new CallerIdModel_1.default(attributes.ConnectedLineName, attributes.ConnectedLineNum);
         super(attributes, options);
         this.setProp(P_PROP_TRACE_ID, null);
         this.setProp(P_PROP_VARS_CALLBACKS, new Map());
-        this.setProp(P_PROP_BRIDGES, new Bridges());
-        this.setProp(P_PROP_PEERS, new Peers());
-        this.setProp(P_PROP_VARIABLES, new Variables());
+        this.setProp(P_PROP_BRIDGES, new BridgesCollection_1.default());
+        this.setProp(P_PROP_PEERS, new PeersCollection_1.default());
+        this.setProp(P_PROP_VARIABLES, new VariablesCollection_1.default());
         this.setProp(P_PROP_EXTENSION_HISTORY, []);
         this.setProp(P_PROP_STATE_HISTORY, []);
         this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
@@ -114,8 +115,8 @@ class Channel extends AsteriskModel {
         if (err) {
             throw err;
         }
-        if (response instanceof ManagerError) {
-            throw new NoSuchChannelError("Channel " + self.name + ' is not available: "' + response.response);
+        if (response instanceof ManagerError_1.default) {
+            throw new NoSuchChannel_1.default("Channel " + self.name + ' is not available: "' + response.response);
         }
     }
     get name() {
@@ -229,7 +230,7 @@ class Channel extends AsteriskModel {
         return this.getProp(P_PROP_DIALED_CHANNEL);
     }
     channelDialed(date, dialedChannel) {
-        this._dialedChannelHistory.push(new DialedChannelHistoryEntry(date, dialedChannel));
+        this._dialedChannelHistory.push(new DialedChannelHistoryEntry_1.default(date, dialedChannel));
         this.setProp(P_PROP_DIALED_CHANNEL, dialedChannel);
     }
     get channelDialing() {
@@ -293,16 +294,16 @@ class Channel extends AsteriskModel {
         return false;
     }
     wasBusy() {
-        return this.wasInState(ChannelStates.BUSY) ||
+        return this.wasInState(channelStates_1.default.BUSY) ||
             (this.hangupDate &&
-                (this.hangupCause.status === HangupCauses.AST_CAUSE_BUSY || this.hangupCause.status === HangupCauses.AST_CAUSE_USER_BUSY));
+                (this.hangupCause.status === hangupCauses_1.default.AST_CAUSE_BUSY || this.hangupCause.status === hangupCauses_1.default.AST_CAUSE_USER_BUSY));
     }
     stateChanged(date, state) {
         const oldState = this.state;
         if (oldState && oldState.status === state.status) {
             return;
         }
-        this._stateHistory.push(new ChannelStateHistoryEntry(date, state));
+        this._stateHistory.push(new ChannelStateHistoryEntry_1.default(date, state));
         this.set(PROP_STATE, state);
     }
     callerIdChanged(name, nbr) {
@@ -310,7 +311,7 @@ class Channel extends AsteriskModel {
             return;
         }
         this.logger.info("callerId change: %s name: %j -> %j number: %j -> %j ", this.id, this.callerId.name, name, this.callerId.number, nbr);
-        this.set(PROP_CALLER_ID, new CallerId(name, nbr));
+        this.set(PROP_CALLER_ID, new CallerIdModel_1.default(name, nbr));
     }
     nameChanged(name) {
         if (this.name != null && this.name === name) {
@@ -331,12 +332,12 @@ class Channel extends AsteriskModel {
      * Adds a visited dialplan entry to the history.
      */
     extensionVisited(date, extension) {
-        this._extensionHistory.push(new ExtensionHistoryEntry(date, extension));
+        this._extensionHistory.push(new ExtensionHistoryEntry_1.default(date, extension));
     }
     handleHangup(date, hangupCause) {
         this.set(P_PROP_HANGUP_DATE, date);
         this.set(P_PROP_HANGUP_CAUSE, hangupCause);
-        this.stateChanged(date, ChannelState.byValue(ChannelStates.HANGUP));
+        this.stateChanged(date, channelState_1.default.byValue(channelStates_1.default.HANGUP));
     }
     callDetailRecordReceived(callDetailRecord) {
         this.setProp(P_PROP_CDR, callDetailRecord);
@@ -348,7 +349,7 @@ class Channel extends AsteriskModel {
      * Sets the channel this channel is bridged with.
      */
     channelLinked(date, linkedChannel) {
-        this._linkedChannelHistory.push(new LinkedChannelHistoryEntry(date, linkedChannel));
+        this._linkedChannelHistory.push(new LinkedChannelHistoryEntry_1.default(date, linkedChannel));
         this.setProp(P_PROP_LINKED_CHANNEL, linkedChannel);
         this.setProp(P_PROP_WAS_LINKED, true);
     }
@@ -362,7 +363,7 @@ class Channel extends AsteriskModel {
     // action methods
     hangup(cause) {
         const action = {
-            Action: AST_ACTION.HANGUP,
+            Action: actionNames_1.default.HANGUP,
             Channel: this.name
         };
         if (cause != null) {
@@ -373,7 +374,7 @@ class Channel extends AsteriskModel {
     }
     setAbsoluteTimeout(seconds) {
         const action = {
-            Action: AST_ACTION.ABSOLUTE_TIMEOUT,
+            Action: actionNames_1.default.ABSOLUTE_TIMEOUT,
             Channel: this.name,
             Timeout: seconds.toString()
         };
@@ -381,7 +382,7 @@ class Channel extends AsteriskModel {
     }
     redirect(context, exten, priority) {
         const action = {
-            Action: AST_ACTION.REDIRECT,
+            Action: actionNames_1.default.REDIRECT,
             Channel: this.name,
             Context: context,
             Exten: exten,
@@ -391,7 +392,7 @@ class Channel extends AsteriskModel {
     }
     redirectBothLegs(context, exten, priority) {
         const action = {
-            Action: AST_ACTION.REDIRECT,
+            Action: actionNames_1.default.REDIRECT,
             Channel: this.name,
             Context: context,
             Exten: exten,
@@ -407,10 +408,10 @@ class Channel extends AsteriskModel {
     }
     playDtmf(digit) {
         if (digit == null) {
-            throw new IllegalArgumentError("DTMF digit to send must not be null");
+            throw new IllegalArgument_1.default("DTMF digit to send must not be null");
         }
         const action = {
-            Action: AST_ACTION.PLAY_DTMF,
+            Action: actionNames_1.default.PLAY_DTMF,
             Channel: this.name,
             Digit: digit
         };
@@ -418,7 +419,7 @@ class Channel extends AsteriskModel {
     }
     startMonitoring(filename, format, mix) {
         const action = {
-            Action: AST_ACTION.MONITOR,
+            Action: actionNames_1.default.MONITOR,
             Channel: this.name,
             File: filename,
             Format: format,
@@ -428,10 +429,10 @@ class Channel extends AsteriskModel {
     }
     changeMonitoring(filename) {
         if (filename == null) {
-            throw new IllegalArgumentError("New filename must not be null");
+            throw new IllegalArgument_1.default("New filename must not be null");
         }
         const action = {
-            Action: AST_ACTION.CHANGE_MONITOR,
+            Action: actionNames_1.default.CHANGE_MONITOR,
             Channel: this.name,
             File: filename
         };
@@ -439,37 +440,37 @@ class Channel extends AsteriskModel {
     }
     stopMonitoring() {
         const action = {
-            Action: AST_ACTION.STOP_MONITOR,
+            Action: actionNames_1.default.STOP_MONITOR,
             Channel: this.name
         };
         this._server.sendAction(action, Channel.onServerResponse, this);
     }
     pauseMonitoring() {
         const action = {
-            Action: AST_ACTION.PAUSE_MONITOR,
+            Action: actionNames_1.default.PAUSE_MONITOR,
             Channel: this.name
         };
         this._server.sendAction(action, Channel.onServerResponse, this);
     }
     unpauseMonitoring() {
         const action = {
-            Action: AST_ACTION.UNPAUSE_MONITOR,
+            Action: actionNames_1.default.UNPAUSE_MONITOR,
             Channel: this.name
         };
         this._server.sendAction(action, Channel.onServerResponse, this);
     }
     setVariable(name, value) {
         const action = {
-            Action: AST_ACTION.SET_VAR,
+            Action: actionNames_1.default.SET_VAR,
             Channel: this.name,
             Value: value,
             Variable: name
         };
         this._server.sendAction(action, (err, response) => {
-            if (response instanceof ManagerError) {
-                throw new NoSuchChannelError("Channel " + self.name + " is not available: " + response.response, this);
+            if (response instanceof ManagerError_1.default) {
+                throw new NoSuchChannel_1.default("Channel " + self.name + " is not available: " + response.response, this);
             }
-            this._variables.add(new Variable({ Event: "channel:setVariable", name, value }));
+            this._variables.add(new VariableModel_1.default({ Event: "channel:setVariable", name, value }));
         }, this);
     }
     updateVariable(name, value, srcEvent) {
@@ -478,13 +479,13 @@ class Channel extends AsteriskModel {
             variables.get(name).value = value;
         }
         else {
-            variables.add(new Variable({ Event: (srcEvent ? srcEvent : "channel:updateVariable"), name, value }));
+            variables.add(new VariableModel_1.default({ Event: (srcEvent ? srcEvent : "channel:updateVariable"), name, value }));
         }
     }
     getVariable(name, callbackFn, context) {
         const value = this._variables.get(name);
         if (value !== undefined) {
-            AstUtil.maybeCallbackOnce(callbackFn, context, value);
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, value);
             return;
         }
         if (this._varsCallbacks.has(name)) {
@@ -493,7 +494,7 @@ class Channel extends AsteriskModel {
         else {
             this._varsCallbacks.set(name, [{ context, fn: callbackFn }]);
             const action = {
-                Action: AST_ACTION.GET_VAR,
+                Action: actionNames_1.default.GET_VAR,
                 Channel: this.name,
                 Variable: name
             };
@@ -503,12 +504,12 @@ class Channel extends AsteriskModel {
                     return;
                 }
                 if (err) {
-                    if (this.state.status !== ChannelStates.HANGUP) {
-                        const error = new NoSuchChannelError("Channel " + this.name + " is not available");
+                    if (this.state.status !== channelStates_1.default.HANGUP) {
+                        const error = new NoSuchChannel_1.default("Channel " + this.name + " is not available");
                         const callbacks = this._varsCallbacks.get(name);
                         this._varsCallbacks.delete(name);
                         callbacks.forEach((varCallback) => {
-                            AstUtil.maybeCallback(varCallback.fn, varCallback.context, error);
+                            astUtil_1.default.maybeCallback(varCallback.fn, varCallback.context, error);
                         });
                         return;
                     }
@@ -526,7 +527,7 @@ class Channel extends AsteriskModel {
                 const callbacks = this._varsCallbacks.get(name);
                 this._varsCallbacks.delete(name);
                 callbacks.forEach((varCallback) => {
-                    AstUtil.maybeCallback(varCallback.fn, varCallback.context, null, response.Value);
+                    astUtil_1.default.maybeCallback(varCallback.fn, varCallback.context, null, response.Value);
                 });
             }, this);
         }
@@ -570,5 +571,5 @@ Channel.map = new Map([
     ["state", PROP_STATE],
     ["connectedCallerId", PROP_CONNECTED_CALLER_ID]
 ]);
-module.exports = Channel;
+exports.default = Channel;
 //# sourceMappingURL=ChannelModel.js.map

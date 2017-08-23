@@ -1,6 +1,7 @@
 "use strict";
-const AsteriskHistoryEntry = require("../../internal/asteriskHistoryEntry");
-class DialedChannelHistoryEntry extends AsteriskHistoryEntry {
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskHistoryEntry_1 = require("../../internal/asteriskHistoryEntry");
+class DialedChannelHistoryEntry extends asteriskHistoryEntry_1.default {
     /**
      * Returns the channel that has been dialed.
      */
@@ -18,5 +19,5 @@ class DialedChannelHistoryEntry extends AsteriskHistoryEntry {
         return this.channel.id;
     }
 }
-module.exports = DialedChannelHistoryEntry;
+exports.default = DialedChannelHistoryEntry;
 //# sourceMappingURL=DialedChannelHistoryEntry.js.map

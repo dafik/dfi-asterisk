@@ -1,11 +1,11 @@
-import AsteriskManager = require("../internal/server/Manager");
-import Bridges = require("../collections/BridgesCollection");
-import Bridge = require("../models/BridgeModel");
-import ChannelManager = require("./ChannelManager");
+import AsteriskManager from "../internal/server/Manager";
+import Bridges from "../collections/BridgesCollection";
+import Bridge from "../models/BridgeModel";
+import ChannelManager from "./ChannelManager";
 
-import AstUtil = require("../internal/astUtil");
-import AST_EVENT = require("../internal/asterisk/eventNames");
-import AST_ACTION = require("../internal/asterisk/actionNames");
+import AstUtil from "../internal/astUtil";
+import AST_EVENT from "../internal/asterisk/eventNames";
+import AST_ACTION from "../internal/asterisk/actionNames";
 import {IDfiAMIResponseMessageMulti, IDfiCallbackResult} from "../definitions/interfaces";
 import {IDfiAstModelAttribsBridge} from "../definitions/models";
 import {
@@ -285,4 +285,4 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
     }
 }
 
-export = BridgeManager;
+export default BridgeManager;

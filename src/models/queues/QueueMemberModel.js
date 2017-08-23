@@ -1,13 +1,14 @@
 "use strict";
-const AsteriskModel = require("../../internal/asteriskModel");
-const QueueMemberState = require("../../states/queueMemberState");
-const AstUtil = require("../../internal/astUtil");
-const ManagerError = require("../../errors/ManagerError");
-const IllegalArgumentError = require("../../errors/IllegalArgument");
-const InvalidPenalty = require("../../errors/InvalidPenatly");
-const QueueMemberStates = require("../../enums/queueMemberStates");
-const NoSuchInterface = require("../../errors/NoSuchInterface");
-const AST_ACTION = require("../../internal/asterisk/actionNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../../internal/asteriskModel");
+const queueMemberState_1 = require("../../states/queueMemberState");
+const astUtil_1 = require("../../internal/astUtil");
+const ManagerError_1 = require("../../errors/ManagerError");
+const IllegalArgument_1 = require("../../errors/IllegalArgument");
+const InvalidPenatly_1 = require("../../errors/InvalidPenatly");
+const queueMemberStates_1 = require("../../enums/queueMemberStates");
+const NoSuchInterface_1 = require("../../errors/NoSuchInterface");
+const actionNames_1 = require("../../internal/asterisk/actionNames");
 const PROP_QUEUE = "queue";
 const PROP_NAME = "name";
 const PROP_INTERFACE = "interface";
@@ -24,16 +25,16 @@ const PROP_RING_IN_USE = "ringInUse";
 const P_PROP_AGENT = "agent";
 const MEMBERSHIP_STATIC = "static";
 const MEMBERSHIP_DYNAMIC = "dynamic";
-class QueueMember extends AsteriskModel {
+class QueueMember extends asteriskModel_1.default {
     constructor(attributes, options) {
         options = options || {};
         options.idAttribute = PROP_INTERFACE;
-        attributes.state = QueueMemberState.byValue(parseInt(attributes.Status, 10));
+        attributes.state = queueMemberState_1.default.byValue(parseInt(attributes.Status, 10));
         attributes.CallsTaken = parseInt(attributes.CallsTaken.toString(), 10);
         attributes.LastCall = parseInt(attributes.LastCall.toString(), 10);
         attributes.Penalty = parseInt(attributes.Penalty.toString(), 10);
-        attributes.InCall = AstUtil.isTrue(attributes.InCall.toString());
-        attributes.Paused = AstUtil.isTrue(attributes.Paused.toString());
+        attributes.InCall = astUtil_1.default.isTrue(attributes.InCall.toString());
+        attributes.Paused = astUtil_1.default.isTrue(attributes.Paused.toString());
         attributes.ringInUse = false;
         super(attributes, options);
     }
@@ -102,15 +103,15 @@ class QueueMember extends AsteriskModel {
         this.set(PROP_PENALTY, parseInt(event.Penalty, 10));
         this.set(PROP_CALLS_TAKEN, parseInt(event.CallsTaken, 10));
         this.set(PROP_LAST_CALL, parseInt(event.LastCall, 10));
-        this.set(PROP_IN_CALL, AstUtil.isTrue(event.InCall));
-        this.set(PROP_STATE, QueueMemberState.byValue(parseInt(event.Status, 10)));
-        this.set(PROP_PAUSED, AstUtil.isTrue(event.Paused));
+        this.set(PROP_IN_CALL, astUtil_1.default.isTrue(event.InCall));
+        this.set(PROP_STATE, queueMemberState_1.default.byValue(parseInt(event.Status, 10)));
+        this.set(PROP_PAUSED, astUtil_1.default.isTrue(event.Paused));
         this.set(PROP_PAUSED_REASON, event.PausedReason);
-        this.set(PROP_RING_IN_USE, AstUtil.isTrue(event.Ringinuse));
+        this.set(PROP_RING_IN_USE, astUtil_1.default.isTrue(event.Ringinuse));
     }
     setPaused(paused) {
         const action = {
-            Action: AST_ACTION.QUEUE_PAUSE,
+            Action: actionNames_1.default.QUEUE_PAUSE,
             Interface: this.interface,
             Paused: paused.toString(),
             Queue: this.queue
@@ -119,7 +120,7 @@ class QueueMember extends AsteriskModel {
     }
     setPausedAll(paused) {
         const action = {
-            Action: AST_ACTION.QUEUE_PAUSE,
+            Action: actionNames_1.default.QUEUE_PAUSE,
             Interface: this.interface,
             Paused: paused.toString()
         };
@@ -133,37 +134,37 @@ class QueueMember extends AsteriskModel {
     }
     setPenalty(penalty) {
         if (penalty < 0) {
-            throw new IllegalArgumentError("Penalty must not be negative");
+            throw new IllegalArgument_1.default("Penalty must not be negative");
         }
         const action = {
-            Action: AST_ACTION.QUEUE_PENALTY,
+            Action: actionNames_1.default.QUEUE_PENALTY,
             Interface: this.interface,
             Penalty: penalty.toString(),
             Queue: this.queue
         };
         this._server.sendAction(action, (err, response) => {
-            if (response instanceof ManagerError) {
+            if (response instanceof ManagerError_1.default) {
                 const msg = "Unable to set penalty for '" + this.interface +
                     "' on '" + this.queue + "': " + response.message;
-                throw new InvalidPenalty(msg);
+                throw new InvalidPenatly_1.default(msg);
             }
         }, this);
     }
     isAvailable() {
-        return ((this.state.status === QueueMemberStates.DEVICE_NOT_INUSE) && !this.paused);
+        return ((this.state.status === queueMemberStates_1.default.DEVICE_NOT_INUSE) && !this.paused);
     }
     _sendPauseAction(action) {
         this._server.sendAction(action, (err, response) => {
-            if (response instanceof ManagerError) {
+            if (response instanceof ManagerError_1.default) {
                 if (action.Queue != null) {
                     const msg = "Unable to change paused state for '" + action.Interface +
                         "' on '" + action.Queue + "' : " + response.message;
-                    throw new NoSuchInterface(msg, this);
+                    throw new NoSuchInterface_1.default(msg, this);
                 }
                 else {
                     const msg = "Unable to change paused state for '" + action.Interface +
                         "' on all queues: " + response.message;
-                    throw new NoSuchInterface(msg, this);
+                    throw new NoSuchInterface_1.default(msg, this);
                 }
             }
         }, this);
@@ -187,5 +188,5 @@ QueueMember.map = new Map([
     ["PausedReason", PROP_PAUSED_REASON],
     ["ringInUse", PROP_RING_IN_USE]
 ]);
-module.exports = QueueMember;
+exports.default = QueueMember;
 //# sourceMappingURL=QueueMemberModel.js.map

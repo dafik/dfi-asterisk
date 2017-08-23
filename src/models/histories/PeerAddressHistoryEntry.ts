@@ -1,5 +1,5 @@
-import AsteriskHistoryEntry = require("../../internal/asteriskHistoryEntry");
-import Ip = require("../IpAddressModel");
+import AsteriskHistoryEntry from "../../internal/asteriskHistoryEntry";
+import Ip from "../IpAddressModel";
 
 class PeerAddressHistoryEntry extends AsteriskHistoryEntry {
 
@@ -21,4 +21,4 @@ class PeerAddressHistoryEntry extends AsteriskHistoryEntry {
     }
 }
 
-export = PeerAddressHistoryEntry;
+export default PeerAddressHistoryEntry;

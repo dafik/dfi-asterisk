@@ -1,5 +1,5 @@
-import AsteriskState = require("../internal/asteriskState");
-import ChannelStates = require("../enums/channelStates");
+import AsteriskState from "../internal/asteriskState";
+import ChannelStates from "../enums/channelStates";
 
 class ChannelState extends AsteriskState {
 
@@ -17,4 +17,4 @@ class ChannelState extends AsteriskState {
 
     protected static STATES = ChannelStates;
 }
-export = ChannelState;
+export default ChannelState;

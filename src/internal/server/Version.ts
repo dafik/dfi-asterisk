@@ -35,4 +35,4 @@ class AsteriskVersion {
     }
 }
 
-export = AsteriskVersion;
+export default AsteriskVersion;

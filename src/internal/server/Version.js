@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class AsteriskVersion {
     constructor(version) {
         const fullVersion = version;
@@ -33,5 +34,5 @@ class AsteriskVersion {
         });
     }
 }
-module.exports = AsteriskVersion;
+exports.default = AsteriskVersion;
 //# sourceMappingURL=Version.js.map

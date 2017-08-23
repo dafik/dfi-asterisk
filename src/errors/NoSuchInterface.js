@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class NoSuchInterface extends Error {
     constructor(message, member) {
         super(message);
@@ -7,5 +8,5 @@ class NoSuchInterface extends Error {
         this.member = member;
     }
 }
-module.exports = NoSuchInterface;
+exports.default = NoSuchInterface;
 //# sourceMappingURL=NoSuchInterface.js.map

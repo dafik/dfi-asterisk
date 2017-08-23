@@ -1,9 +1,9 @@
-import BaseServerAction = require("./BaseAction");
-import AsteriskVersion = require("../Version");
-import AstUtil = require("../../astUtil");
-import ManagerCommunication = require("../../../errors/ManagerCommunication");
-import ManagerError = require("../../../errors/ManagerError");
-import AST_ACTION = require("../../asterisk/actionNames");
+import BaseServerAction from "./BaseAction";
+import AsteriskVersion from "../Version";
+import AstUtil from "../../astUtil";
+import ManagerCommunication from "../../../errors/ManagerCommunication";
+import ManagerError from "../../../errors/ManagerError";
+import AST_ACTION from "../../asterisk/actionNames";
 import {IDfiActionCallback, IDfiAMIResponse, IDfiAMIResponseCommand, IDfiCallbackError, IDfiGetAsteriskVersionCallback, IDfiGetFileVersionCallback} from "../../../definitions/interfaces";
 
 import {IAstActionCommand, IAstActionFilter} from "../../asterisk/actions";
@@ -170,4 +170,4 @@ class CoreServerAction extends BaseServerAction {
     }
 }
 
-export = CoreServerAction;
+export default CoreServerAction;

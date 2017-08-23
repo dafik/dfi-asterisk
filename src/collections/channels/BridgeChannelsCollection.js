@@ -1,7 +1,8 @@
 "use strict";
-const AsteriskCollection = require("../../internal/asteriskCollection");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskCollection_1 = require("../../internal/asteriskCollection");
 let channelClass;
-class BridgeChannels extends AsteriskCollection {
+class BridgeChannels extends asteriskCollection_1.default {
     constructor() {
         if (typeof channelClass !== "function") {
             channelClass = require("../../models/ChannelModel");
@@ -26,5 +27,5 @@ class BridgeChannels extends AsteriskCollection {
         return super.clear();
     }
 }
-module.exports = BridgeChannels;
+exports.default = BridgeChannels;
 //# sourceMappingURL=BridgeChannelsCollection.js.map

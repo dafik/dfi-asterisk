@@ -5,9 +5,9 @@ import DebugLogger from "local-dfi-debug-logger";
 import {getInstance as manager} from "local-dfi-linphone-endpoint-manager";
 import EndpointManger from "local-dfi-linphone-endpoint-manager/src/endpointManager";
 import {AST_ACTION} from "../index";
-import asterisk = require("./mock/asterisk-real");
-import PeerStates = require("../src/enums/peerStates");
-import DeviceStates = require("../src/enums/deviceStates");
+import DeviceStates from "../src/enums/deviceStates";
+import PeerStates from "../src/enums/peerStates";
+import asterisk from "./mock/asterisk-real";
 
 const logger = new DebugLogger("sip:factory");
 const endpointManger = manager(asterisk);

@@ -1,10 +1,10 @@
-import AsteriskModel = require("../../internal/asteriskModel");
+import AsteriskModel from "../../internal/asteriskModel";
 import {IDfiAstEventsQueue} from "../../definitions/events";
 import {IDfiAstModelAttribsQueue, IDfiAstModelAttribsQueueEntry, IDfiAstModelOptions} from "../../definitions/models";
 
-import QueueEntry = require("./QueueEntryModel");
-import QueueMember = require("./QueueMemberModel");
-import ServiceLevelTimerTask = require("../../internal/serviceLeverTimerTask");
+import QueueEntry from "./QueueEntryModel";
+import QueueMember from "./QueueMemberModel";
+import ServiceLevelTimerTask from "../../internal/serviceLeverTimerTask";
 
 const PROP_NAME = "name";
 const PROP_MAX = "max";
@@ -325,4 +325,4 @@ const EVENTS = {
     SERVICE_LEVEL_EXCEEDED: Symbol("entry:ServiceLevelExceeded")
 };
 
-export = Queue;
+export default Queue;

@@ -1,6 +1,6 @@
-import AsteriskModel = require("../../internal/asteriskModel");
+import AsteriskModel from "../../internal/asteriskModel";
 import {IDfiAstModelAttribsDialplanContext, IDfiAstModelOptions} from "../../definitions/models";
-import DialplanExtension = require("./DialplanExtensionModel");
+import DialplanExtension from "./DialplanExtensionModel";
 
 const PROP_NAME = "name";
 const PROP_REGISTRAR = "registrar";
@@ -40,4 +40,4 @@ class DialplanContext extends AsteriskModel {
 
 }
 
-export = DialplanContext;
+export default DialplanContext;

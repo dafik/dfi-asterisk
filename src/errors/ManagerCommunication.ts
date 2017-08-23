@@ -6,4 +6,4 @@ class ManagerCommunication extends Error {
         this.name = "ManagerCommunication";
     }
 }
-export = ManagerCommunication;
+export default ManagerCommunication;

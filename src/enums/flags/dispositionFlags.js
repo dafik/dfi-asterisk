@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var DispositionFlags;
 (function (DispositionFlags) {
     DispositionFlags[DispositionFlags["NO_ANSWER"] = "no_answer"] = "NO_ANSWER";
@@ -7,5 +8,5 @@ var DispositionFlags;
     DispositionFlags[DispositionFlags["ANSWERED"] = "answered"] = "ANSWERED";
     DispositionFlags[DispositionFlags["UNKNOWN"] = "unknown"] = "UNKNOWN";
 })(DispositionFlags || (DispositionFlags = {}));
-module.exports = DispositionFlags;
+exports.default = DispositionFlags;
 //# sourceMappingURL=dispositionFlags.js.map

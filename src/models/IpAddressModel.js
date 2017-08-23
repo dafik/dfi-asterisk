@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const dfiModel_1 = require("local-dfi-base/src/dfiModel");
 const PROP_IP = "ipAddress";
 const PROP_MASK = "mask";
@@ -32,5 +33,5 @@ IpAddress.map = new Map([
     ["mask", PROP_MASK],
     ["port", PROP_PORT]
 ]);
-module.exports = IpAddress;
+exports.default = IpAddress;
 //# sourceMappingURL=IpAddressModel.js.map

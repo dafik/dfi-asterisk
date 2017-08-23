@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const dfiObject_1 = require("local-dfi-base/src/dfiObject");
 const PROP_ENTRY = Symbol("entry");
 const PROP_QUEUE = Symbol("queue");
@@ -22,5 +23,5 @@ class ServiceLevelTimerTask extends dfiObject_1.default {
         this.getProp(PROP_QUEUE).fireServiceLevelExceeded(this.getProp(PROP_ENTRY));
     }
 }
-module.exports = ServiceLevelTimerTask;
+exports.default = ServiceLevelTimerTask;
 //# sourceMappingURL=serviceLeverTimerTask.js.map

@@ -1,5 +1,5 @@
-import AsteriskManager = require("../internal/server/Manager");
-import Queues = require("../collections/QueuesCollection");
+import AsteriskManager from "../internal/server/Manager";
+import Queues from "../collections/QueuesCollection";
 import {IDfiAstEventsQueueManager} from "../definitions/events";
 import {IAstActionQueueStatus} from "../internal/asterisk/actions";
 import {
@@ -16,13 +16,13 @@ import {
     IAstEventQueueParams
 } from "../internal/asterisk/events";
 
-import ChannelManager = require("./ChannelManager");
-import Queue = require("../models/queues/QueueModel");
-import QueueMember = require("../models/queues/QueueMemberModel");
-import QueueMemberState = require("../states/queueMemberState");
-import AstUtil = require("../internal/astUtil");
-import AST_EVENT = require("../internal/asterisk/eventNames");
-import AST_ACTION = require("../internal/asterisk/actionNames");
+import ChannelManager from "./ChannelManager";
+import Queue from "../models/queues/QueueModel";
+import QueueMember from "../models/queues/QueueMemberModel";
+import QueueMemberState from "../states/queueMemberState";
+import AstUtil from "../internal/astUtil";
+import AST_EVENT from "../internal/asterisk/eventNames";
+import AST_ACTION from "../internal/asterisk/actionNames";
 
 const PROP_CHANNEL_MANAGER = "channelManager";
 
@@ -373,4 +373,4 @@ const EVENTS: IDfiAstEventsQueueManager = {
     MEMBER_REMOVE: Symbol("member:remove")
 };
 
-export = QueueManager;
+export default QueueManager;

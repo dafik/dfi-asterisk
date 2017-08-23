@@ -1,15 +1,16 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const dfiObject_1 = require("local-dfi-base/src/dfiObject");
-const ModuleAction = require("./actions/ModuleAction");
-const VoiceMailServerAction = require("./actions/VoicemailAction");
-const VariableServerAction = require("./actions/VariableAction");
-const PeersServerAction = require("./actions/PeerAction");
-const OriginateServerAction = require("./actions/OriginateAction");
-const DBServerAction = require("./actions/DBAction");
-const CoreServerAction = require("./actions/CoreAction");
-const ConfigServerAction = require("./actions/ConfigAction");
-const DTMFServerAction = require("./actions/DTMFAction");
-const DialPlanServerAction = require("./actions/DialPlanActions");
+const ModuleAction_1 = require("./actions/ModuleAction");
+const VoicemailAction_1 = require("./actions/VoicemailAction");
+const VariableAction_1 = require("./actions/VariableAction");
+const PeerAction_1 = require("./actions/PeerAction");
+const OriginateAction_1 = require("./actions/OriginateAction");
+const DBAction_1 = require("./actions/DBAction");
+const CoreAction_1 = require("./actions/CoreAction");
+const ConfigAction_1 = require("./actions/ConfigAction");
+const DTMFAction_1 = require("./actions/DTMFAction");
+const DialPlanActions_1 = require("./actions/DialPlanActions");
 const PROP_VOICEMAIL = "voiceMail";
 const PROP_VARIABLE = "variable";
 const PROP_PEERS = "peers";
@@ -23,16 +24,16 @@ const PROP_DIALPLAN = "dialplan";
 class ServerActions extends dfiObject_1.default {
     constructor(server) {
         super();
-        this.setProp(PROP_VOICEMAIL, new VoiceMailServerAction(server));
-        this.setProp(PROP_VARIABLE, new VariableServerAction(server));
-        this.setProp(PROP_PEERS, new PeersServerAction(server));
-        this.setProp(PROP_ORIGINATE, new OriginateServerAction(server));
-        this.setProp(PROP_MODULE, new ModuleAction(server));
-        this.setProp(PROP_DTMF, new DTMFServerAction(server));
-        this.setProp(PROP_DB, new DBServerAction(server));
-        this.setProp(PROP_CORE, new CoreServerAction(server));
-        this.setProp(PROP_CONFIG, new ConfigServerAction(server));
-        this.setProp(PROP_DIALPLAN, new DialPlanServerAction(server));
+        this.setProp(PROP_VOICEMAIL, new VoicemailAction_1.default(server));
+        this.setProp(PROP_VARIABLE, new VariableAction_1.default(server));
+        this.setProp(PROP_PEERS, new PeerAction_1.default(server));
+        this.setProp(PROP_ORIGINATE, new OriginateAction_1.default(server));
+        this.setProp(PROP_MODULE, new ModuleAction_1.default(server));
+        this.setProp(PROP_DTMF, new DTMFAction_1.default(server));
+        this.setProp(PROP_DB, new DBAction_1.default(server));
+        this.setProp(PROP_CORE, new CoreAction_1.default(server));
+        this.setProp(PROP_CONFIG, new ConfigAction_1.default(server));
+        this.setProp(PROP_DIALPLAN, new DialPlanActions_1.default(server));
     }
     get voiceMail() {
         return this.getProp(PROP_VOICEMAIL);
@@ -65,5 +66,5 @@ class ServerActions extends dfiObject_1.default {
         return this.getProp(PROP_DIALPLAN);
     }
 }
-module.exports = ServerActions;
+exports.default = ServerActions;
 //# sourceMappingURL=Actions.js.map

@@ -1,18 +1,19 @@
 "use strict";
-const BaseServerAction = require("./BaseAction");
-const AsteriskVersion = require("../Version");
-const AstUtil = require("../../astUtil");
-const ManagerCommunication = require("../../../errors/ManagerCommunication");
-const ManagerError = require("../../../errors/ManagerError");
-const AST_ACTION = require("../../asterisk/actionNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseAction_1 = require("./BaseAction");
+const Version_1 = require("../Version");
+const astUtil_1 = require("../../astUtil");
+const ManagerCommunication_1 = require("../../../errors/ManagerCommunication");
+const ManagerError_1 = require("../../../errors/ManagerError");
+const actionNames_1 = require("../../asterisk/actionNames");
 const SHOW_VERSION_FILES_COMMAND = "core show file version";
 const SHOW_VERSION_FILES_PATTERN = /^([\S]+)\s+([0-9.]+)/;
 const SHOW_VERSION_COMMAND = "core show version";
-class CoreServerAction extends BaseServerAction {
+class CoreServerAction extends BaseAction_1.default {
     getAvailableActions(callbackFn, context) {
         this._server.logger.debug("on getAvailableActions");
         const action = {
-            Action: AST_ACTION.COMMAND,
+            Action: actionNames_1.default.COMMAND,
             Command: "manager show commands"
         };
         this._server.sendAction(action, (err, response) => {
@@ -35,7 +36,7 @@ class CoreServerAction extends BaseServerAction {
     filterRTCP(callbackFn, context) {
         this._server.logger.debug("on onAvailableActions");
         const action = {
-            Action: AST_ACTION.FILTER,
+            Action: actionNames_1.default.FILTER,
             Filter: "!Event: RTCP",
             Operation: "Add"
         };
@@ -44,27 +45,27 @@ class CoreServerAction extends BaseServerAction {
     getAsteriskVersion(callbackFn, context) {
         this._server.logger.debug("on getVersion");
         if (this._server.version) {
-            AstUtil.maybeCallback(callbackFn, context, null, this._server.version);
+            astUtil_1.default.maybeCallback(callbackFn, context, null, this._server.version);
         }
         if (!this._server.isConnected) {
-            AstUtil.maybeCallbackOnce(callbackFn, context, new ManagerCommunication("not connected"));
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, new ManagerCommunication_1.default("not connected"));
             return;
         }
         const action = {
-            Action: AST_ACTION.COMMAND,
+            Action: actionNames_1.default.COMMAND,
             Command: SHOW_VERSION_COMMAND
         };
         this._server.sendAction(action, (err, response) => {
             this._server.logger.debug("on onVersion");
             if (err) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
             }
             let tmp = response.$content.replace(/built by.+/, "").replace("Asterisk", "").trim();
             if (-1 !== tmp.indexOf("SVN")) {
                 tmp = tmp.replace("SVN-branch-", "").replace(/-r.*/, "").trim() + ".-1.-1";
             }
-            this._server.version = new AsteriskVersion(tmp);
-            AstUtil.maybeCallback(callbackFn, context, null, this._server.version);
+            this._server.version = new Version_1.default(tmp);
+            astUtil_1.default.maybeCallback(callbackFn, context, null, this._server.version);
         }, this);
     }
     getFileVersion(file, callbackFn, context) {
@@ -77,7 +78,7 @@ class CoreServerAction extends BaseServerAction {
             parts.forEach((part) => {
                 intParts.push(parseInt(part, 10));
             });
-            AstUtil.maybeCallbackOnce(callbackFn, context, null, intParts);
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, intParts);
         }
         if (this.versions) {
             onFileVersion(this.versions.get(file));
@@ -86,13 +87,13 @@ class CoreServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             const action = {
-                Action: AST_ACTION.COMMAND,
+                Action: actionNames_1.default.COMMAND,
                 Command: SHOW_VERSION_FILES_COMMAND
             };
             this._server.sendAction(action, (err, response) => {
                 if (err) {
                     this._server.logger.warn("Unable to send '" + SHOW_VERSION_FILES_COMMAND + "' command.", err);
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+                    astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
                     return;
                 }
                 if (response.$content) {
@@ -113,7 +114,7 @@ class CoreServerAction extends BaseServerAction {
         })
             .catch((error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
@@ -121,24 +122,24 @@ class CoreServerAction extends BaseServerAction {
         this._server.start()
             .then(() => {
             const action = {
-                Action: AST_ACTION.COMMAND,
+                Action: actionNames_1.default.COMMAND,
                 Command: command
             };
             this._server.sendAction(action, (err, response) => {
                 if (err) {
-                    const error = new ManagerError("Response to CommandAction(\"" + command + "\") was not a CommandResponse but " + response.Message, response);
-                    AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                    const error = new ManagerError_1.default("Response to CommandAction(\"" + command + "\") was not a CommandResponse but " + response.Message, response);
+                    astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
                 }
                 else {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, null, response);
+                    astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, response);
                 }
             }, this);
         }, (error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
 }
-module.exports = CoreServerAction;
+exports.default = CoreServerAction;
 //# sourceMappingURL=CoreAction.js.map

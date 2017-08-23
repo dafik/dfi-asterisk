@@ -1,11 +1,12 @@
 "use strict";
-const AsteriskModel = require("../internal/asteriskModel");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../internal/asteriskModel");
 const PROP_CONTEXT = "context";
 const PROP_EXTEN = "exten";
 const PROP_PRIORITY = "priority";
 const PROP_APPLICATION = "application";
 const PROP_APP_DATA = "appData";
-class Extension extends AsteriskModel {
+class Extension extends asteriskModel_1.default {
     constructor(attributes, options) {
         super(attributes, options);
     }
@@ -32,5 +33,5 @@ Extension.map = new Map([
     ["Application", PROP_APPLICATION],
     ["AppData", PROP_APP_DATA]
 ]);
-module.exports = Extension;
+exports.default = Extension;
 //# sourceMappingURL=ExtensionModel.js.map

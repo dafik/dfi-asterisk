@@ -1,6 +1,6 @@
-import BaseServerAction = require("./BaseAction");
-import AstUtil = require("../../astUtil");
-import AST_ACTION = require("../../asterisk/actionNames");
+import BaseServerAction from "./BaseAction";
+import AstUtil from "../../astUtil";
+import AST_ACTION from "../../asterisk/actionNames";
 import {IDfiAMIResponseGetvar, IDfiCallbackError, IDfiCallbackResult} from "../../../definitions/interfaces";
 
 import {format} from "util";
@@ -64,4 +64,4 @@ class VariableServerAction extends BaseServerAction {
     }
 }
 
-export = VariableServerAction;
+export default VariableServerAction;

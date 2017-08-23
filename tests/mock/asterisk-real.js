@@ -1,6 +1,7 @@
 "use strict";
-const getServerInstance = require("../../src/asteriskServerInstance");
-const asterisk = getServerInstance({
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskServerInstance_1 = require("../../src/asteriskServerInstance");
+const asterisk = asteriskServerInstance_1.default({
     config: {
         managers: {
             agent: false,
@@ -20,5 +21,5 @@ const asterisk = getServerInstance({
         }
     }
 });
-module.exports = asterisk;
+exports.default = asterisk;
 //# sourceMappingURL=asterisk-real.js.map

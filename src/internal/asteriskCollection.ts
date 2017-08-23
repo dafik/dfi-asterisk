@@ -1,4 +1,4 @@
-import AsteriskModel = require("./asteriskModel");
+import AsteriskModel from "./asteriskModel";
 import {DfiCollection} from "local-dfi-base";
 import {IDfiAstConfigCollection} from "../definitions/configs";
 
@@ -27,4 +27,4 @@ abstract class AsteriskCollection<M extends AsteriskModel> extends DfiCollection
     }
 }
 
-export = AsteriskCollection;
+export default AsteriskCollection;

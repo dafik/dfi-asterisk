@@ -1,5 +1,6 @@
 "use strict";
-const AstUtil = require("../internal/astUtil");
+Object.defineProperty(exports, "__esModule", { value: true });
+const astUtil_1 = require("../internal/astUtil");
 const dfiObject_1 = require("local-dfi-base/src/dfiObject");
 const P_PROP_NAME = "name";
 const P_PROP_NUMBER = "number";
@@ -9,13 +10,13 @@ class CallerId extends dfiObject_1.default {
      * <code>"Some Name" &lt;1234&gt;</code> to a AsteriskCallerId object.
      */
     static valueOf(s) {
-        const parsedCallerId = AstUtil.parseCallerId(s);
+        const parsedCallerId = astUtil_1.default.parseCallerId(s);
         return new CallerId(parsedCallerId[0], parsedCallerId[1]);
     }
     constructor(name, nbr) {
         super();
-        this.setProp(P_PROP_NAME, AstUtil.isNull(name) ? null : name);
-        this.setProp(P_PROP_NUMBER, AstUtil.isNull(nbr) ? null : nbr);
+        this.setProp(P_PROP_NAME, astUtil_1.default.isNull(name) ? null : name);
+        this.setProp(P_PROP_NUMBER, astUtil_1.default.isNull(nbr) ? null : nbr);
     }
     get name() {
         return this.getProp(P_PROP_NAME);
@@ -37,5 +38,5 @@ class CallerId extends dfiObject_1.default {
         return !(this.number != null ? this.number !== callerId.number : callerId.number != null);
     }
 }
-module.exports = CallerId;
+exports.default = CallerId;
 //# sourceMappingURL=CallerIdModel.js.map

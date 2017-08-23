@@ -1,26 +1,27 @@
 "use strict";
-const BaseServerAction = require("./BaseAction");
-const AstUtil = require("../../astUtil");
-const ManagerError = require("../../../errors/ManagerError");
-const ConfigFile = require("../ConfigFile");
-const AST_ACTION = require("../../asterisk/actionNames");
-class ConfigServerAction extends BaseServerAction {
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseAction_1 = require("./BaseAction");
+const astUtil_1 = require("../../astUtil");
+const ManagerError_1 = require("../../../errors/ManagerError");
+const ConfigFile_1 = require("../ConfigFile");
+const actionNames_1 = require("../../asterisk/actionNames");
+class ConfigServerAction extends BaseAction_1.default {
     getConfig(filename, callbackFn, context) {
         // TODO check OCB
         this._server.start()
             .then(() => {
             const action = {
-                Action: AST_ACTION.GET_CONFIG,
+                Action: actionNames_1.default.GET_CONFIG,
                 Filename: filename
             };
             this._server.sendAction(action, onResponse);
         }, (err) => {
-            AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
         });
         function onResponse(err, response) {
             if (err) {
-                const error = new ManagerError("Response to GetConfigAction(\"" + filename + "\") " + err.message);
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                const error = new ManagerError_1.default("Response to GetConfigAction(\"" + filename + "\") " + err.message);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
             const res = { categories: new Map() };
             let val;
@@ -56,9 +57,9 @@ class ConfigServerAction extends BaseServerAction {
             res.categories.forEach((category) => {
                 categories.set(category.name, category.lines);
             });
-            AstUtil.maybeCallbackOnce(callbackFn, context, null, new ConfigFile(filename, categories));
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, new ConfigFile_1.default(filename, categories));
         }
     }
 }
-module.exports = ConfigServerAction;
+exports.default = ConfigServerAction;
 //# sourceMappingURL=ConfigAction.js.map

@@ -5,4 +5,4 @@ enum DispositionFlags {
     ANSWERED =  "answered" as any,
     UNKNOWN =  "unknown" as any
 }
-export = DispositionFlags;
+export default DispositionFlags;

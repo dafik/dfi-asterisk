@@ -1,4 +1,4 @@
-const AST_EVENT = {
+export const AST_EVENT = {
     AGENTS: "Agents",
     AGENTS_COMPLETE: "AgentsComplete",
     AGENT_CALLED: "AgentCalled",
@@ -164,4 +164,4 @@ const AST_EVENT = {
     USER_EVENT: "UserEvent",
     VAR_SET: "VarSet"
 };
-export = AST_EVENT;
+export default AST_EVENT;

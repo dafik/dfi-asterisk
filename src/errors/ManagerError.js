@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class ManagerError extends Error {
     constructor(message, response) {
         super(message);
@@ -7,5 +8,5 @@ class ManagerError extends Error {
         this.response = response;
     }
 }
-module.exports = ManagerError;
+exports.default = ManagerError;
 //# sourceMappingURL=ManagerError.js.map

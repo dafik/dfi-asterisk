@@ -1,10 +1,11 @@
 "use strict";
-const AsteriskCollection = require("../internal/asteriskCollection");
-const Variable = require("../models/VariableModel");
-class Variables extends AsteriskCollection {
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskCollection_1 = require("../internal/asteriskCollection");
+const VariableModel_1 = require("../models/VariableModel");
+class Variables extends asteriskCollection_1.default {
     constructor() {
         super({
-            model: Variable
+            model: VariableModel_1.default
         });
     }
     has(element) {
@@ -17,5 +18,5 @@ class Variables extends AsteriskCollection {
         return super.add(element);
     }
 }
-module.exports = Variables;
+exports.default = Variables;
 //# sourceMappingURL=VariablesCollection.js.map

@@ -1,10 +1,11 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class BaseServerAction {
     constructor(server) {
         this._server = server;
     }
 }
-module.exports = BaseServerAction;
+exports.default = BaseServerAction;
 /*
 
  this._server.start()

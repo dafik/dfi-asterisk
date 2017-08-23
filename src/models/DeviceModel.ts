@@ -1,6 +1,6 @@
-import AsteriskModel = require("../internal/asteriskModel");
+import AsteriskModel from "../internal/asteriskModel";
 import {IDfiAstModelAttribsDevice, IDfiAstModelOptions} from "../definitions/models";
-import DeviceState = require("../states/deviceState");
+import DeviceState from "../states/deviceState";
 
 const PROP_DEVICE = "device";
 const PROP_STATE = "state";
@@ -38,4 +38,4 @@ class Device extends AsteriskModel {
     }
 }
 
-export = Device;
+export default Device;

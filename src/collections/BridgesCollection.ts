@@ -1,5 +1,5 @@
-import AsteriskCollection = require("../internal/asteriskCollection");
-import Bridge = require("../models/BridgeModel");
+import AsteriskCollection from "../internal/asteriskCollection";
+import Bridge from "../models/BridgeModel";
 
 class Bridges extends AsteriskCollection<Bridge> {
     constructor() {
@@ -36,4 +36,4 @@ class Bridges extends AsteriskCollection<Bridge> {
         return super.toArray();
     }
 }
-export = Bridges;
+export default Bridges;

@@ -1,6 +1,7 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const local_dfi_base_1 = require("local-dfi-base");
-const AsteriskState = require("./asteriskState");
+const asteriskState_1 = require("./asteriskState");
 let getServerInstance;
 class AsteriskModel extends local_dfi_base_1.DfiModel {
     get sourceEvent() {
@@ -8,7 +9,7 @@ class AsteriskModel extends local_dfi_base_1.DfiModel {
     }
     get _server() {
         if (typeof getServerInstance !== "function") {
-            getServerInstance = require("../asteriskServerInstance");
+            getServerInstance = require("../asteriskServerInstance").getServerInstance;
         }
         return getServerInstance();
     }
@@ -25,7 +26,7 @@ class AsteriskModel extends local_dfi_base_1.DfiModel {
         }
         this.on(AsteriskModel.events.UPDATE, (model, attribute, newValue, oldValue) => {
             if (attribute === "state") {
-                if (!(newValue instanceof AsteriskState)) {
+                if (!(newValue instanceof asteriskState_1.default)) {
                     this.logger.error("trying to set state with not State obj %s, %j ", newValue, model);
                 }
             }
@@ -63,5 +64,5 @@ class AsteriskModel extends local_dfi_base_1.DfiModel {
         }
     }
 }
-module.exports = AsteriskModel;
+exports.default = AsteriskModel;
 //# sourceMappingURL=asteriskModel.js.map

@@ -1,11 +1,11 @@
-import BaseServerAction = require("./BaseAction");
-import Channel = require("../../../models/ChannelModel");
-import AstUtil = require("../../astUtil");
-import ChannelStates = require("../../../enums/channelStates");
-import NoSuchChannel = require("../../../errors/NoSuchChannel");
-import ChannelState = require("../../../states/channelState");
-import CallerId = require("../../../models/CallerIdModel");
-import AST_ACTION = require("../../asterisk/actionNames");
+import BaseServerAction from "./BaseAction";
+import Channel from "../../../models/ChannelModel";
+import AstUtil from "../../astUtil";
+import ChannelStates from "../../../enums/channelStates";
+import NoSuchChannel from "../../../errors/NoSuchChannel";
+import ChannelState from "../../../states/channelState";
+import CallerId from "../../../models/CallerIdModel";
+import AST_ACTION from "../../asterisk/actionNames";
 import {IDfiAMIResponseOriginate, IDfiAsOriginateCallback, IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../../../definitions/interfaces";
 import {IAstActionOriginate} from "../../asterisk/actions";
 import {IAstEventOriginateResponse} from "../../asterisk/events";
@@ -378,4 +378,4 @@ class OriginateServerAction extends BaseServerAction {
     }
 }
 
-export = OriginateServerAction;
+export default OriginateServerAction;

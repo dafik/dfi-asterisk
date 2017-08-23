@@ -1,4 +1,4 @@
-import QueueMember = require("../models/queues/QueueMemberModel");
+import QueueMember from "../models/queues/QueueMemberModel";
 
 class NoSuchInterface extends Error {
     public member;
@@ -11,4 +11,4 @@ class NoSuchInterface extends Error {
         this.member = member;
     }
 }
-export = NoSuchInterface;
+export default NoSuchInterface;

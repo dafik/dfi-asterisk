@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class InvalidPenalty extends Error {
     constructor(message) {
         super(message);
@@ -6,5 +7,5 @@ class InvalidPenalty extends Error {
         this.name = "InvalidPenalty";
     }
 }
-module.exports = InvalidPenalty;
+exports.default = InvalidPenalty;
 //# sourceMappingURL=InvalidPenatly.js.map

@@ -1,14 +1,15 @@
 "use strict";
-const AsteriskModel = require("../internal/asteriskModel");
-const DeviceState = require("../states/deviceState");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../internal/asteriskModel");
+const deviceState_1 = require("../states/deviceState");
 const PROP_DEVICE = "device";
 const PROP_STATE = "state";
 const PROP_LAST_UPDATE = "lastUpdate";
-class Device extends AsteriskModel {
+class Device extends asteriskModel_1.default {
     constructor(attributes, options) {
         options = options || {};
         options.idAttribute = PROP_DEVICE;
-        attributes.State = DeviceState.byName(attributes.State);
+        attributes.State = deviceState_1.default.byName(attributes.State);
         super(attributes, options);
     }
     get device() {
@@ -28,5 +29,5 @@ Device.map = new Map([
     ["Device", PROP_DEVICE],
     ["State", PROP_STATE]
 ]);
-module.exports = Device;
+exports.default = Device;
 //# sourceMappingURL=DeviceModel.js.map

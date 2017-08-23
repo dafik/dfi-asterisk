@@ -5,13 +5,13 @@ const local_dfi_debug_logger_1 = require("local-dfi-debug-logger");
 const local_dfi_linphone_1 = require("local-dfi-linphone");
 const local_dfi_linphone_endpoint_manager_1 = require("local-dfi-linphone-endpoint-manager");
 const endpointManager_1 = require("local-dfi-linphone-endpoint-manager/src/endpointManager");
-const asterisk = require("./mock/asterisk-real");
-const AST_ACTION = require("../src/internal/asterisk/actionNames");
+const actionNames_1 = require("../src/internal/asterisk/actionNames");
+const asterisk_real_1 = require("./mock/asterisk-real");
 process.on("unhandledRejection", (reason, p) => {
     new local_dfi_debug_logger_1.default("test").debug("Unhandled Rejection at: Promise", p, "reason:", reason);
     // application specific logging, throwing an error, or other logic here
 });
-const endpointManger = local_dfi_linphone_endpoint_manager_1.getInstance(asterisk);
+const endpointManger = local_dfi_linphone_endpoint_manager_1.getInstance(asterisk_real_1.default);
 let answerTimeout = 0;
 let endCallTimeout = 0;
 const eventTimeout = 30000;
@@ -47,7 +47,7 @@ describe("calls", () => {
             try {
                 let dial1 = false;
                 let dial2 = false;
-                asterisk.start()
+                asterisk_real_1.default.start()
                     .then(() => {
                     endpointManger.on(endpointManager_1.default.events.ERROR, error);
                     endpointManger.on(endpointManager_1.default.events.ENDPOINTS_SET, finishEndpoints);
@@ -60,9 +60,9 @@ describe("calls", () => {
                     function createDialplan(technology) {
                         const ctx1 = "testSource";
                         const ctx2 = "testDestination";
-                        const add = AST_ACTION.DIALPLAN_EXTENSION_ADD;
-                        const del = AST_ACTION.DIALPLAN_EXTENSION_REMOVE;
-                        asterisk.actions.dialplan.getDialplan(ctx1, (err, dialplan) => {
+                        const add = actionNames_1.AST_ACTION.DIALPLAN_EXTENSION_ADD;
+                        const del = actionNames_1.AST_ACTION.DIALPLAN_EXTENSION_REMOVE;
+                        asterisk_real_1.default.actions.dialplan.getDialplan(ctx1, (err, dialplan) => {
                             if (err && !err.message.match(/Did not find context/)) {
                                 finishInit(err);
                                 return;
@@ -77,7 +77,7 @@ describe("calls", () => {
                                     });
                                 });
                             }
-                            asterisk.sendActions(toDelete, (err1) => {
+                            asterisk_real_1.default.sendActions(toDelete, (err1) => {
                                 if (err1) {
                                     finishInit(err1);
                                     return;
@@ -87,7 +87,7 @@ describe("calls", () => {
                                     { Action: add, Application: "Noop", ApplicationData: "1,calling testsource ${EXTEN}", Context: ctx1, Extension: "_X.", Priority: "1", Replace: "1" },
                                     { Action: add, Application: "Dial", ApplicationData: technology + "/${EXTEN},30,F", Context: ctx1, Extension: "_X.", Priority: "2", Replace: "1" }
                                 ];
-                                asterisk.sendActions(toAdd, (err2) => {
+                                asterisk_real_1.default.sendActions(toAdd, (err2) => {
                                     if (!err2) {
                                         dial1 = true;
                                         if (dial2) {
@@ -97,7 +97,7 @@ describe("calls", () => {
                                 });
                             });
                         });
-                        asterisk.actions.dialplan.getDialplan(ctx2, (err, dialplan) => {
+                        asterisk_real_1.default.actions.dialplan.getDialplan(ctx2, (err, dialplan) => {
                             if (err && !err.message.match(/Did not find context/)) {
                                 finishInit(err);
                                 return;
@@ -112,7 +112,7 @@ describe("calls", () => {
                                     });
                                 });
                             }
-                            asterisk.sendActions(toDelete, (err1) => {
+                            asterisk_real_1.default.sendActions(toDelete, (err1) => {
                                 if (err1) {
                                     finishInit(err1);
                                     return;
@@ -122,7 +122,7 @@ describe("calls", () => {
                                     { Action: add, Application: "Noop", ApplicationData: "1,calling testdestination ${EXTEN}", Context: ctx2, Extension: "_X.", Priority: "1", Replace: "1" },
                                     { Action: add, Application: "Dial", ApplicationData: technology + "/${EXTEN},30,F", Context: ctx2, Extension: "_X.", Priority: "2", Replace: "1" }
                                 ];
-                                asterisk.sendActions(toAdd, (err2) => {
+                                asterisk_real_1.default.sendActions(toAdd, (err2) => {
                                     if (!err2) {
                                         dial2 = true;
                                         if (dial1) {
@@ -248,7 +248,7 @@ describe("calls", () => {
         run();
         function makeCall(sSip, tSip) {
             const action = {
-                Action: AST_ACTION.ORIGINATE,
+                Action: actionNames_1.AST_ACTION.ORIGINATE,
                 Async: true.toString(),
                 Channel: "Local/" + sSip + "@testSource/n",
                 Context: "testDestination",
@@ -273,7 +273,7 @@ describe("calls", () => {
                     logger.info("onSuccess");
                 }
             };
-            asterisk.actions.originate.async(action, ocb, onOriginateChannel);
+            asterisk_real_1.default.actions.originate.async(action, ocb, onOriginateChannel);
         }
         function onOriginateChannel(err) {
             if (err) {

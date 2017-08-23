@@ -1,10 +1,11 @@
 "use strict";
-const AsteriskCollection = require("../../internal/asteriskCollection");
-const Dahdi = require("../../models/DahdiModel");
-class DAHDIChannels extends AsteriskCollection {
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskCollection_1 = require("../../internal/asteriskCollection");
+const DahdiModel_1 = require("../../models/DahdiModel");
+class DAHDIChannels extends asteriskCollection_1.default {
     constructor() {
         super({
-            model: Dahdi
+            model: DahdiModel_1.default
         });
     }
     get(id) {
@@ -17,5 +18,5 @@ class DAHDIChannels extends AsteriskCollection {
         return super.clear();
     }
 }
-module.exports = DAHDIChannels;
+exports.default = DAHDIChannels;
 //# sourceMappingURL=DAHDIChannelsCollection.js.map

@@ -13,28 +13,28 @@ import {
     IAstActionStopMonitor,
     IAstActionUnpauseMonitor
 } from "../internal/asterisk/actions";
-import AsteriskModel = require("../internal/asteriskModel");
-import AstUtil = require("../internal/astUtil");
-import Bridge = require("./BridgeModel");
-import Bridges = require("../collections/BridgesCollection");
-import CallerId = require("./CallerIdModel");
-import CallDetailRecord = require("./CallDetailRecordModel");
-import ChannelStateHistoryEntry = require("./histories/ChannelStateHistoryEntry");
-import ChannelState = require("../states/channelState");
-import ChannelStates = require("../enums/channelStates");
-import DialedChannelHistoryEntry = require("./histories/DialedChannelHistoryEntry");
-import Extension = require("./ExtensionModel");
-import ExtensionHistoryEntry = require("./histories/ExtensionHistoryEntry");
-import HangupCause = require("../states/hangupCause");
-import HangupCauses = require("../enums/hangupCauses");
-import IllegalArgumentError = require("../errors/IllegalArgument");
-import LinkedChannelHistoryEntry = require("./histories/LinkedChannelHistoryEntry");
-import ManagerError = require("../errors/ManagerError");
-import NoSuchChannelError = require("../errors/NoSuchChannel");
-import Peers = require("../collections/PeersCollection");
-import Variable = require("./VariableModel");
-import Variables = require("../collections/VariablesCollection");
-import AST_ACTION = require("../internal/asterisk/actionNames");
+import AsteriskModel from "../internal/asteriskModel";
+import AstUtil from "../internal/astUtil";
+import Bridge from "./BridgeModel";
+import Bridges from "../collections/BridgesCollection";
+import CallerId from "./CallerIdModel";
+import CallDetailRecord from "./CallDetailRecordModel";
+import ChannelStateHistoryEntry from "./histories/ChannelStateHistoryEntry";
+import ChannelState from "../states/channelState";
+import ChannelStates from "../enums/channelStates";
+import DialedChannelHistoryEntry from "./histories/DialedChannelHistoryEntry";
+import Extension from "./ExtensionModel";
+import ExtensionHistoryEntry from "./histories/ExtensionHistoryEntry";
+import HangupCause from "../states/hangupCause";
+import HangupCauses from "../enums/hangupCauses";
+import IllegalArgumentError from "../errors/IllegalArgument";
+import LinkedChannelHistoryEntry from "./histories/LinkedChannelHistoryEntry";
+import ManagerError from "../errors/ManagerError";
+import NoSuchChannelError from "../errors/NoSuchChannel";
+import Peers from "../collections/PeersCollection";
+import Variable from "./VariableModel";
+import Variables from "../collections/VariablesCollection";
+import AST_ACTION from "../internal/asterisk/actionNames";
 
 const CAUSE_VARIABLE_NAME = "PRI_CAUSE";
 const ID = "id";
@@ -718,4 +718,4 @@ class Channel extends AsteriskModel {
     }
 }
 
-export = Channel;
+export default Channel;

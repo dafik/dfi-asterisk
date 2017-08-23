@@ -1,5 +1,5 @@
-import Agent = require("../models/AgentModel");
-import AsteriskCollection = require("../internal/asteriskCollection");
+import Agent from "../models/AgentModel";
+import AsteriskCollection from "../internal/asteriskCollection";
 class Agents extends AsteriskCollection<Agent> {
     constructor() {
         super({
@@ -27,4 +27,4 @@ class Agents extends AsteriskCollection<Agent> {
         return super.toArray();
     }
 }
-export = Agents;
+export default Agents;

@@ -7,4 +7,4 @@ class AsteriskHistoryEntry {
         this.entry = entry;
     }
 }
-export = AsteriskHistoryEntry;
+export default AsteriskHistoryEntry;

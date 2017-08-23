@@ -1,4 +1,4 @@
-import AsteriskModel = require("../internal/asteriskModel");
+import AsteriskModel from "../internal/asteriskModel";
 import {IDfiAstModelAttribsVariable} from "../definitions/models";
 
 const PROP_NAME = "name";
@@ -29,4 +29,4 @@ class Variable extends AsteriskModel {
         this.set(PROP_VALUE, value);
     }
 }
-export = Variable;
+export default Variable;

@@ -1,7 +1,7 @@
-import BaseServerAction = require("./BaseAction");
-import AstUtil = require("../../astUtil");
-import AST_ACTION = require("../../asterisk/actionNames");
-import AST_EVENT = require("../../asterisk/eventNames");
+import BaseServerAction from "./BaseAction";
+import AstUtil from "../../astUtil";
+import AST_ACTION from "../../asterisk/actionNames";
+import AST_EVENT from "../../asterisk/eventNames";
 import {IDfiCallbackResult} from "../../../definitions/interfaces";
 import {IAstActionSIPpeers} from "../../asterisk/actions";
 import {IAstEventPeerSIPEntry} from "../../asterisk/events";
@@ -37,4 +37,4 @@ class PeersServerAction extends BaseServerAction {
     }
 }
 
-export = PeersServerAction;
+export default PeersServerAction;

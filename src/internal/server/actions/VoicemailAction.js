@@ -1,17 +1,18 @@
 "use strict";
-const BaseServerAction = require("./BaseAction");
-const AstUtil = require("../../astUtil");
-const VoiceMailbox = require("../../../models/VoiceMailboxModel");
-const AST_ACTION = require("../../asterisk/actionNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseAction_1 = require("./BaseAction");
+const astUtil_1 = require("../../astUtil");
+const VoiceMailboxModel_1 = require("../../../models/VoiceMailboxModel");
+const actionNames_1 = require("../../asterisk/actionNames");
 const SHOW_VOICEMAIL_USERS_COMMAND = "voicemail show users";
 const SHOW_VOICEMAIL_USERS_PATTERN = /^(\S+)\s+(\S+)\s+(.{25})\s+(\d+)/;
-class VoiceMailServerAction extends BaseServerAction {
+class VoiceMailServerAction extends BaseAction_1.default {
     getVoicemailBoxes(callbackFn, context) {
         this._server.start()
             .then(() => {
-            this._server.sendAction({ Action: AST_ACTION.COMMAND, Command: SHOW_VOICEMAIL_USERS_COMMAND }, (err, commandResponse) => {
+            this._server.sendAction({ Action: actionNames_1.default.COMMAND, Command: SHOW_VOICEMAIL_USERS_COMMAND }, (err, commandResponse) => {
                 if (err) {
-                    AstUtil.maybeCallback(callbackFn, context, err);
+                    astUtil_1.default.maybeCallback(callbackFn, context, err);
                     return;
                 }
                 const voicemailboxes = [];
@@ -29,7 +30,7 @@ class VoiceMailServerAction extends BaseServerAction {
                 result.forEach((line) => {
                     matcher = SHOW_VOICEMAIL_USERS_PATTERN.exec(line);
                     if (matcher && matcher.length > 0) {
-                        voicemailboxes.push(new VoiceMailbox({
+                        voicemailboxes.push(new VoiceMailboxModel_1.default({
                             Event: "voicemail show users",
                             context: matcher[1],
                             mailbox: matcher[2],
@@ -43,11 +44,11 @@ class VoiceMailServerAction extends BaseServerAction {
                 voicemailboxes.forEach((voicemailbox) => {
                     const fullName = voicemailbox.mailbox + "@" + voicemailbox.context;
                     const action = {
-                        Action: AST_ACTION.MAILBOX_COUNT, Mailbox: fullName
+                        Action: actionNames_1.default.MAILBOX_COUNT, Mailbox: fullName
                     };
                     this._server.sendAction(action, (err1, response) => {
                         if (err1) {
-                            AstUtil.maybeCallback(callbackFn, context, err1);
+                            astUtil_1.default.maybeCallback(callbackFn, context, err1);
                             return;
                         }
                         pending--;
@@ -60,15 +61,15 @@ class VoiceMailServerAction extends BaseServerAction {
                             this._server.logger.error("Response to MailboxCountAction was not a MailboxCountResponse but " + response);
                         }
                         if (pending === 0) {
-                            AstUtil.maybeCallback(callbackFn, context, null, voicemailboxes);
+                            astUtil_1.default.maybeCallback(callbackFn, context, null, voicemailboxes);
                         }
                     });
                 }, this);
             }, this);
         }, (err) => {
-            AstUtil.maybeCallback(callbackFn, context, err);
+            astUtil_1.default.maybeCallback(callbackFn, context, err);
         });
     }
 }
-module.exports = VoiceMailServerAction;
+exports.default = VoiceMailServerAction;
 //# sourceMappingURL=VoicemailAction.js.map

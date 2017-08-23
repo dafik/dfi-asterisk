@@ -1,10 +1,11 @@
 "use strict";
-const AsteriskCollection = require("../internal/asteriskCollection");
-const Queue = require("../models/queues/QueueModel");
-class Queues extends AsteriskCollection {
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskCollection_1 = require("../internal/asteriskCollection");
+const QueueModel_1 = require("../models/queues/QueueModel");
+class Queues extends asteriskCollection_1.default {
     constructor() {
         super({
-            model: Queue
+            model: QueueModel_1.default
         });
     }
     get(id) {
@@ -26,5 +27,5 @@ class Queues extends AsteriskCollection {
         return super.toArray();
     }
 }
-module.exports = Queues;
+exports.default = Queues;
 //# sourceMappingURL=QueuesCollection.js.map

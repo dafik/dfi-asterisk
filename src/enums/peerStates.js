@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /*const PJSIPStates = {
  UNAVAILABLE: "Unreachable",
  AVAILABLE: "Reachable",
@@ -39,5 +40,5 @@ var PeerStates;
     // sip
     PeerStates[PeerStates["REGISTERED"] = 10] = "REGISTERED";
 })(PeerStates || (PeerStates = {}));
-module.exports = PeerStates;
+exports.default = PeerStates;
 //# sourceMappingURL=peerStates.js.map

@@ -1,10 +1,10 @@
-import BaseServerAction = require("./BaseAction");
+import BaseServerAction from "./BaseAction";
 
-import AstUtil = require("../../astUtil");
-import DialplanContext = require("../../../models/dialplans/DialplanContextModel");
-import DialplanExtension = require("../../../models/dialplans/DialplanExtensionModel");
-import DialplanPriority = require("../../../models/dialplans/DialplanPriorityModel");
-import AST_ACTION = require("../../asterisk/actionNames");
+import AstUtil from "../../astUtil";
+import DialplanContext from "../../../models/dialplans/DialplanContextModel";
+import DialplanExtension from "../../../models/dialplans/DialplanExtensionModel";
+import DialplanPriority from "../../../models/dialplans/DialplanPriorityModel";
+import AST_ACTION from "../../asterisk/actionNames";
 import {IDfiGetDialplanCallback, IDfiGetDialplansCallback} from "../../../definitions/interfaces";
 
 import {IAstActionShowDialPlan} from "../../asterisk/actions";
@@ -83,4 +83,4 @@ class DialPlanServerAction extends BaseServerAction {
     }
 }
 
-export = DialPlanServerAction;
+export default DialPlanServerAction;

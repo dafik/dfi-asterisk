@@ -1,8 +1,8 @@
 import {IDfiAstModelAttribsCDR} from "../definitions/models";
-import AsteriskModel = require("../internal/asteriskModel");
-import AmaFlags = require("../enums/flags/amaFlags");
-import CdrFlags = require("../enums/flags/cdrFlags");
-import DispositionFlags = require("../enums/flags/dispositionFlags");
+import AsteriskModel from "../internal/asteriskModel";
+import AmaFlags from "../enums/flags/amaFlags";
+import CdrFlags from "../enums/flags/cdrFlags";
+import DispositionFlags from "../enums/flags/dispositionFlags";
 
 class CallDetailRecord extends AsteriskModel {
 
@@ -54,4 +54,4 @@ const AMA_FLAGS_MAP: Map<string, AmaFlags> = new Map([
     [CdrFlags.AMA_FLAG_UNKNOWN.toString(), AmaFlags.UNKNOWN]
 ]);
 
-export = CallDetailRecord;
+export default CallDetailRecord;

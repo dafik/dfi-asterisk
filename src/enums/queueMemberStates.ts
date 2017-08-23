@@ -1,4 +1,4 @@
-import DeviceStates = require("./deviceStates");
+import DeviceStates from "./deviceStates";
 enum QueueMemberStates  {
     DEVICE_UNKNOWN = (DeviceStates.UNKNOWN as number),
         /**
@@ -20,4 +20,4 @@ enum QueueMemberStates  {
     DEVICE_ONHOLD = DeviceStates.ONHOLD
 }
 
-export = QueueMemberStates;
+export default QueueMemberStates;

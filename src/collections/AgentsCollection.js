@@ -1,10 +1,11 @@
 "use strict";
-const Agent = require("../models/AgentModel");
-const AsteriskCollection = require("../internal/asteriskCollection");
-class Agents extends AsteriskCollection {
+Object.defineProperty(exports, "__esModule", { value: true });
+const AgentModel_1 = require("../models/AgentModel");
+const asteriskCollection_1 = require("../internal/asteriskCollection");
+class Agents extends asteriskCollection_1.default {
     constructor() {
         super({
-            model: Agent
+            model: AgentModel_1.default
         });
     }
     get(id) {
@@ -23,5 +24,5 @@ class Agents extends AsteriskCollection {
         return super.toArray();
     }
 }
-module.exports = Agents;
+exports.default = Agents;
 //# sourceMappingURL=AgentsCollection.js.map

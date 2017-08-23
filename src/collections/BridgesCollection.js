@@ -1,10 +1,11 @@
 "use strict";
-const AsteriskCollection = require("../internal/asteriskCollection");
-const Bridge = require("../models/BridgeModel");
-class Bridges extends AsteriskCollection {
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskCollection_1 = require("../internal/asteriskCollection");
+const BridgeModel_1 = require("../models/BridgeModel");
+class Bridges extends asteriskCollection_1.default {
     constructor() {
         super({
-            model: Bridge
+            model: BridgeModel_1.default
         });
     }
     has(element) {
@@ -29,5 +30,5 @@ class Bridges extends AsteriskCollection {
         return super.toArray();
     }
 }
-module.exports = Bridges;
+exports.default = Bridges;
 //# sourceMappingURL=BridgesCollection.js.map

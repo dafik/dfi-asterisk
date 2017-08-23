@@ -14,4 +14,4 @@ class ManagerError<A extends IAstAction> extends Error implements IDfiAMIRespons
     }
 }
 
-export = ManagerError;
+export default ManagerError;

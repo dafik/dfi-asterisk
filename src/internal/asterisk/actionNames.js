@@ -1,5 +1,6 @@
 "use strict";
-const AST_ACTION = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AST_ACTION = {
     ABSOLUTE_TIMEOUT: "AbsoluteTimeout",
     AGENTS: "Agents",
     AGENT_LOGOFF: "AgentLogoff",
@@ -153,5 +154,5 @@ const AST_ACTION = {
     WAIT_EVENT: "WaitEvent",
     XMPP: "xmpp"
 };
-module.exports = AST_ACTION;
+exports.default = exports.AST_ACTION;
 //# sourceMappingURL=actionNames.js.map

@@ -1,6 +1,6 @@
-import Peer = require("./PeerModel");
+import Peer from "./PeerModel";
 import {IDfiAstModelAttribsPeer, IDfiAstModelAttribsPJSIPPeer, IDfiAstModelOptions} from "../../definitions/models";
-import Ip = require("../IpAddressModel");
+import Ip from "../IpAddressModel";
 
 /*const PROP_CHANNEL_TYPE = "channelType";
  const PROP_OBJECT_NAME = "objectName";
@@ -37,4 +37,4 @@ class PJSIPPeer extends Peer {
         super(attr, options);
     }
 }
-export = PJSIPPeer;
+export default PJSIPPeer;

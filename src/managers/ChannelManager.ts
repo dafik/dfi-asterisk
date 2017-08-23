@@ -1,5 +1,7 @@
+import Channels from "../collections/channels/ChannelsCollection";
 import {IDfiAstEventsChannelManager} from "../definitions/events";
 import {IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../definitions/interfaces";
+import ChannelStates from "../enums/channelStates";
 import {IAstActionCommand} from "../internal/asterisk/actions";
 import {
     IAstEventCdr,
@@ -25,20 +27,18 @@ import {
     IAstEventUnParkedCall,
     IAstEventVarSet
 } from "../internal/asterisk/events";
-import AsteriskManager = require("../internal/server/Manager");
-import Channels = require("../collections/channels/ChannelsCollection");
-import Channel = require("../models/ChannelModel");
-import AstUtil = require("../internal/astUtil");
-import Extension = require("../models/ExtensionModel");
-import CallDetailRecord = require("../models/CallDetailRecordModel");
-import ChannelState = require("../states/channelState");
-import HangupCause = require("../states/hangupCause");
-import ChannelStates = require("../enums/channelStates");
+import AstUtil from "../internal/astUtil";
+import AsteriskManager from "../internal/server/Manager";
+import CallDetailRecord from "../models/CallDetailRecordModel";
+import Channel from "../models/ChannelModel";
+import Extension from "../models/ExtensionModel";
+import ChannelState from "../states/channelState";
+import HangupCause from "../states/hangupCause";
 
-import moment = require("moment");
+import * as moment from "moment";
+import AST_ACTION from "../internal/asterisk/actionNames";
+import AST_EVENT from "../internal/asterisk/eventNames";
 import Moment = moment.Moment;
-import AST_EVENT = require("../internal/asterisk/eventNames");
-import AST_ACTION = require("../internal/asterisk/actionNames");
 
 const REMOVAL_THRESHOLD = 5; // 15 minutes in seconds
 const VARIABLE_TRACE_ID = "AJ_TRACE_ID";
@@ -284,6 +284,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             return null;
         }
         this.channels.forEach(onForeach);
+
         /**
          *
          * @param {Channel} tmp
@@ -792,7 +793,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         }
     }
 
-    private  _addNewChannel(event) {
+    private _addNewChannel(event) {
 
         /**
          * type Channel
@@ -836,4 +837,4 @@ const EVENTS: IDfiAstEventsChannelManager = {
     CHANNEL_ADD: Symbol("channelr:add")
 };
 
-export = ChannelManager;
+export default ChannelManager;

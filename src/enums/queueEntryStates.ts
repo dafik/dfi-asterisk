@@ -8,4 +8,4 @@ enum QueueEntryStates {
          */
     LEFT = 0
 }
-export = QueueEntryStates;
+export default QueueEntryStates;

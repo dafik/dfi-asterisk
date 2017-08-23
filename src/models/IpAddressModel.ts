@@ -42,4 +42,4 @@ class IpAddress extends DfiModel {
     }
 }
 
-export = IpAddress;
+export default IpAddress;

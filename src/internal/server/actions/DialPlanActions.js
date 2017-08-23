@@ -1,46 +1,47 @@
 "use strict";
-const BaseServerAction = require("./BaseAction");
-const AstUtil = require("../../astUtil");
-const DialplanContext = require("../../../models/dialplans/DialplanContextModel");
-const DialplanExtension = require("../../../models/dialplans/DialplanExtensionModel");
-const DialplanPriority = require("../../../models/dialplans/DialplanPriorityModel");
-const AST_ACTION = require("../../asterisk/actionNames");
-class DialPlanServerAction extends BaseServerAction {
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseAction_1 = require("./BaseAction");
+const astUtil_1 = require("../../astUtil");
+const DialplanContextModel_1 = require("../../../models/dialplans/DialplanContextModel");
+const DialplanExtensionModel_1 = require("../../../models/dialplans/DialplanExtensionModel");
+const DialplanPriorityModel_1 = require("../../../models/dialplans/DialplanPriorityModel");
+const actionNames_1 = require("../../asterisk/actionNames");
+class DialPlanServerAction extends BaseAction_1.default {
     getDialplans(callbackFn, context) {
         this._server.start()
             .then(() => {
-            const action = { Action: AST_ACTION.SHOW_DIALPLAN };
+            const action = { Action: actionNames_1.default.SHOW_DIALPLAN };
             this._server.sendEventGeneratingAction(action, (err, response) => {
                 if (err) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+                    astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
                     return;
                 }
                 const dialplans = this._buildDialplans(response.events);
-                AstUtil.maybeCallbackOnce(callbackFn, context, null, dialplans);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, dialplans);
             });
         })
             .catch((error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
     getDialplan(name, callbackFn, context) {
         this._server.start()
             .then(() => {
-            const action = { Action: AST_ACTION.SHOW_DIALPLAN, Context: name };
+            const action = { Action: actionNames_1.default.SHOW_DIALPLAN, Context: name };
             this._server.sendEventGeneratingAction(action, (err, response) => {
                 if (err) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, err);
+                    astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
                     return;
                 }
                 const dialplan = this._buildDialplans(response.events).get(name);
-                AstUtil.maybeCallbackOnce(callbackFn, context, null, dialplan);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, dialplan);
             });
         })
             .catch((error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
@@ -49,22 +50,22 @@ class DialPlanServerAction extends BaseServerAction {
         events.forEach((event) => {
             let context = dialplans.get(event.Context);
             if (!context) {
-                context = new DialplanContext(event);
+                context = new DialplanContextModel_1.default(event);
                 dialplans.set(context.id, context);
             }
             let extension = context.extensions.get(event.Extension);
             if (!extension) {
-                extension = new DialplanExtension(event, { context });
+                extension = new DialplanExtensionModel_1.default(event, { context });
                 context.addExtension(extension);
             }
             let priority = extension.priorities.get(event.Priority);
             if (!priority) {
-                priority = new DialplanPriority(event, { context, extension });
+                priority = new DialplanPriorityModel_1.default(event, { context, extension });
                 extension.addPriority(priority);
             }
         });
         return dialplans;
     }
 }
-module.exports = DialPlanServerAction;
+exports.default = DialPlanServerAction;
 //# sourceMappingURL=DialPlanActions.js.map

@@ -1,5 +1,5 @@
-import AsteriskHistoryEntry = require("../../internal/asteriskHistoryEntry");
-import Channel = require("../ChannelModel");
+import AsteriskHistoryEntry from "../../internal/asteriskHistoryEntry";
+import Channel from "../ChannelModel";
 
 class DialedChannelHistoryEntry extends AsteriskHistoryEntry {
     /**
@@ -23,4 +23,4 @@ class DialedChannelHistoryEntry extends AsteriskHistoryEntry {
     }
 }
 
-export = DialedChannelHistoryEntry;
+export default DialedChannelHistoryEntry;

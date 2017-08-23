@@ -1,36 +1,37 @@
 "use strict";
-const BaseServerAction = require("./BaseAction");
-const Channel = require("../../../models/ChannelModel");
-const AstUtil = require("../../astUtil");
-const AST_ACTION = require("../../asterisk/actionNames");
-class DTMFServerAction extends BaseServerAction {
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseAction_1 = require("./BaseAction");
+const ChannelModel_1 = require("../../../models/ChannelModel");
+const astUtil_1 = require("../../astUtil");
+const actionNames_1 = require("../../asterisk/actionNames");
+class DTMFServerAction extends BaseAction_1.default {
     send(channel, digit, callbackFn, context) {
         this._server.start()
             .then(() => {
-            if (channel instanceof Channel) {
+            if (channel instanceof ChannelModel_1.default) {
                 channel = channel.name;
             }
             const action = {
-                Action: AST_ACTION.PLAY_DTMF,
+                Action: actionNames_1.default.PLAY_DTMF,
                 Channel: channel,
                 Digit: digit,
                 Duration: "1000"
             };
             this._server.sendEventGeneratingAction(action, (err, response) => {
                 if (err) {
-                    AstUtil.maybeCallback(callbackFn, context, err);
+                    astUtil_1.default.maybeCallback(callbackFn, context, err);
                     return;
                 }
                 const dbgre = response.events.length > 0 ? response.events[0] : response;
-                AstUtil.maybeCallback(callbackFn, context, null, dbgre);
+                astUtil_1.default.maybeCallback(callbackFn, context, null, dbgre);
             }, context);
         })
             .catch((error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
 }
-module.exports = DTMFServerAction;
+exports.default = DTMFServerAction;
 //# sourceMappingURL=DTMFAction.js.map

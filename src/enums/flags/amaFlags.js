@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var AmaFlags;
 (function (AmaFlags) {
     AmaFlags[AmaFlags["BILLING"] = "billing"] = "BILLING";
@@ -6,5 +7,5 @@ var AmaFlags;
     AmaFlags[AmaFlags["OMIT"] = "omit"] = "OMIT";
     AmaFlags[AmaFlags["UNKNOWN"] = "unknown"] = "UNKNOWN";
 })(AmaFlags || (AmaFlags = {}));
-module.exports = AmaFlags;
+exports.default = AmaFlags;
 //# sourceMappingURL=amaFlags.js.map

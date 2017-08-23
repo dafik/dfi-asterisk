@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class ManagerCommunication extends Error {
     constructor(message) {
         super(message);
@@ -6,5 +7,5 @@ class ManagerCommunication extends Error {
         this.name = "ManagerCommunication";
     }
 }
-module.exports = ManagerCommunication;
+exports.default = ManagerCommunication;
 //# sourceMappingURL=ManagerCommunication.js.map

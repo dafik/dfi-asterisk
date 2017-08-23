@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class NoSuchChannel extends Error {
     constructor(message, channel) {
         super(message);
@@ -7,5 +8,5 @@ class NoSuchChannel extends Error {
         this.channel = channel;
     }
 }
-module.exports = NoSuchChannel;
+exports.default = NoSuchChannel;
 //# sourceMappingURL=NoSuchChannel.js.map

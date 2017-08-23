@@ -1,7 +1,8 @@
 "use strict";
-const Peer = require("./PeerModel");
-const Ip = require("../IpAddressModel");
-const AstUtil = require("../../internal/astUtil");
+Object.defineProperty(exports, "__esModule", { value: true });
+const PeerModel_1 = require("./PeerModel");
+const IpAddressModel_1 = require("../IpAddressModel");
+const astUtil_1 = require("../../internal/astUtil");
 const PROP_CHANNEL_TYPE = "channelType";
 const PROP_OBJECT_NAME = "objectName";
 const PROP_OBJECT_USER_NAME = "objectUserName";
@@ -10,9 +11,9 @@ const PROP_DYNAMIC = "dynamic";
 const PROP_STATE = "state";
 const PROP_TRUNK = "trunk";
 const PROP_ENCRYPTION = "encryption";
-class IAXPeer extends Peer {
+class IAXPeer extends PeerModel_1.default {
     constructor(attributes, options) {
-        const attr = Object.assign({}, attributes, { Encryption: AstUtil.isTrue(attributes.Encryption) ? true : false, Trunk: AstUtil.isTrue(attributes.Trunk) ? true : false, ip: new Ip({
+        const attr = Object.assign({}, attributes, { Encryption: astUtil_1.default.isTrue(attributes.Encryption) ? true : false, Trunk: astUtil_1.default.isTrue(attributes.Trunk) ? true : false, ip: new IpAddressModel_1.default({
                 ipAddress: attributes.IPaddress,
                 mask: attributes.Mask,
                 port: parseInt(attributes.Port, 10)
@@ -20,7 +21,7 @@ class IAXPeer extends Peer {
         super(attr, options);
     }
 }
-IAXPeer.map = new Map([...Peer.map.entries()].concat([
+IAXPeer.map = new Map([...PeerModel_1.default.map.entries()].concat([
     ["Channeltype", PROP_CHANNEL_TYPE],
     ["ObjectName", PROP_OBJECT_NAME],
     ["ObjectUsername", PROP_OBJECT_USER_NAME],
@@ -30,5 +31,5 @@ IAXPeer.map = new Map([...Peer.map.entries()].concat([
     ["Encryption", PROP_ENCRYPTION],
     ["Status", PROP_STATE]
 ]));
-module.exports = IAXPeer;
+exports.default = IAXPeer;
 //# sourceMappingURL=IAXPeerModel.js.map

@@ -1,4 +1,4 @@
-import Channel = require("../models/ChannelModel");
+import Channel from "../models/ChannelModel";
 
 class NoSuchChannel extends Error {
     public channel;
@@ -11,4 +11,4 @@ class NoSuchChannel extends Error {
         this.channel = channel;
     }
 }
-export = NoSuchChannel;
+export default NoSuchChannel;

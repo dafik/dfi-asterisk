@@ -1,14 +1,15 @@
 "use strict";
-const dfiObject_1 = require("local-dfi-base/src/dfiObject");
+Object.defineProperty(exports, "__esModule", { value: true });
 const async = require("async");
-const ChannelManager = require("../../managers/ChannelManager");
-const PeerManager = require("../../managers/PeerManager");
-const DeviceManager = require("../../managers/DeviceManager");
-const BridgeManager = require("../../managers/BridgeManager");
-const DahdiManager = require("../../managers/DahdiManager");
-const QueueManager = require("../../managers/QueueManager");
-const AgentManager = require("../../managers/AgentManager");
-const AstUtil = require("../astUtil");
+const dfiObject_1 = require("local-dfi-base/src/dfiObject");
+const AgentManager_1 = require("../../managers/AgentManager");
+const BridgeManager_1 = require("../../managers/BridgeManager");
+const ChannelManager_1 = require("../../managers/ChannelManager");
+const DahdiManager_1 = require("../../managers/DahdiManager");
+const DeviceManager_1 = require("../../managers/DeviceManager");
+const PeerManager_1 = require("../../managers/PeerManager");
+const QueueManager_1 = require("../../managers/QueueManager");
+const astUtil_1 = require("../astUtil");
 const PROP_MANAGERS = "managers";
 const PROP_SERVER = "server";
 const DEVICE = "device";
@@ -26,13 +27,13 @@ class ServerManagers extends dfiObject_1.default {
         const managers = this.getProp(PROP_MANAGERS);
         const managerOptions = { managers: this, server };
         const state = server.managerConfig;
-        managers.set(DEVICE, new DeviceManager(managerOptions, state.device));
-        managers.set(PEER, new PeerManager(managerOptions, state.peer));
-        managers.set(BRIDGE, new BridgeManager(managerOptions, state.bridge));
-        managers.set(DAHDI, new DahdiManager(managerOptions, state.dahdi));
-        managers.set(CHANNEL, new ChannelManager(managerOptions, state.channel));
-        managers.set(QUEUE, new QueueManager(managerOptions, state.queue));
-        managers.set(AGENT, new AgentManager(managerOptions, state.agent));
+        managers.set(DEVICE, new DeviceManager_1.default(managerOptions, state.device));
+        managers.set(PEER, new PeerManager_1.default(managerOptions, state.peer));
+        managers.set(BRIDGE, new BridgeManager_1.default(managerOptions, state.bridge));
+        managers.set(DAHDI, new DahdiManager_1.default(managerOptions, state.dahdi));
+        managers.set(CHANNEL, new ChannelManager_1.default(managerOptions, state.channel));
+        managers.set(QUEUE, new QueueManager_1.default(managerOptions, state.queue));
+        managers.set(AGENT, new AgentManager_1.default(managerOptions, state.agent));
     }
     get channel() {
         return this.getProp(PROP_MANAGERS).get(CHANNEL);
@@ -66,7 +67,7 @@ class ServerManagers extends dfiObject_1.default {
             self.queue.restart.bind(self.queue),
             self.agent.restart.bind(self.agent)
         ], (err) => {
-            AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
         });
     }
     start(callbackFn, context) {
@@ -81,16 +82,16 @@ class ServerManagers extends dfiObject_1.default {
                 self.queue.start.bind(self.queue),
                 self.agent.start.bind(self.agent)
             ], (err) => {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
             });
         }
         catch (err) {
-            AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
         }
     }
     managers() {
         return new Map([...this.getProp(PROP_MANAGERS).entries()]);
     }
 }
-module.exports = ServerManagers;
+exports.default = ServerManagers;
 //# sourceMappingURL=Managers.js.map

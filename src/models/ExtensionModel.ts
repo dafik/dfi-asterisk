@@ -1,4 +1,4 @@
-import AsteriskModel = require("../internal/asteriskModel");
+import AsteriskModel from "../internal/asteriskModel";
 import {IDfiAstModelAttribsExtension, IDfiAstModelOptions} from "../definitions/models";
 
 const PROP_CONTEXT = "context";
@@ -42,4 +42,4 @@ class Extension extends AsteriskModel {
     }
 }
 
-export = Extension;
+export default Extension;

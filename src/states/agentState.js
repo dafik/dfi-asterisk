@@ -1,17 +1,18 @@
 "use strict";
-const AgentStates = require("../enums/agentStates");
-const AsteriskState = require("../internal/asteriskState");
-class AgentState extends AsteriskState {
+Object.defineProperty(exports, "__esModule", { value: true });
+const agentStates_1 = require("../enums/agentStates");
+const asteriskState_1 = require("../internal/asteriskState");
+class AgentState extends asteriskState_1.default {
     static byValue(status) {
-        return AsteriskState.byValue(status, this);
+        return asteriskState_1.default.byValue(status, this);
     }
     static byName(status) {
-        return AsteriskState.byName(status, this);
+        return asteriskState_1.default.byName(status, this);
     }
     static byNameOrValue(status) {
-        return AsteriskState.byNameOrValue(status, this);
+        return asteriskState_1.default.byNameOrValue(status, this);
     }
 }
-AgentState.STATES = AgentStates;
-module.exports = AgentState;
+AgentState.STATES = agentStates_1.default;
+exports.default = AgentState;
 //# sourceMappingURL=agentState.js.map

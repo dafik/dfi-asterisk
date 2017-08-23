@@ -1,7 +1,7 @@
-import AsteriskModel = require("../../internal/asteriskModel");
+import AsteriskModel from "../../internal/asteriskModel";
 import {IDfiAstModelAttribsDialplanPriority, IDfiAstModelOptionsDialplanPriority} from "../../definitions/models";
-import DialplanContext = require("./DialplanContextModel");
-import DialplanExtension = require("./DialplanExtensionModel");
+import DialplanContext from "./DialplanContextModel";
+import DialplanExtension from "./DialplanExtensionModel";
 
 const PROP_NAME = "name";
 const PROP_APPLICATION = "application";
@@ -49,4 +49,4 @@ class DialplanPriority extends AsteriskModel {
 
 }
 
-export = DialplanPriority;
+export default DialplanPriority;

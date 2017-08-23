@@ -1,6 +1,6 @@
-import Peer = require("./PeerModel");
-import Ip = require("../IpAddressModel");
-import AstUtil = require("../../internal/astUtil");
+import Peer from "./PeerModel";
+import Ip from "../IpAddressModel";
+import AstUtil from "../../internal/astUtil";
 import {IDfiAstModelAttribsSipPeer, IDfiAstModelOptions} from "../../definitions/models";
 
 const PROP_CHANNEL_TYPE = "channelType";
@@ -66,4 +66,4 @@ class SIPPeer extends Peer {
     }
 }
 
-export = SIPPeer;
+export default SIPPeer;

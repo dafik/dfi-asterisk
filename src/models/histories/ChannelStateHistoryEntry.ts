@@ -1,4 +1,4 @@
-import AsteriskHistoryEntry = require("../../internal/asteriskHistoryEntry");
+import AsteriskHistoryEntry from "../../internal/asteriskHistoryEntry";
 /**
  * An entry in the channel state history of an AsteriskChannel.
  * Creates a new instance.
@@ -37,4 +37,4 @@ class ChannelStateHistoryEntry extends AsteriskHistoryEntry {
 
 }
 
-export = ChannelStateHistoryEntry;
+export default ChannelStateHistoryEntry;

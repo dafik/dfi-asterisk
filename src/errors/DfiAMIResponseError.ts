@@ -12,4 +12,4 @@ class DfiAMIResponseError<A extends (IAstAction | IAstActionCommand)> extends Er
     }
 }
 
-export = DfiAMIResponseError;
+export default DfiAMIResponseError;

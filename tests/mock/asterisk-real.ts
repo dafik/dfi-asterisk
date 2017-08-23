@@ -1,5 +1,5 @@
-import getServerInstance = require("../../src/asteriskServerInstance");
-import AsteriskServer = require("../../src/asteriskServer");
+import AsteriskServer from "../../src/asteriskServer";
+import getServerInstance from "../../src/asteriskServerInstance";
 
 const asterisk: AsteriskServer = getServerInstance({
     config: {
@@ -23,4 +23,4 @@ const asterisk: AsteriskServer = getServerInstance({
     }
 });
 
-export =  asterisk;
+export default asterisk;

@@ -1,5 +1,5 @@
-import AsteriskCollection = require("../../internal/asteriskCollection");
-import Dahdi = require("../../models/DahdiModel");
+import AsteriskCollection from "../../internal/asteriskCollection";
+import Dahdi from "../../models/DahdiModel";
 
 class DAHDIChannels extends AsteriskCollection<Dahdi> {
 
@@ -23,4 +23,4 @@ class DAHDIChannels extends AsteriskCollection<Dahdi> {
     }
 }
 
-export = DAHDIChannels;
+export default DAHDIChannels;

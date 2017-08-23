@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Asterisk hangup cause.<p>
  * Definitions from <code>/include/asterisk/causes.h</code>.
@@ -67,5 +68,5 @@ var HangupCauses;
     HangupCauses[HangupCauses["STRANGE1"] = 79] = "STRANGE1";
     HangupCauses[HangupCauses["UNKNOWN"] = -1] = "UNKNOWN";
 })(HangupCauses || (HangupCauses = {}));
-module.exports = HangupCauses;
+exports.default = HangupCauses;
 //# sourceMappingURL=hangupCauses.js.map

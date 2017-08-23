@@ -32,4 +32,4 @@ class ConfigFile {
     }
 
 }
-export = ConfigFile;
+export default ConfigFile;

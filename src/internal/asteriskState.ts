@@ -84,4 +84,4 @@ abstract class AsteriskState {
     }
 }
 
-export = AsteriskState;
+export default AsteriskState;

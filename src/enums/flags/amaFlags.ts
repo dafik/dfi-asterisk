@@ -4,4 +4,4 @@ enum AmaFlags  {
     OMIT = "omit" as any,
     UNKNOWN = "unknown" as any
 }
-export = AmaFlags;
+export default AmaFlags;

@@ -1,32 +1,33 @@
 "use strict";
-const BaseServerAction = require("./BaseAction");
-const AstUtil = require("../../astUtil");
-const AST_ACTION = require("../../asterisk/actionNames");
-const AST_EVENT = require("../../asterisk/eventNames");
-class PeersServerAction extends BaseServerAction {
+Object.defineProperty(exports, "__esModule", { value: true });
+const BaseAction_1 = require("./BaseAction");
+const astUtil_1 = require("../../astUtil");
+const actionNames_1 = require("../../asterisk/actionNames");
+const eventNames_1 = require("../../asterisk/eventNames");
+class PeersServerAction extends BaseAction_1.default {
     getEntries(callbackFn, context) {
         this._server.start()
             .then(() => {
-            const action = { Action: AST_ACTION.SIP_PEERS };
+            const action = { Action: actionNames_1.default.SIP_PEERS };
             this._server.sendEventGeneratingAction(action, (err, response) => {
                 if (err) {
-                    AstUtil.maybeCallback(callbackFn, context, err);
+                    astUtil_1.default.maybeCallback(callbackFn, context, err);
                 }
                 const peerEntries = [];
                 response.events.forEach((event) => {
-                    if (event.Event === AST_EVENT.PEER_ENTRY) {
+                    if (event.Event === eventNames_1.default.PEER_ENTRY) {
                         peerEntries.push(event);
                     }
                 }, this);
-                AstUtil.maybeCallback(callbackFn, context, null, peerEntries);
+                astUtil_1.default.maybeCallback(callbackFn, context, null, peerEntries);
             });
         })
             .catch((error) => {
             if (error) {
-                AstUtil.maybeCallbackOnce(callbackFn, context, error);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, error);
             }
         });
     }
 }
-module.exports = PeersServerAction;
+exports.default = PeersServerAction;
 //# sourceMappingURL=PeerAction.js.map

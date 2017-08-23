@@ -1,5 +1,5 @@
-import AsteriskState = require("../internal/asteriskState");
-import PeerStates = require("../enums/peerStates");
+import AsteriskState from "../internal/asteriskState";
+import PeerStates from "../enums/peerStates";
 
 class PeerState extends AsteriskState {
 
@@ -17,4 +17,4 @@ class PeerState extends AsteriskState {
 
     protected static STATES = PeerStates;
 }
-export = PeerState;
+export default PeerState;

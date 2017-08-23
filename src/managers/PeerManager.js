@@ -1,28 +1,29 @@
 "use strict";
-const AsteriskManager = require("../internal/server/Manager");
-const Peers = require("../collections/PeersCollection");
-const Peer = require("../models/peers/PeerModel");
-const AstUtil = require("../internal/astUtil");
-const IAXPeer = require("../models/peers/IAXPeerModel");
-const PJSIPPeer = require("../models/peers/PJSIPPeerModel");
-const SIPPeer = require("../models/peers/SIPPeerModel");
-const Ip = require("../models/IpAddressModel");
-const AST_EVENT = require("../internal/asterisk/eventNames");
-const AST_ACTION = require("../internal/asterisk/actionNames");
+Object.defineProperty(exports, "__esModule", { value: true });
+const Manager_1 = require("../internal/server/Manager");
+const PeersCollection_1 = require("../collections/PeersCollection");
+const PeerModel_1 = require("../models/peers/PeerModel");
+const astUtil_1 = require("../internal/astUtil");
+const IAXPeerModel_1 = require("../models/peers/IAXPeerModel");
+const PJSIPPeerModel_1 = require("../models/peers/PJSIPPeerModel");
+const SIPPeerModel_1 = require("../models/peers/SIPPeerModel");
+const IpAddressModel_1 = require("../models/IpAddressModel");
+const eventNames_1 = require("../internal/asterisk/eventNames");
+const actionNames_1 = require("../internal/asterisk/actionNames");
 /**
  * Manages all events related to peers on Asterisk server. For correct work
  * ensure enabled PeerCalledEvents. You have to set
  * <code>eventwhencalled = yes</code> in <code>queues.conf</code>.
  *
  */
-class PeerManager extends AsteriskManager {
+class PeerManager extends Manager_1.default {
     constructor(options, state) {
-        super(options, state, new Peers());
+        super(options, state, new PeersCollection_1.default());
         if (!this.enabled) {
             return;
         }
         const map = {};
-        map[AST_EVENT.PEER_STATUS] = this._handlePeerStatusEvent;
+        map[eventNames_1.default.PEER_STATUS] = this._handlePeerStatusEvent;
         this._mapEvents(map);
     }
     get peers() {
@@ -38,27 +39,27 @@ class PeerManager extends AsteriskManager {
         function finish() {
             if (waiting === 0) {
                 this.server.logger.info('manager "PeerManager" started');
-                AstUtil.maybeCallback(callbackFn, context, null, "PeerManager");
+                astUtil_1.default.maybeCallback(callbackFn, context, null, "PeerManager");
             }
         }
         const handlePeers = (err, response) => {
             if (err && err.message !== "No endpoints found") {
-                AstUtil.maybeCallback(callbackFn, context, err);
+                astUtil_1.default.maybeCallback(callbackFn, context, err);
                 return;
             }
             if (typeof response !== "undefined") {
                 response.events.forEach((event) => {
                     let peer;
-                    if (event.Event === AST_EVENT.ENDPOINT_LIST) {
-                        peer = new PJSIPPeer(event);
+                    if (event.Event === eventNames_1.default.ENDPOINT_LIST) {
+                        peer = new PJSIPPeerModel_1.default(event);
                         this.logger.debug("Adding peer %j (%s)", peer.id, peer.state.name);
                     }
-                    else if (event.Event === AST_EVENT.PEER_ENTRY) {
+                    else if (event.Event === eventNames_1.default.PEER_ENTRY) {
                         if (event.Channeltype === "SIP") {
-                            peer = new SIPPeer(event);
+                            peer = new SIPPeerModel_1.default(event);
                         }
                         else if (event.Channeltype === "IAX") {
-                            peer = new IAXPeer(event);
+                            peer = new IAXPeerModel_1.default(event);
                         }
                         else {
                             this.logger.info('unknown peer technology: "' + event.Channeltype + '"');
@@ -76,17 +77,17 @@ class PeerManager extends AsteriskManager {
             finish.call(this);
             return;
         }
-        const action1 = { Action: AST_ACTION.IAX_PEERLIST };
+        const action1 = { Action: actionNames_1.default.IAX_PEERLIST };
         if (this.server.allowedActions.has(action1.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action1, handlePeers, this);
         }
-        const action2 = { Action: AST_ACTION.SIP_PEERS };
+        const action2 = { Action: actionNames_1.default.SIP_PEERS };
         if (this.server.allowedActions.has(action2.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action2, handlePeers, this);
         }
-        const action3 = { Action: AST_ACTION.PJSIP_SHOW_ENDPOINTS };
+        const action3 = { Action: actionNames_1.default.PJSIP_SHOW_ENDPOINTS };
         if (this.server.allowedActions.has(action3.Action)) {
             waiting++;
             this.server.sendEventGeneratingAction(action3, handlePeers, this);
@@ -109,7 +110,7 @@ class PeerManager extends AsteriskManager {
             let port = "0";
             let address = null;
             const mask = "255.255.255.255";
-            if (peer.technology === Peer.PEER_TECH.SIP) {
+            if (peer.technology === PeerModel_1.default.PEER_TECH.SIP) {
                 if (event.Address) {
                     const parts = event.Address.split(":");
                     address = parts[0];
@@ -119,13 +120,13 @@ class PeerManager extends AsteriskManager {
                     this.logger.error("no addres found %j", event);
                 }
             }
-            else if (peer.technology === Peer.PEER_TECH.IAX) {
+            else if (peer.technology === PeerModel_1.default.PEER_TECH.IAX) {
                 this.logger.error("error");
             }
-            else if (peer.technology === Peer.PEER_TECH.PJSIP) {
+            else if (peer.technology === PeerModel_1.default.PEER_TECH.PJSIP) {
                 this.logger.error("error");
             }
-            const ip = new Ip({
+            const ip = new IpAddressModel_1.default({
                 ipAddress: address,
                 mask,
                 port: parseInt(port, 10)
@@ -148,5 +149,5 @@ class PeerManager extends AsteriskManager {
         });
     }
 }
-module.exports = PeerManager;
+exports.default = PeerManager;
 //# sourceMappingURL=PeerManager.js.map

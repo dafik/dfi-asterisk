@@ -1,10 +1,11 @@
 "use strict";
-const AsteriskHistoryEntry = require("../../internal/asteriskHistoryEntry");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskHistoryEntry_1 = require("../../internal/asteriskHistoryEntry");
 /**
  * An entry in the channel state history of an AsteriskChannel
  * Creates a new instance.
  */
-class PeerStateHistoryEntry extends AsteriskHistoryEntry {
+class PeerStateHistoryEntry extends asteriskHistoryEntry_1.default {
     get state() {
         return this.entry;
     }
@@ -22,5 +23,5 @@ class PeerStateHistoryEntry extends AsteriskHistoryEntry {
         return this.stateDesc;
     }
 }
-module.exports = PeerStateHistoryEntry;
+exports.default = PeerStateHistoryEntry;
 //# sourceMappingURL=PeerStateHistoryEntry.js.map

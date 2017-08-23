@@ -1,11 +1,12 @@
 "use strict";
-const AsteriskModel = require("../../internal/asteriskModel");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../../internal/asteriskModel");
 const PROP_NAME = "name";
 const PROP_APPLICATION = "application";
 const PROP_APP_DATA = "appData";
 const P_PROP_CONTEXT = "context";
 const P_PROP_EXTENSION = "extension";
-class DialplanPriority extends AsteriskModel {
+class DialplanPriority extends asteriskModel_1.default {
     constructor(attributes, options) {
         options = options || {};
         options.idAttribute = PROP_NAME;
@@ -35,5 +36,5 @@ DialplanPriority.map = new Map([
     ["Application", PROP_APPLICATION],
     ["AppData", PROP_APP_DATA]
 ]);
-module.exports = DialplanPriority;
+exports.default = DialplanPriority;
 //# sourceMappingURL=DialplanPriorityModel.js.map

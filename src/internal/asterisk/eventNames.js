@@ -1,5 +1,6 @@
 "use strict";
-const AST_EVENT = {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AST_EVENT = {
     AGENTS: "Agents",
     AGENTS_COMPLETE: "AgentsComplete",
     AGENT_CALLED: "AgentCalled",
@@ -165,5 +166,5 @@ const AST_EVENT = {
     USER_EVENT: "UserEvent",
     VAR_SET: "VarSet"
 };
-module.exports = AST_EVENT;
+exports.default = exports.AST_EVENT;
 //# sourceMappingURL=eventNames.js.map

@@ -1,17 +1,18 @@
 "use strict";
-const AsteriskState = require("../internal/asteriskState");
-const PeerStates = require("../enums/peerStates");
-class PeerState extends AsteriskState {
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskState_1 = require("../internal/asteriskState");
+const peerStates_1 = require("../enums/peerStates");
+class PeerState extends asteriskState_1.default {
     static byValue(status) {
-        return AsteriskState.byValue(status, this);
+        return asteriskState_1.default.byValue(status, this);
     }
     static byName(status) {
-        return AsteriskState.byName(status, this);
+        return asteriskState_1.default.byName(status, this);
     }
     static byNameOrValue(status) {
-        return AsteriskState.byNameOrValue(status, this);
+        return asteriskState_1.default.byNameOrValue(status, this);
     }
 }
-PeerState.STATES = PeerStates;
-module.exports = PeerState;
+PeerState.STATES = peerStates_1.default;
+exports.default = PeerState;
 //# sourceMappingURL=peerState.js.map

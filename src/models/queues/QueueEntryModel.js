@@ -1,7 +1,8 @@
 "use strict";
-const AsteriskModel = require("../../internal/asteriskModel");
-const QueueEntryState = require("../../states/queueEntryState");
-const QueueEntryStates = require("../../enums/queueEntryStates");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../../internal/asteriskModel");
+const queueEntryState_1 = require("../../states/queueEntryState");
+const queueEntryStates_1 = require("../../enums/queueEntryStates");
 const POSITION_UNDETERMINED = -1;
 const PROP_REPORTED_POSITION = "reportedPosition";
 const PROP_POSITION = "position";
@@ -11,10 +12,10 @@ const PROP_DATE_JOINED = "dateJoined";
 const PROP_DATE_LEFT = "dateLeft";
 const PROP_STATE = "state";
 const PROP_ABANDONED = "abandoned";
-class QueueEntry extends AsteriskModel {
+class QueueEntry extends asteriskModel_1.default {
     constructor(attributes, options) {
         options = options || {};
-        attributes.state = QueueEntryState.byValue(QueueEntryStates.JOINED);
+        attributes.state = queueEntryState_1.default.byValue(queueEntryStates_1.default.JOINED);
         attributes.id = attributes.channel.id;
         attributes.abandoned = false;
         attributes.ReportedPosition = attributes.ReportedPosition ?
@@ -84,7 +85,7 @@ class QueueEntry extends AsteriskModel {
      */
     left(dateLeft) {
         this.set(PROP_DATE_LEFT, dateLeft);
-        this.set(PROP_STATE, QueueEntryState.byValue(QueueEntryStates.LEFT));
+        this.set(PROP_STATE, queueEntryState_1.default.byValue(queueEntryStates_1.default.LEFT));
     }
     get state() {
         return this.get(PROP_STATE);
@@ -99,5 +100,5 @@ QueueEntry.map = new Map([
     ["dateLeft", PROP_DATE_LEFT],
     ["state", PROP_STATE]
 ]);
-module.exports = QueueEntry;
+exports.default = QueueEntry;
 //# sourceMappingURL=QueueEntryModel.js.map

@@ -1,13 +1,13 @@
-import AsteriskManager = require("../internal/server/Manager");
+import AsteriskManager from "../internal/server/Manager";
 import {IDfiCallbackResult} from "../definitions/interfaces";
 import {IDfiAstDAHDIOnChannel} from "../definitions/models";
 import {IAstActionDAHDIShowChannels} from "../internal/asterisk/actions";
 import {IAstEventDAHDIChannel, IAstEventDAHDIShowChannels, IAstEventHangup} from "../internal/asterisk/events";
-import Dahdi = require("../models/DahdiModel");
-import AstUtil = require("../internal/astUtil");
-import DAHDIChannels = require("../collections/channels/DAHDIChannelsCollection");
-import AST_EVENT = require("../internal/asterisk/eventNames");
-import AST_ACTION = require("../internal/asterisk/actionNames");
+import Dahdi from "../models/DahdiModel";
+import AstUtil from "../internal/astUtil";
+import DAHDIChannels from "../collections/channels/DAHDIChannelsCollection";
+import AST_EVENT from "../internal/asterisk/eventNames";
+import AST_ACTION from "../internal/asterisk/actionNames";
 
 const P_PROP_CHANNELS_BY_DAHDI_ID = "channelsByDahdiId";
 const P_PROP_ACTIVE_COUNT = "activeCount";
@@ -195,4 +195,4 @@ class DahdiManager extends AsteriskManager<Dahdi, DAHDIChannels> {
         this.channels.add(dahdiChannel);
     }
 }
-export = DahdiManager;
+export default DahdiManager;

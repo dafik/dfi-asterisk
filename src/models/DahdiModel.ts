@@ -1,4 +1,4 @@
-import AsteriskModel = require("../internal/asteriskModel");
+import AsteriskModel from "../internal/asteriskModel";
 import {IDfiAstDAHDIOnChannel, IDfiAstModelAttribsDAHDI, IDfiAstModelOptions} from "../definitions/models";
 
 const PROP_NAME = "name";
@@ -45,4 +45,4 @@ class Dahdi extends AsteriskModel {
     }
 }
 
-export = Dahdi;
+export default Dahdi;

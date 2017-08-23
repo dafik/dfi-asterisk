@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var QueueEntryStates;
 (function (QueueEntryStates) {
     /**
@@ -10,5 +11,5 @@ var QueueEntryStates;
      */
     QueueEntryStates[QueueEntryStates["LEFT"] = 0] = "LEFT";
 })(QueueEntryStates || (QueueEntryStates = {}));
-module.exports = QueueEntryStates;
+exports.default = QueueEntryStates;
 //# sourceMappingURL=queueEntryStates.js.map

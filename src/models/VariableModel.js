@@ -1,8 +1,9 @@
 "use strict";
-const AsteriskModel = require("../internal/asteriskModel");
+Object.defineProperty(exports, "__esModule", { value: true });
+const asteriskModel_1 = require("../internal/asteriskModel");
 const PROP_NAME = "name";
 const PROP_VALUE = "value";
-class Variable extends AsteriskModel {
+class Variable extends asteriskModel_1.default {
     constructor(attributes, options) {
         options = options || {};
         options.idAttribute = PROP_NAME;
@@ -22,5 +23,5 @@ Variable.map = new Map([
     [PROP_NAME, PROP_NAME],
     [PROP_VALUE, PROP_VALUE]
 ]);
-module.exports = Variable;
+exports.default = Variable;
 //# sourceMappingURL=VariableModel.js.map

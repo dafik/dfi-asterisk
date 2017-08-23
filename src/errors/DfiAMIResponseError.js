@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class DfiAMIResponseError extends Error {
     constructor(message, action) {
         super(message);
@@ -7,5 +8,5 @@ class DfiAMIResponseError extends Error {
         this.action = action;
     }
 }
-module.exports = DfiAMIResponseError;
+exports.default = DfiAMIResponseError;
 //# sourceMappingURL=DfiAMIResponseError.js.map

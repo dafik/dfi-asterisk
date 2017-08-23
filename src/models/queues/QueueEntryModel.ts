@@ -1,9 +1,9 @@
-import AsteriskModel = require("../../internal/asteriskModel");
-import QueueEntryState = require("../../states/queueEntryState");
-import QueueEntryStates = require("../../enums/queueEntryStates");
+import AsteriskModel from "../../internal/asteriskModel";
+import QueueEntryState from "../../states/queueEntryState";
+import QueueEntryStates from "../../enums/queueEntryStates";
 import {IDfiAstModelAttribsQueueEntry, IDfiAstModelOptions} from "../../definitions/models";
-import Queue = require("./QueueModel");
-import Channel = require("../ChannelModel");
+import Queue from "./QueueModel";
+import Channel from "../ChannelModel";
 
 const POSITION_UNDETERMINED = -1;
 
@@ -124,4 +124,4 @@ class QueueEntry extends AsteriskModel {
     }
 }
 
-export = QueueEntry;
+export default QueueEntry;

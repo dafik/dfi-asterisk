@@ -1,16 +1,16 @@
 import DfiObject from "local-dfi-base/src/dfiObject";
-import ModuleAction = require("./actions/ModuleAction");
-import VoiceMailServerAction = require("./actions/VoicemailAction");
-import VariableServerAction = require("./actions/VariableAction");
-import PeersServerAction = require("./actions/PeerAction");
-import OriginateServerAction = require("./actions/OriginateAction");
-import DBServerAction = require("./actions/DBAction");
-import CoreServerAction = require("./actions/CoreAction");
-import ConfigServerAction = require("./actions/ConfigAction");
-import AsteriskServer = require("../../asteriskServer");
-import DTMFServerAction = require("./actions/DTMFAction");
-import ModuleServerAction = require("./actions/ModuleAction");
-import DialPlanServerAction = require("./actions/DialPlanActions");
+import ModuleAction from "./actions/ModuleAction";
+import VoiceMailServerAction from "./actions/VoicemailAction";
+import VariableServerAction from "./actions/VariableAction";
+import PeersServerAction from "./actions/PeerAction";
+import OriginateServerAction from "./actions/OriginateAction";
+import DBServerAction from "./actions/DBAction";
+import CoreServerAction from "./actions/CoreAction";
+import ConfigServerAction from "./actions/ConfigAction";
+import AsteriskServer from "../../asteriskServer";
+import DTMFServerAction from "./actions/DTMFAction";
+import ModuleServerAction from "./actions/ModuleAction";
+import DialPlanServerAction from "./actions/DialPlanActions";
 
 const PROP_VOICEMAIL = "voiceMail";
 const PROP_VARIABLE = "variable";
@@ -81,4 +81,4 @@ class ServerActions extends DfiObject {
     }
 }
 
-export = ServerActions;
+export default ServerActions;

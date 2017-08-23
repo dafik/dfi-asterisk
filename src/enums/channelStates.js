@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var ChannelStates;
 (function (ChannelStates) {
     /*Channel is down and available */
@@ -28,5 +29,5 @@ var ChannelStates;
      */
     ChannelStates[ChannelStates["HANGUP"] = -1] = "HANGUP";
 })(ChannelStates || (ChannelStates = {}));
-module.exports = ChannelStates;
+exports.default = ChannelStates;
 //# sourceMappingURL=channelStates.js.map

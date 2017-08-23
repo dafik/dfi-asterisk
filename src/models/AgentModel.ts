@@ -1,10 +1,10 @@
-import AsteriskModel = require("../internal/asteriskModel");
-import Queues = require("../collections/QueuesCollection");
+import AsteriskModel from "../internal/asteriskModel";
+import Queues from "../collections/QueuesCollection";
 import {IDfiAstModelAttribsAgent, IDfiAstModelOptions} from "../definitions/models";
-import AgentState = require("../states/agentState");
-import Peer = require("./peers/PeerModel");
-import Device = require("./DeviceModel");
-import Queue = require("./queues/QueueModel");
+import AgentState from "../states/agentState";
+import Peer from "./peers/PeerModel";
+import Device from "./DeviceModel";
+import Queue from "./queues/QueueModel";
 
 const PROP_NAME = "name";
 const PROP_DEVICE = "device";
@@ -63,4 +63,4 @@ class Agent extends AsteriskModel {
     }
 }
 
-export = Agent;
+export default Agent;

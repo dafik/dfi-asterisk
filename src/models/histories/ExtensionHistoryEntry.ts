@@ -1,5 +1,5 @@
-import AsteriskHistoryEntry = require("../../internal/asteriskHistoryEntry");
-import Extension = require("../ExtensionModel");
+import AsteriskHistoryEntry from "../../internal/asteriskHistoryEntry";
+import Extension from "../ExtensionModel";
 
 class ExtensionHistoryEntry extends AsteriskHistoryEntry {
 
@@ -11,4 +11,4 @@ class ExtensionHistoryEntry extends AsteriskHistoryEntry {
         return this.extension.toJSON();
     }
 }
-export = ExtensionHistoryEntry;
+export default ExtensionHistoryEntry;

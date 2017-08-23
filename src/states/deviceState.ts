@@ -1,5 +1,5 @@
-import AsteriskState = require("../internal/asteriskState");
-import DeviceStates = require("../enums/deviceStates");
+import AsteriskState from "../internal/asteriskState";
+import DeviceStates from "../enums/deviceStates";
 
 class DeviceState extends AsteriskState {
 
@@ -17,4 +17,4 @@ class DeviceState extends AsteriskState {
 
     protected static STATES = DeviceStates;
 }
-export = DeviceState;
+export default DeviceState;

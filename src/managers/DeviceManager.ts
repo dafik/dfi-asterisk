@@ -1,12 +1,12 @@
-import AsteriskManager = require("../internal/server/Manager");
-import Devices = require("../collections/DevicesCollection");
+import AsteriskManager from "../internal/server/Manager";
+import Devices from "../collections/DevicesCollection";
 import {IDfiAMIResponseMessageMulti, IDfiCallbackResult} from "../definitions/interfaces";
 import {IAstEventDeviceStateChange} from "../internal/asterisk/events";
-import Device = require("../models/DeviceModel");
-import AstUtil = require("../internal/astUtil");
-import DeviceState = require("../states/deviceState");
-import AST_EVENT = require("../internal/asterisk/eventNames");
-import AST_ACTION = require("../internal/asterisk/actionNames");
+import Device from "../models/DeviceModel";
+import AstUtil from "../internal/astUtil";
+import DeviceState from "../states/deviceState";
+import AST_EVENT from "../internal/asterisk/eventNames";
+import AST_ACTION from "../internal/asterisk/actionNames";
 
 class DeviceManager extends AsteriskManager<Device, Devices> {
 
@@ -97,4 +97,4 @@ class DeviceManager extends AsteriskManager<Device, Devices> {
     }
 }
 
-export = DeviceManager;
+export default DeviceManager;

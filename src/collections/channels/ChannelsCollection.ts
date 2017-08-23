@@ -1,6 +1,6 @@
-import AsteriskCollection = require("../../internal/asteriskCollection");
-import Channel = require("../../models/ChannelModel");
-import AST_EVENT = require("../../internal/asterisk/eventNames");
+import AsteriskCollection from "../../internal/asteriskCollection";
+import Channel from "../../models/ChannelModel";
+import AST_EVENT from "../../internal/asterisk/eventNames";
 
 const SEPARATOR = "/";
 const P_PROP_CHANNELS_BY_NAME = "byName";
@@ -86,4 +86,4 @@ class Channels extends AsteriskCollection<Channel> {
     }
 }
 
-export = Channels;
+export default Channels;
