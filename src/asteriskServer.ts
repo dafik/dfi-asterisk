@@ -1,4 +1,4 @@
-import {IDfiAstConfigAstManager, IDfiAstConfigAstManagerConfig, IDfiAstConfigAstServer, IDfiAstConfigServerOptions} from "./definitions/configs";
+import {IDfiAstConfigAstManager, IDfiAstConfigAstManagerConfig, IDfiAstConfigAstOriginate, IDfiAstConfigAstServer, IDfiAstConfigServerOptions} from "./definitions/configs";
 import {IDfiAstEventsServer} from "./definitions/events";
 import {
     IDfiActionCallback,
@@ -101,6 +101,10 @@ class AsteriskServer extends DfiEventObject {
 
     get managerConfig(): IDfiAstConfigAstManager {
         return Object.assign(Object.create(null), this.getProp(PROP_CONFIG).managers);
+    }
+
+    get originateConfig(): IDfiAstConfigAstOriginate {
+        return {prefix: this.getProp(PROP_CONFIG).originatePrefix || "AN"};
     }
 
     set version(version: AsteriskVersion) {

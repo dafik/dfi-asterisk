@@ -64,6 +64,9 @@ class AsteriskServer extends local_dfi_base_1.DfiEventObject {
     get managerConfig() {
         return Object.assign(Object.create(null), this.getProp(PROP_CONFIG).managers);
     }
+    get originateConfig() {
+        return { prefix: this.getProp(PROP_CONFIG).originatePrefix || "AN" };
+    }
     set version(version) {
         this.setProp(PROP_VERSION, version);
     }

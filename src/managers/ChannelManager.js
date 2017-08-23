@@ -13,13 +13,15 @@ const moment = require("moment");
 const actionNames_1 = require("../internal/asterisk/actionNames");
 const eventNames_1 = require("../internal/asterisk/eventNames");
 const REMOVAL_THRESHOLD = 5; // 15 minutes in seconds
-const VARIABLE_TRACE_ID = "AJ_TRACE_ID";
+let VARIABLE_TRACE_ID = "AJ_TRACE_ID";
 class ChannelManager extends Manager_1.default {
     static get events() {
         return EVENTS;
     }
     constructor(options, state) {
         super(options, state, new ChannelsCollection_1.default());
+        const prefix = this.server.originateConfig.prefix;
+        VARIABLE_TRACE_ID = prefix + "_TRACE_ID";
         this.setProp("technologyCount", {});
         if (!this.enabled) {
             return;

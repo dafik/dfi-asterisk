@@ -1,16 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseAction_1 = require("./BaseAction");
-const ChannelModel_1 = require("../../../models/ChannelModel");
-const astUtil_1 = require("../../astUtil");
 const channelStates_1 = require("../../../enums/channelStates");
 const NoSuchChannel_1 = require("../../../errors/NoSuchChannel");
+const ChannelModel_1 = require("../../../models/ChannelModel");
 const actionNames_1 = require("../../asterisk/actionNames");
-const VARIABLE_TRACE_ID = "AJ_TRACE_ID";
-const ACTION_ID_PREFIX_ORIGINATE = "AJ_ORIGINATE_";
+const astUtil_1 = require("../../astUtil");
+const BaseAction_1 = require("./BaseAction");
+let VARIABLE_TRACE_ID = "AN_TRACE_ID";
+let ACTION_ID_PREFIX_ORIGINATE = "AN_ORIGINATE_";
 class OriginateServerAction extends BaseAction_1.default {
     constructor(server) {
         super(server);
+        const prefix = server.originateConfig.prefix;
+        VARIABLE_TRACE_ID = prefix + "_TRACE_ID";
+        ACTION_ID_PREFIX_ORIGINATE = prefix + "_ORIGINATE_";
         this._originateCallbacks = new Map();
     }
     getOriginateCallbackDataByTraceId(traceId) {

@@ -17,6 +17,7 @@ export interface IDfiAstConfigServerOptions extends IDfiBaseObjectConfig {
 export interface IDfiAstConfigServer extends Object {
     server: IDfiAstConfigAstServer;
     managers?: IDfiAstConfigAstManagerConfig;
+    originatePrefix?: string;
 }
 
 export interface IDfiAstConfigAstServer extends Object {
@@ -45,6 +46,10 @@ export interface IDfiAstConfigAstManager extends Object {
     dahdi: boolean;
     queue: boolean;
     agent: boolean;
+}
+
+export interface IDfiAstConfigAstOriginate extends Object {
+    prefix: string;
 }
 
 export interface IDfiAstManagerOptions extends IDfiBaseObjectConfig {

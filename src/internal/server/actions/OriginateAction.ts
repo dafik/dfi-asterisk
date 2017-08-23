@@ -1,23 +1,28 @@
-import BaseServerAction from "./BaseAction";
-import Channel from "../../../models/ChannelModel";
-import AstUtil from "../../astUtil";
+import AsteriskServer from "../../../asteriskServer";
+import {IDfiAMIResponseOriginate, IDfiAsOriginateCallback, IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../../../definitions/interfaces";
 import ChannelStates from "../../../enums/channelStates";
 import NoSuchChannel from "../../../errors/NoSuchChannel";
-import ChannelState from "../../../states/channelState";
 import CallerId from "../../../models/CallerIdModel";
+import Channel from "../../../models/ChannelModel";
+import ChannelState from "../../../states/channelState";
 import AST_ACTION from "../../asterisk/actionNames";
-import {IDfiAMIResponseOriginate, IDfiAsOriginateCallback, IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../../../definitions/interfaces";
 import {IAstActionOriginate} from "../../asterisk/actions";
 import {IAstEventOriginateResponse} from "../../asterisk/events";
+import AstUtil from "../../astUtil";
+import BaseServerAction from "./BaseAction";
 
-const VARIABLE_TRACE_ID = "AJ_TRACE_ID";
-const ACTION_ID_PREFIX_ORIGINATE = "AJ_ORIGINATE_";
+let VARIABLE_TRACE_ID = "AN_TRACE_ID";
+let ACTION_ID_PREFIX_ORIGINATE = "AN_ORIGINATE_";
 
 class OriginateServerAction extends BaseServerAction {
     private _originateCallbacks: Map<string, IDfiAstOriginateCallbackData>;
 
-    constructor(server) {
+    constructor(server: AsteriskServer) {
         super(server);
+        const prefix = server.originateConfig.prefix;
+        VARIABLE_TRACE_ID = prefix + "_TRACE_ID";
+        ACTION_ID_PREFIX_ORIGINATE = prefix + "_ORIGINATE_";
+
         this._originateCallbacks = new Map();
     }
 

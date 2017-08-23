@@ -41,7 +41,7 @@ import AST_EVENT from "../internal/asterisk/eventNames";
 import Moment = moment.Moment;
 
 const REMOVAL_THRESHOLD = 5; // 15 minutes in seconds
-const VARIABLE_TRACE_ID = "AJ_TRACE_ID";
+let VARIABLE_TRACE_ID = "AJ_TRACE_ID";
 
 class ChannelManager extends AsteriskManager<Channel, Channels> {
 
@@ -51,6 +51,9 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
 
     constructor(options, state) {
         super(options, state, new Channels());
+
+        const prefix = this.server.originateConfig.prefix;
+        VARIABLE_TRACE_ID = prefix + "_TRACE_ID";
 
         this.setProp("technologyCount", {});
 
