@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const AgentModel_1 = require("../models/AgentModel");
 const asteriskCollection_1 = require("../internal/asteriskCollection");
+const AgentModel_1 = require("../models/AgentModel");
 class Agents extends asteriskCollection_1.default {
     constructor() {
         super({

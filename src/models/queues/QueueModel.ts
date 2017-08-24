@@ -1,10 +1,10 @@
-import AsteriskModel from "../../internal/asteriskModel";
 import {IDfiAstEventsQueue} from "../../definitions/events";
 import {IDfiAstModelAttribsQueue, IDfiAstModelAttribsQueueEntry, IDfiAstModelOptions} from "../../definitions/models";
+import AsteriskModel from "../../internal/asteriskModel";
 
+import ServiceLevelTimerTask from "../../internal/serviceLeverTimerTask";
 import QueueEntry from "./QueueEntryModel";
 import QueueMember from "./QueueMemberModel";
-import ServiceLevelTimerTask from "../../internal/serviceLeverTimerTask";
 
 const PROP_NAME = "name";
 const PROP_MAX = "max";

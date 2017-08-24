@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const asteriskModel_1 = require("../internal/asteriskModel");
 const QueuesCollection_1 = require("../collections/QueuesCollection");
+const asteriskModel_1 = require("../internal/asteriskModel");
 const PROP_NAME = "name";
 const PROP_DEVICE = "device";
 const PROP_PEER = "peer";

@@ -1,5 +1,5 @@
-import AsteriskModel from "../../internal/asteriskModel";
 import {IDfiAstModelAttribsDialplanContext, IDfiAstModelOptions} from "../../definitions/models";
+import AsteriskModel from "../../internal/asteriskModel";
 import DialplanExtension from "./DialplanExtensionModel";
 
 const PROP_NAME = "name";

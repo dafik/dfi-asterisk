@@ -1,12 +1,13 @@
-import AsteriskManager from "../internal/server/Manager";
 import Devices from "../collections/DevicesCollection";
 import {IDfiAMIResponseMessageMulti, IDfiCallbackResult} from "../definitions/interfaces";
-import {IAstEventDeviceStateChange} from "../internal/asterisk/events";
-import Device from "../models/DeviceModel";
-import AstUtil from "../internal/astUtil";
-import DeviceState from "../states/deviceState";
-import AST_EVENT from "../internal/asterisk/eventNames";
+import NotAllowedAction from "../errors/NotAllowedAction";
 import AST_ACTION from "../internal/asterisk/actionNames";
+import AST_EVENT from "../internal/asterisk/eventNames";
+import {IAstEventDeviceStateChange} from "../internal/asterisk/events";
+import AstUtil from "../internal/astUtil";
+import AsteriskManager from "../internal/server/Manager";
+import Device from "../models/DeviceModel";
+import DeviceState from "../states/deviceState";
 
 class DeviceManager extends AsteriskManager<Device, Devices> {
 
@@ -26,7 +27,7 @@ class DeviceManager extends AsteriskManager<Device, Devices> {
         return this._collection;
     }
 
-    public start(callbackFn: IDfiCallbackResult, context?) {
+    public start(callbackFn: IDfiCallbackResult<Error, "DeviceManager">, context?) {
 
         function finish() {
             this.server.logger.info('manager "DeviceManager" started');
@@ -38,9 +39,9 @@ class DeviceManager extends AsteriskManager<Device, Devices> {
         if (!this.enabled) {
             finish.call(this);
         } else {
-            this.server.sendEventGeneratingAction({Action: AST_ACTION.DEVICE_STATE_LIST}, (err: Error|null, re: IDfiAMIResponseMessageMulti<IAstEventDeviceStateChange>) => {
+            this.server.sendEventGeneratingAction({Action: AST_ACTION.DEVICE_STATE_LIST}, (err: Error | null, re: IDfiAMIResponseMessageMulti<IAstEventDeviceStateChange, Error, {}>) => {
                 if (err) {
-                    if (!err.message.match("Not Allowed Action")) {
+                    if (!(err instanceof NotAllowedAction)) {
                         AstUtil.maybeCallbackOnce(callbackFn, context, err);
                         return;
                     }

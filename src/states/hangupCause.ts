@@ -1,5 +1,5 @@
-import AsteriskState from "../internal/asteriskState";
 import HangupCauses from "../enums/hangupCauses";
+import AsteriskState from "../internal/asteriskState";
 
 class HangupCause extends AsteriskState {
 

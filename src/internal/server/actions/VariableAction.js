@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseAction_1 = require("./BaseAction");
-const astUtil_1 = require("../../astUtil");
-const actionNames_1 = require("../../asterisk/actionNames");
 const util_1 = require("util");
+const actionNames_1 = require("../../asterisk/actionNames");
+const astUtil_1 = require("../../astUtil");
+const BaseAction_1 = require("./BaseAction");
 class VariableServerAction extends BaseAction_1.default {
     getGlobalVariable(variable, callbackFn, context) {
         this._server.start()

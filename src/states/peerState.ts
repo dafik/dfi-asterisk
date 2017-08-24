@@ -1,5 +1,5 @@
-import AsteriskState from "../internal/asteriskState";
 import PeerStates from "../enums/peerStates";
+import AsteriskState from "../internal/asteriskState";
 
 class PeerState extends AsteriskState {
 

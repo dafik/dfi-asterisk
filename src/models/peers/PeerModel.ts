@@ -1,15 +1,15 @@
-import AsteriskModel from "../../internal/asteriskModel";
-import AstUtil from "../../internal/astUtil";
-import PeerStateHistoryEntry from "../histories/PeerStateHistoryEntry";
+import PeerChannels from "../../collections/channels/PeerChannelsCollection";
 import {IDfiAstEventsPeer} from "../../definitions/events";
 import {IDfiAstModelAttribsPeer, IDfiAstModelOptions} from "../../definitions/models";
 import PeerStates from "../../enums/peerStates";
-import Ip from "../IpAddressModel";
-import Device from "../DeviceModel";
-import PeerChannels from "../../collections/channels/PeerChannelsCollection";
+import AsteriskModel from "../../internal/asteriskModel";
+import AstUtil from "../../internal/astUtil";
 import PeerState from "../../states/peerState";
 import Channel from "../ChannelModel";
+import Device from "../DeviceModel";
 import PeerAddressHistoryEntry from "../histories/PeerAddressHistoryEntry";
+import PeerStateHistoryEntry from "../histories/PeerStateHistoryEntry";
+import Ip from "../IpAddressModel";
 
 const PROP_TECHNOLOGY = "technology";
 const PROP_IP = "ip";
@@ -51,7 +51,7 @@ class Peer extends AsteriskModel {
     constructor(attributes: IDfiAstModelAttribsPeer, options?: IDfiAstModelOptions) {
 
         attributes.id = attributes.technology + "/" + attributes.ObjectName;
-        attributes.Dynamic = AstUtil.isTrue(attributes.Dynamic) ? true : false;
+        attributes.Dynamic = AstUtil.isTrue(attributes.Dynamic);
 
         if (attributes.Status) {
             const status = attributes.Status;

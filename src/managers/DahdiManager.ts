@@ -1,13 +1,13 @@
-import AsteriskManager from "../internal/server/Manager";
+import DAHDIChannels from "../collections/channels/DAHDIChannelsCollection";
 import {IDfiCallbackResult} from "../definitions/interfaces";
 import {IDfiAstDAHDIOnChannel} from "../definitions/models";
-import {IAstActionDAHDIShowChannels} from "../internal/asterisk/actions";
-import {IAstEventDAHDIChannel, IAstEventDAHDIShowChannels, IAstEventHangup} from "../internal/asterisk/events";
-import Dahdi from "../models/DahdiModel";
-import AstUtil from "../internal/astUtil";
-import DAHDIChannels from "../collections/channels/DAHDIChannelsCollection";
-import AST_EVENT from "../internal/asterisk/eventNames";
 import AST_ACTION from "../internal/asterisk/actionNames";
+import {IAstActionDAHDIShowChannels} from "../internal/asterisk/actions";
+import AST_EVENT from "../internal/asterisk/eventNames";
+import {IAstEventDAHDIChannel, IAstEventDAHDIShowChannels, IAstEventHangup} from "../internal/asterisk/events";
+import AstUtil from "../internal/astUtil";
+import AsteriskManager from "../internal/server/Manager";
+import Dahdi from "../models/DahdiModel";
 
 const P_PROP_CHANNELS_BY_DAHDI_ID = "channelsByDahdiId";
 const P_PROP_ACTIVE_COUNT = "activeCount";
@@ -46,7 +46,7 @@ class DahdiManager extends AsteriskManager<Dahdi, DAHDIChannels> {
         return this.getProp(P_PROP_CHANNELS_BY_DAHDI_ID);
     }
 
-    public start(callbackFn: IDfiCallbackResult, context?) {
+    public start(callbackFn: IDfiCallbackResult<Error, "DahdiManager">, context?) {
 
         function finish() {
             this.server.logger.info('manager "DahdiManager" started');

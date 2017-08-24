@@ -1,20 +1,20 @@
 import {IDfiBaseModelAttribs, IDfiBaseModelConfig} from "local-dfi-base/src/dfiInterfaces";
-import Ip from "../models/IpAddressModel";
-import CallerId from "../models/CallerIdModel";
-import DeviceState from "../states/deviceState";
-import PeerState from "../states/peerState";
-import ChannelState from "../states/channelState";
-import Channel from "../models/ChannelModel";
-import DispositionFlag from "../enums/flags/dispositionFlags";
 import AmaFlags from "../enums/flags/amaFlags";
-import QueueMemberState from "../states/queueMemberState";
-import Peer from "../models/peers/PeerModel";
-import AgentState from "../states/agentState";
+import DispositionFlag from "../enums/flags/dispositionFlags";
+import CallerId from "../models/CallerIdModel";
+import Channel from "../models/ChannelModel";
 import Device from "../models/DeviceModel";
-import Queue from "../models/queues/QueueModel";
-import QueueEntryState from "../states/queueEntryState";
 import DialplanContext from "../models/dialplans/DialplanContextModel";
 import DialplanExtension from "../models/dialplans/DialplanExtensionModel";
+import Ip from "../models/IpAddressModel";
+import Peer from "../models/peers/PeerModel";
+import Queue from "../models/queues/QueueModel";
+import AgentState from "../states/agentState";
+import ChannelState from "../states/channelState";
+import DeviceState from "../states/deviceState";
+import PeerState from "../states/peerState";
+import QueueEntryState from "../states/queueEntryState";
+import QueueMemberState from "../states/queueMemberState";
 
 export interface IDfiAstModelOptions extends IDfiBaseModelConfig {
     sourceEvent?: string;

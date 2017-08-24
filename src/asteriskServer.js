@@ -1,17 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const local_asterisk_ami_client_1 = require("local-asterisk-ami-client");
-const _ = require("lodash");
 const async = require("async");
+const local_asterisk_ami_client_1 = require("local-asterisk-ami-client");
 const local_dfi_base_1 = require("local-dfi-base");
-const Actions_1 = require("./internal/server/Actions");
-const EventDispatcher_1 = require("./internal/server/EventDispatcher");
-const Managers_1 = require("./internal/server/Managers");
+const _ = require("lodash");
 const DfiAMIResponseError_1 = require("./errors/DfiAMIResponseError");
+const ErrorMultiple_1 = require("./errors/ErrorMultiple");
 const ManagerCommunication_1 = require("./errors/ManagerCommunication");
+const NotAllowedAction_1 = require("./errors/NotAllowedAction");
 const actionNames_1 = require("./internal/asterisk/actionNames");
 const eventNames_1 = require("./internal/asterisk/eventNames");
 const astUtil_1 = require("./internal/astUtil");
+const Actions_1 = require("./internal/server/Actions");
+const EventDispatcher_1 = require("./internal/server/EventDispatcher");
+const Managers_1 = require("./internal/server/Managers");
 const PROP_AMI = "ami";
 const PROP_AMI_HANDLERS = "amiHandlers";
 const PROP_INITIALIZED = "initialized";
@@ -95,7 +97,7 @@ class AsteriskServer extends local_dfi_base_1.DfiEventObject {
     }
     sendAction(action, callbackFn, context) {
         if (!this.allowedActions.has(action.Action)) {
-            astUtil_1.default.maybeCallbackOnce(callbackFn, context, "Not Allowed Action: " + action.Action);
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, new NotAllowedAction_1.default("Unable to send not allowed action " + action.Action, action));
             return;
         }
         if (action.Action === actionNames_1.default.GET_VAR) {
@@ -150,7 +152,7 @@ class AsteriskServer extends local_dfi_base_1.DfiEventObject {
         const errors = [];
         const responses = [];
         if (wait === 0) {
-            astUtil_1.default.maybeCallbackOnce(callbackFn, context, errors.length > 0 ? errors : null, responses);
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, responses);
         }
         actions.forEach((action) => {
             this.sendAction(action, (err, resp) => {
@@ -160,14 +162,15 @@ class AsteriskServer extends local_dfi_base_1.DfiEventObject {
                 }
                 responses.push(resp);
                 if (wait === 0) {
-                    astUtil_1.default.maybeCallbackOnce(callbackFn, context, errors.length > 0 ? errors : null, responses);
+                    const errAll = new ErrorMultiple_1.default("Multiple error", errors);
+                    astUtil_1.default.maybeCallbackOnce(callbackFn, context, errors.length > 0 ? errAll : null, responses);
                 }
             });
         });
     }
     sendEventGeneratingAction(action, callbackFn, context) {
         if (!this.allowedActions.has(action.Action)) {
-            astUtil_1.default.maybeCallback(callbackFn, context, "Not Allowed Action: " + action.Action);
+            astUtil_1.default.maybeCallback(callbackFn, context, new NotAllowedAction_1.default("Unable to send not allowed action " + action.Action));
             return;
         }
         if (!Object.hasOwnProperty.call(action, "ActionID")) {
@@ -307,28 +310,24 @@ class AsteriskServer extends local_dfi_base_1.DfiEventObject {
         }
         function onConnected() {
             const self = this;
-            async.series([
-                self.actions.core.getAvailableActions.bind(self.actions.core),
-                self.actions.core.filterRTCP.bind(self.actions.core),
-                self.managers.start.bind(self.managers),
-                onAll.bind(self)
-            ], (err) => {
+            const aResult = (err) => {
                 if (err) {
                     astUtil_1.default.maybeCallback(callbackFn, context, err);
                 }
-            });
-        }
-        /**
-         * @this AsteriskServer
-         * @param callback
-         */
-        function onAll(callback) {
-            this.logger.debug("on onAll");
-            this.logger.info("Initializing done");
-            this.setProp(PROP_INITIALIZED, true);
-            this.setProp(PROP_INITIALIZATION_STARTED, false);
-            this.emit(AsteriskServer.events.INIT);
-            astUtil_1.default.maybeCallback(callback, context);
+                else {
+                    this.logger.debug("on onAll");
+                    this.logger.info("Initializing done");
+                    this.setProp(PROP_INITIALIZED, true);
+                    this.setProp(PROP_INITIALIZATION_STARTED, false);
+                    this.emit(AsteriskServer.events.INIT);
+                    astUtil_1.default.maybeCallback(callbackFn, context);
+                }
+            };
+            async.series([
+                self.actions.core.getAvailableActions.bind(self.actions.core),
+                self.actions.core.filterRTCP.bind(self.actions.core),
+                self.managers.start.bind(self.managers)
+            ], aResult);
         }
         function onInitialized() {
             this.logger.debug("on onInitialized");

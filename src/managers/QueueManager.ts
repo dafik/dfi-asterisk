@@ -1,4 +1,3 @@
-import AsteriskManager from "../internal/server/Manager";
 import Queues from "../collections/QueuesCollection";
 import {IDfiAstEventsQueueManager} from "../definitions/events";
 import {IAstActionQueueStatus} from "../internal/asterisk/actions";
@@ -15,14 +14,16 @@ import {
     IAstEventQueueMemberStatus,
     IAstEventQueueParams
 } from "../internal/asterisk/events";
+import AsteriskManager from "../internal/server/Manager";
 
-import ChannelManager from "./ChannelManager";
-import Queue from "../models/queues/QueueModel";
-import QueueMember from "../models/queues/QueueMemberModel";
-import QueueMemberState from "../states/queueMemberState";
-import AstUtil from "../internal/astUtil";
-import AST_EVENT from "../internal/asterisk/eventNames";
+import {IDfiCallbackResult} from "../definitions/interfaces";
 import AST_ACTION from "../internal/asterisk/actionNames";
+import AST_EVENT from "../internal/asterisk/eventNames";
+import AstUtil from "../internal/astUtil";
+import QueueMember from "../models/queues/QueueMemberModel";
+import Queue from "../models/queues/QueueModel";
+import QueueMemberState from "../states/queueMemberState";
+import ChannelManager from "./ChannelManager";
 
 const PROP_CHANNEL_MANAGER = "channelManager";
 
@@ -72,12 +73,12 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
         return EVENTS;
     }
 
-    public start(callback, thisp) {
+    public start(callbackFn: IDfiCallbackResult<Error, "QueueManager">, context?: any) {
 
         function finish() {
-            if (typeof callback === "function") {
+            if (typeof callbackFn === "function") {
                 this.server.logger.info('manager "QueueManager" started');
-                callback.call(thisp, null, "queueManager");
+                AstUtil.maybeCallbackOnce(callbackFn, context, null, "queueManager");
             }
         }
 
@@ -145,7 +146,7 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
         this.server.sendEventGeneratingAction(action, (err, response) => {
 
             if (err) {
-                callback.call(thisp, err);
+                AstUtil.maybeCallbackOnce(callbackFn, context, err);
                 return;
             }
             response.events.forEach((event) => {
@@ -164,6 +165,7 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
 
     public disconnected() {
         this.queues.forEach(onForeach);
+
         function onForeach(queue) {
             queue.cancelServiceLevelTimer();
         }

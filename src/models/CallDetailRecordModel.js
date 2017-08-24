@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const asteriskModel_1 = require("../internal/asteriskModel");
 const amaFlags_1 = require("../enums/flags/amaFlags");
 const cdrFlags_1 = require("../enums/flags/cdrFlags");
 const dispositionFlags_1 = require("../enums/flags/dispositionFlags");
+const asteriskModel_1 = require("../internal/asteriskModel");
 class CallDetailRecord extends asteriskModel_1.default {
     constructor(channel, destinationChannel, cdrEvent) {
         cdrEvent.channel = channel;

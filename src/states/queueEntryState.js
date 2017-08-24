@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const asteriskState_1 = require("../internal/asteriskState");
 const queueEntryStates_1 = require("../enums/queueEntryStates");
+const asteriskState_1 = require("../internal/asteriskState");
 class QueueEntryState extends asteriskState_1.default {
     static byValue(status) {
         return asteriskState_1.default.byValue(status, this);

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const queueEntryStates_1 = require("../../enums/queueEntryStates");
 const asteriskModel_1 = require("../../internal/asteriskModel");
 const queueEntryState_1 = require("../../states/queueEntryState");
-const queueEntryStates_1 = require("../../enums/queueEntryStates");
 const POSITION_UNDETERMINED = -1;
 const PROP_REPORTED_POSITION = "reportedPosition";
 const PROP_POSITION = "position";

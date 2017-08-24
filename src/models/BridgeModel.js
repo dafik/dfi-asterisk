@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const asteriskModel_1 = require("../internal/asteriskModel");
 const BridgeChannelsCollection_1 = require("../collections/channels/BridgeChannelsCollection");
 const eventNames_1 = require("../internal/asterisk/eventNames");
+const asteriskModel_1 = require("../internal/asteriskModel");
 const PROP_UNIQUE_ID = "uniqueid";
 const PROP_TYPE = "type";
 const PROP_TECHNOLOGY = "technology";

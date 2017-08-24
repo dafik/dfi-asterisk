@@ -1,8 +1,8 @@
-import AsteriskModel from "../internal/asteriskModel";
-import {IDfiAstModelAttribsBridge, IDfiAstModelOptions} from "../definitions/models";
-import Channel from "./ChannelModel";
 import BridgeChannels from "../collections/channels/BridgeChannelsCollection";
+import {IDfiAstModelAttribsBridge, IDfiAstModelOptions} from "../definitions/models";
 import AST_EVENT from "../internal/asterisk/eventNames";
+import AsteriskModel from "../internal/asteriskModel";
+import Channel from "./ChannelModel";
 
 const PROP_UNIQUE_ID = "uniqueid";
 const PROP_TYPE = "type";

@@ -13,7 +13,7 @@ class AsteriskManager extends dfiEventObject_1.default {
         super(options);
         this.setProp(P_PROP_COLLECTION, collection);
         this.setProp(P_PROP_EVENTSMAP, new Map());
-        this.setProp(P_PROP_ENABLED, !!enabled);
+        this.setProp(P_PROP_ENABLED, enabled);
     }
     get enabled() {
         return this.getProp(P_PROP_ENABLED);
@@ -37,6 +37,7 @@ class AsteriskManager extends dfiEventObject_1.default {
         return this.getProp(P_PROP_MANAGERS);
     }
     restart(callbackFn, context) {
+        // TODO implement
         this.server.logger.info("manager %s restarted", this.constructor.name);
         astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, this.constructor.name);
     }

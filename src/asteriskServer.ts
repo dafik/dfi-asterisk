@@ -1,6 +1,11 @@
+import * as async from "async";
+import AmiClient from "local-asterisk-ami-client";
+import {DfiEventObject} from "local-dfi-base";
+import * as _ from "lodash";
 import {IDfiAstConfigAstManager, IDfiAstConfigAstManagerConfig, IDfiAstConfigAstOriginate, IDfiAstConfigAstServer, IDfiAstConfigServerOptions} from "./definitions/configs";
 import {IDfiAstEventsServer} from "./definitions/events";
 import {
+    AsteriskActionType1, AsteriskActionType2,
     IDfiActionCallback,
     IDfiAMICallbackError,
     IDfiAMIMultiCallback,
@@ -11,30 +16,21 @@ import {
     IDfiAMIResponseMessage,
     IDfiAMIResponseMessageMulti,
     IDfiAstResponseMessageMulti,
-    IDfiCallbackResult
+    IDfiCallbackError
 } from "./definitions/interfaces";
-
+import DfiAMIResponseError from "./errors/DfiAMIResponseError";
+import ErrorMultiple from "./errors/ErrorMultiple";
+import ManagerCommunication from "./errors/ManagerCommunication";
+import NotAllowedAction from "./errors/NotAllowedAction";
+import AST_ACTION from "./internal/asterisk/actionNames";
 import {IAstAction, IAstActionCommand, IAstActionGetvar} from "./internal/asterisk/actions";
-
-import AmiClient from "local-asterisk-ami-client";
-import * as _ from "lodash";
+import AST_EVENT from "./internal/asterisk/eventNames";
 import {IAstEvent} from "./internal/asterisk/events";
-
-import * as async from "async";
-import {DfiEventObject} from "local-dfi-base";
+import AstUtil from "./internal/astUtil";
 import ServerActions from "./internal/server/Actions";
 import EventDispatcher from "./internal/server/EventDispatcher";
 import ServerManagers from "./internal/server/Managers";
-
-import DfiAMIResponseError from "./errors/DfiAMIResponseError";
-import ManagerCommunication from "./errors/ManagerCommunication";
-import AST_ACTION from "./internal/asterisk/actionNames";
-import AST_EVENT from "./internal/asterisk/eventNames";
-import AstUtil from "./internal/astUtil";
 import AsteriskVersion from "./internal/server/Version";
-
-type AsteriskActionType1 = IAstAction | IAstActionGetvar | IAstActionCommand;
-type AsteriskActionType2 = IAstAction | IAstActionCommand;
 
 const PROP_AMI = "ami";
 const PROP_AMI_HANDLERS = "amiHandlers";
@@ -142,7 +138,7 @@ class AsteriskServer extends DfiEventObject {
 
     public sendAction<R extends IDfiAMIResponse>(action: AsteriskActionType1, callbackFn?: IDfiActionCallback<R, AsteriskActionType1> | IDfiAMICallbackError<AsteriskActionType1>, context?: any) {
         if (!this.allowedActions.has(action.Action)) {
-            AstUtil.maybeCallbackOnce(callbackFn, context, "Not Allowed Action: " + action.Action);
+            AstUtil.maybeCallbackOnce(callbackFn, context, new NotAllowedAction("Unable to send not allowed action " + action.Action, action));
             return;
         }
 
@@ -197,7 +193,7 @@ class AsteriskServer extends DfiEventObject {
         const errors = [];
         const responses = [];
         if (wait === 0) {
-            AstUtil.maybeCallbackOnce(callbackFn, context, errors.length > 0 ? errors : null, responses);
+            AstUtil.maybeCallbackOnce<Error, {}>(callbackFn, context, null, responses);
         }
         actions.forEach((action) => {
             this.sendAction(action, (err, resp) => {
@@ -207,15 +203,16 @@ class AsteriskServer extends DfiEventObject {
                 }
                 responses.push(resp);
                 if (wait === 0) {
-                    AstUtil.maybeCallbackOnce(callbackFn, context, errors.length > 0 ? errors : null, responses);
+                    const errAll = new ErrorMultiple("Multiple error", errors);
+                    AstUtil.maybeCallbackOnce<Error, {}>(callbackFn, context, errors.length > 0 ? errAll : null, responses);
                 }
             });
         });
     }
 
-    public sendEventGeneratingAction<E extends IAstEvent>(action: AsteriskActionType2, callbackFn: IDfiAMIMultiCallback<E, AsteriskActionType2>, context?) {
+    public sendEventGeneratingAction<Ev extends IAstEvent>(action: AsteriskActionType2, callbackFn: IDfiAMIMultiCallback<Ev, AsteriskActionType2, NotAllowedAction, {}>, context?) {
         if (!this.allowedActions.has(action.Action)) {
-            AstUtil.maybeCallback(callbackFn, context, "Not Allowed Action: " + action.Action);
+            AstUtil.maybeCallback(callbackFn, context, new NotAllowedAction("Unable to send not allowed action " + action.Action));
             return;
         }
         if (!Object.hasOwnProperty.call(action, "ActionID")) {
@@ -226,9 +223,9 @@ class AsteriskServer extends DfiEventObject {
         this.logger.trace("sending %s %j", action.Action, action);
         this.logger.trace("\n\n %j \n", action);
 
-        const responses = this._getResponses<E>();
+        const responses = this._getResponses<Ev, NotAllowedAction, {}>();
 
-        const responseMulti: IDfiAstResponseMessageMulti<E> = {
+        const responseMulti: IDfiAstResponseMessageMulti<Ev, NotAllowedAction, {}> = {
             ctx: context,
             events: [],
             fn: callbackFn
@@ -271,11 +268,11 @@ class AsteriskServer extends DfiEventObject {
             });
     }
 
-    private _getResponses<E extends IAstEvent>(): Map<string, IDfiAstResponseMessageMulti<E>> {
+    private _getResponses<Ev extends IAstEvent, Er extends Error, R>(): Map<string, IDfiAstResponseMessageMulti<Ev, Er, R>> {
         return this.getProp(PROP_MULTIPART_RESPONSES);
     }
 
-    private _finishMultipartResponse<E extends IAstEvent>(response, resp: IDfiAMIResponseMessageMulti<E>) {
+    private _finishMultipartResponse<Ev extends IAstEvent, Er extends Error, R>(response, resp: IDfiAMIResponseMessageMulti<Ev, Er, R>) {
         const responses = this._getResponses();
         responses.delete(response.ActionID);
         if (responses.size === 0) {
@@ -287,7 +284,7 @@ class AsteriskServer extends DfiEventObject {
         delete resp.fn;
         delete resp.ctx;
 
-        AstUtil.maybeCallback(fn, ctx, null, resp);
+        AstUtil.maybeCallback<Er, {}>(fn, ctx, null, resp);
     }
 
     private _onMultipartResponse(response) {
@@ -362,7 +359,7 @@ class AsteriskServer extends DfiEventObject {
 
     }
 
-    private _initializeIfNeeded(callbackFn: IDfiCallbackResult, context?) {
+    private _initializeIfNeeded(callbackFn: IDfiCallbackError<ManagerCommunication | Error>, context?) {
 
         const initialize = () => {
             const ami = this._ami;
@@ -407,31 +404,25 @@ class AsteriskServer extends DfiEventObject {
         function onConnected() {
             const self: AsteriskServer = this;
 
+            const aResult: AsyncResultArrayCallback<any, any> = (err) => {
+                if (err) {
+                    AstUtil.maybeCallback(callbackFn, context, err);
+                } else {
+                    this.logger.debug("on onAll");
+                    this.logger.info("Initializing done");
+                    this.setProp(PROP_INITIALIZED, true);
+                    this.setProp(PROP_INITIALIZATION_STARTED, false);
+
+                    this.emit(AsteriskServer.events.INIT);
+                    AstUtil.maybeCallback(callbackFn, context);
+                }
+            };
+
             async.series([
                 self.actions.core.getAvailableActions.bind(self.actions.core),
                 self.actions.core.filterRTCP.bind(self.actions.core),
-                self.managers.start.bind(self.managers),
-                onAll.bind(self)
-            ], (err) => {
-                if (err) {
-                    AstUtil.maybeCallback(callbackFn, context, err);
-                }
-
-            });
-        }
-
-        /**
-         * @this AsteriskServer
-         * @param callback
-         */
-        function onAll(callback) {
-            this.logger.debug("on onAll");
-            this.logger.info("Initializing done");
-            this.setProp(PROP_INITIALIZED, true);
-            this.setProp(PROP_INITIALIZATION_STARTED, false);
-
-            this.emit(AsteriskServer.events.INIT);
-            AstUtil.maybeCallback(callback, context);
+                self.managers.start.bind(self.managers)
+            ], aResult);
         }
 
         function onInitialized() {
@@ -439,7 +430,7 @@ class AsteriskServer extends DfiEventObject {
             AstUtil.maybeCallback(callbackFn, context);
         }
 
-        function onInitializedError(err) {
+        function onInitializedError(err: ManagerCommunication | Error) {
             this.logger.debug("on onInitializedError %j", err);
             AstUtil.maybeCallback(callbackFn, context, err);
         }

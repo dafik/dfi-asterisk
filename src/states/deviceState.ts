@@ -1,5 +1,5 @@
-import AsteriskState from "../internal/asteriskState";
 import DeviceStates from "../enums/deviceStates";
+import AsteriskState from "../internal/asteriskState";
 
 class DeviceState extends AsteriskState {
 

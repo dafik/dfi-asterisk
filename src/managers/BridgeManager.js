@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Manager_1 = require("../internal/server/Manager");
 const BridgesCollection_1 = require("../collections/BridgesCollection");
-const BridgeModel_1 = require("../models/BridgeModel");
-const astUtil_1 = require("../internal/astUtil");
-const eventNames_1 = require("../internal/asterisk/eventNames");
 const actionNames_1 = require("../internal/asterisk/actionNames");
+const eventNames_1 = require("../internal/asterisk/eventNames");
+const astUtil_1 = require("../internal/astUtil");
+const Manager_1 = require("../internal/server/Manager");
+const BridgeModel_1 = require("../models/BridgeModel");
 const PROP_LOCAL_MAP = "localMap";
 const PROP_CHANNEL_MANAGER = "channelManager";
 class BridgeManager extends Manager_1.default {

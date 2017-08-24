@@ -135,7 +135,8 @@ class OriginateServerAction extends BaseAction_1.default {
      */
     async(originateAction, callbackFn, context) {
         if (!this._server.managers.channel.enabled) {
-            throw new Error("channel manager is not enabled but required for originate async");
+            const error = new Error("channel manager is not enabled but required for originate async");
+            astUtil_1.default.maybeCallbackOnce(callbackFn.onFailure, callbackFn, error);
         }
         this._server.start()
             .then(() => {

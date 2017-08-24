@@ -2,7 +2,7 @@ import * as async from "async";
 import DfiObject from "local-dfi-base/src/dfiObject";
 import AsteriskServer from "../../asteriskServer";
 import {IDfiAstConfigAstManager} from "../../definitions/configs";
-import {IDfiCallbackResult} from "../../definitions/interfaces";
+import {IDfiCallbackError} from "../../definitions/interfaces";
 import AgentManager from "../../managers/AgentManager";
 import BridgeManager from "../../managers/BridgeManager";
 import ChannelManager from "../../managers/ChannelManager";
@@ -76,8 +76,12 @@ class ServerManagers extends DfiObject {
         return this.getProp(PROP_MANAGERS).get(AGENT);
     }
 
-    public restart(callbackFn: IDfiCallbackResult, context?) {
+    public restart(callbackFn: IDfiCallbackError<Error>, context?) {
         const self = this;
+
+        const aResult: AsyncResultArrayCallback<any, any> = (err) => {
+            AstUtil.maybeCallbackOnce(callbackFn, context, err);
+        };
         async.series([
             self.device.restart.bind(self.device),
             self.peer.restart.bind(self.peer),
@@ -86,15 +90,16 @@ class ServerManagers extends DfiObject {
             self.dahdi.restart.bind(self.dahdi),
             self.queue.restart.bind(self.queue),
             self.agent.restart.bind(self.agent)
-        ], (err) => {
-            AstUtil.maybeCallbackOnce(callbackFn, context, err);
-        });
+        ], aResult);
     }
 
-    public start(callbackFn: IDfiCallbackResult, context?) {
+    public start(callbackFn: IDfiCallbackError<Error>, context?) {
         const self = this;
         try {
 
+            const aResult: AsyncResultArrayCallback<any, any> = (err) => {
+                AstUtil.maybeCallbackOnce(callbackFn, context, err);
+            };
             async.series([
                 self.device.start.bind(self.device),
                 self.peer.start.bind(self.peer),
@@ -103,9 +108,7 @@ class ServerManagers extends DfiObject {
                 self.dahdi.start.bind(self.dahdi),
                 self.queue.start.bind(self.queue),
                 self.agent.start.bind(self.agent)
-            ], (err) => {
-                AstUtil.maybeCallbackOnce(callbackFn, context, err);
-            });
+            ], aResult);
         } catch (err) {
             AstUtil.maybeCallbackOnce(callbackFn, context, err);
         }

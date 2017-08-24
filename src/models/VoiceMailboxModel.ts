@@ -1,5 +1,5 @@
-import AsteriskModel from "../internal/asteriskModel";
 import {IDfiAstModelAttribsVoiceMailbox, IDfiAstModelOptions} from "../definitions/models";
+import AsteriskModel from "../internal/asteriskModel";
 
 const PROP_CONTEXT = "context";
 const PROP_MAILBOX = "mailbox";

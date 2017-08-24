@@ -1,10 +1,10 @@
-import BaseServerAction from "./BaseAction";
-import AsteriskVersion from "../Version";
-import AstUtil from "../../astUtil";
+import {IDfiActionCallback, IDfiAMIResponse, IDfiAMIResponseCommand, IDfiCallbackError, IDfiGetAsteriskVersionCallback, IDfiGetFileVersionCallback} from "../../../definitions/interfaces";
 import ManagerCommunication from "../../../errors/ManagerCommunication";
 import ManagerError from "../../../errors/ManagerError";
 import AST_ACTION from "../../asterisk/actionNames";
-import {IDfiActionCallback, IDfiAMIResponse, IDfiAMIResponseCommand, IDfiCallbackError, IDfiGetAsteriskVersionCallback, IDfiGetFileVersionCallback} from "../../../definitions/interfaces";
+import AstUtil from "../../astUtil";
+import AsteriskVersion from "../Version";
+import BaseServerAction from "./BaseAction";
 
 import {IAstActionCommand, IAstActionFilter} from "../../asterisk/actions";
 
@@ -15,7 +15,7 @@ const SHOW_VERSION_COMMAND = "core show version";
 class CoreServerAction extends BaseServerAction {
     private versions;
 
-    public getAvailableActions(callbackFn: IDfiCallbackError, context?) {
+    public getAvailableActions(callbackFn: IDfiCallbackError<Error>, context?) {
 
         this._server.logger.debug("on getAvailableActions");
         const action: IAstActionCommand = {

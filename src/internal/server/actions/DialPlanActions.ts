@@ -1,11 +1,10 @@
-import BaseServerAction from "./BaseAction";
-
-import AstUtil from "../../astUtil";
+import {IDfiGetDialplanCallback, IDfiGetDialplansCallback} from "../../../definitions/interfaces";
 import DialplanContext from "../../../models/dialplans/DialplanContextModel";
 import DialplanExtension from "../../../models/dialplans/DialplanExtensionModel";
 import DialplanPriority from "../../../models/dialplans/DialplanPriorityModel";
 import AST_ACTION from "../../asterisk/actionNames";
-import {IDfiGetDialplanCallback, IDfiGetDialplansCallback} from "../../../definitions/interfaces";
+import AstUtil from "../../astUtil";
+import BaseServerAction from "./BaseAction";
 
 import {IAstActionShowDialPlan} from "../../asterisk/actions";
 import {IAstEventListDialplan} from "../../asterisk/events";

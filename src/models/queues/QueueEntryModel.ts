@@ -1,9 +1,9 @@
+import {IDfiAstModelAttribsQueueEntry, IDfiAstModelOptions} from "../../definitions/models";
+import QueueEntryStates from "../../enums/queueEntryStates";
 import AsteriskModel from "../../internal/asteriskModel";
 import QueueEntryState from "../../states/queueEntryState";
-import QueueEntryStates from "../../enums/queueEntryStates";
-import {IDfiAstModelAttribsQueueEntry, IDfiAstModelOptions} from "../../definitions/models";
-import Queue from "./QueueModel";
 import Channel from "../ChannelModel";
+import Queue from "./QueueModel";
 
 const POSITION_UNDETERMINED = -1;
 

@@ -11,7 +11,7 @@ abstract class AsteriskModel extends DfiModel {
         return this.getProp("sourceEvent");
     }
 
-    protected get _server(): AsteriskServer {
+    protected static get _server(): AsteriskServer {
         if (typeof getServerInstance !== "function") {
             getServerInstance = require("../asteriskServerInstance").getServerInstance;
         }

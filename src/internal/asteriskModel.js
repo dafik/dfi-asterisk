@@ -7,7 +7,7 @@ class AsteriskModel extends local_dfi_base_1.DfiModel {
     get sourceEvent() {
         return this.getProp("sourceEvent");
     }
-    get _server() {
+    static get _server() {
         if (typeof getServerInstance !== "function") {
             getServerInstance = require("../asteriskServerInstance").getServerInstance;
         }

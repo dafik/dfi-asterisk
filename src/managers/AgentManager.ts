@@ -1,8 +1,8 @@
-import AsteriskManager from "../internal/server/Manager";
 import Agents from "../collections/AgentsCollection";
+import AstUtil from "../internal/astUtil";
+import AsteriskManager from "../internal/server/Manager";
 import Agent from "../models/AgentModel";
 import QueueManager from "./QueueManager";
-import AstUtil from "../internal/astUtil";
 
 import {IDfiCallbackResult, IEventHandlersMap} from "../definitions/interfaces";
 import {IDfiAstModelAttribsAgent} from "../definitions/models";
@@ -12,12 +12,12 @@ import {IAstActionAgents} from "../internal/asterisk/actions";
 
 import {IAstEvent, IAstEventAgentCalled, IAstEventAgentComplete, IAstEventAgentConnect, IAstEventAgentLogin, IAstEventAgentLogoff, IAstEventAgents} from "../internal/asterisk/events";
 
-import AgentState from "../states/agentState";
 import AgentStates from "../enums/agentStates";
-import QueueMember from "../models/queues/QueueMemberModel";
-import Queue from "../models/queues/QueueModel";
 import AST_ACTION from "../internal/asterisk/actionNames";
 import AST_EVENT from "../internal/asterisk/eventNames";
+import QueueMember from "../models/queues/QueueMemberModel";
+import Queue from "../models/queues/QueueModel";
+import AgentState from "../states/agentState";
 
 const RINGING_AGENTS = "ringingAgents";
 
@@ -74,11 +74,11 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
         return this.agents.toArray();
     }
 
-    public start(callbackFn: IDfiCallbackResult, context?) {
+    public start(callbackFn: IDfiCallbackResult<Error, "AgentManager">, context?) {
 
         function finish() {
             this.server.logger.info('manager "AgentManager" started');
-            AstUtil.maybeCallbackOnce(callbackFn, context, null, "agentManager");
+            AstUtil.maybeCallbackOnce(callbackFn, context, null, "AgentManager");
         }
 
         this.server.logger.info('starting manager "AgentManager"');
@@ -262,4 +262,5 @@ class AgentManager extends AsteriskManager<Agent, Agents> {
         this.ringingAgents.set(channelCalling, agent);
     }
 }
+
 export default AgentManager;

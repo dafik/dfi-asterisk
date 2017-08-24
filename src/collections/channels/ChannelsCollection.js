@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const eventNames_1 = require("../../internal/asterisk/eventNames");
 const asteriskCollection_1 = require("../../internal/asteriskCollection");
 const ChannelModel_1 = require("../../models/ChannelModel");
-const eventNames_1 = require("../../internal/asterisk/eventNames");
 const SEPARATOR = "/";
 const P_PROP_CHANNELS_BY_NAME = "byName";
 const P_PROP_CHANNELS_BY_TECH = "byTech";

@@ -1,17 +1,16 @@
-import AsteriskManager from "../internal/server/Manager";
 import Peers from "../collections/PeersCollection";
-import Peer from "../models/peers/PeerModel";
-
+import {IDfiAMIMultiCallback, IDfiCallbackResult} from "../definitions/interfaces";
+import AST_ACTION from "../internal/asterisk/actionNames";
+import {IAstActionIAXpeerlist, IAstActionPJSIPShowEndpoints, IAstActionSIPpeers} from "../internal/asterisk/actions";
+import AST_EVENT from "../internal/asterisk/eventNames";
+import {IAstEventEndpointList, IAstEventPeerEntry, IAstEventPeerIAXEntry, IAstEventPeerSIPEntry, IAstEventPeerStatus} from "../internal/asterisk/events";
 import AstUtil from "../internal/astUtil";
+import AsteriskManager from "../internal/server/Manager";
+import Ip from "../models/IpAddressModel";
 import IAXPeer from "../models/peers/IAXPeerModel";
+import Peer from "../models/peers/PeerModel";
 import PJSIPPeer from "../models/peers/PJSIPPeerModel";
 import SIPPeer from "../models/peers/SIPPeerModel";
-import Ip from "../models/IpAddressModel";
-import AST_EVENT from "../internal/asterisk/eventNames";
-import AST_ACTION from "../internal/asterisk/actionNames";
-import {IDfiAMIMultiCallback, IDfiCallbackResult} from "../definitions/interfaces";
-import {IAstActionIAXpeerlist, IAstActionPJSIPShowEndpoints, IAstActionSIPpeers} from "../internal/asterisk/actions";
-import {IAstEventEndpointList, IAstEventPeerEntry, IAstEventPeerIAXEntry, IAstEventPeerSIPEntry, IAstEventPeerStatus} from "../internal/asterisk/events";
 
 /**
  * Manages all events related to peers on Asterisk server. For correct work
@@ -43,7 +42,7 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
      * @param {function} [callbackFn]
      * @param {*} [context] callback this
      */
-    public start(callbackFn?: IDfiCallbackResult, context?) {
+    public start(callbackFn?: IDfiCallbackResult<Error, "PeerManager">, context?) {
         let waiting = 0;
 
         function finish() {
@@ -53,7 +52,9 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
             }
         }
 
-        const handlePeers: IDfiAMIMultiCallback<IAstEventPeerEntry | IAstEventEndpointList, IAstActionIAXpeerlist | IAstActionSIPpeers | IAstActionPJSIPShowEndpoints> = (err, response) => {
+        type PeerEvents = IAstEventPeerEntry | IAstEventEndpointList;
+        type PeerActions = IAstActionIAXpeerlist | IAstActionSIPpeers | IAstActionPJSIPShowEndpoints;
+        const handlePeers: IDfiAMIMultiCallback<PeerEvents, PeerActions, Error, {}> = (err, response) => {
             if (err && err.message !== "No endpoints found") {
                 AstUtil.maybeCallback(callbackFn, context, err);
                 return;

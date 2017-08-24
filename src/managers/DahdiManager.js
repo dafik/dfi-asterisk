@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const DAHDIChannelsCollection_1 = require("../collections/channels/DAHDIChannelsCollection");
+const actionNames_1 = require("../internal/asterisk/actionNames");
+const eventNames_1 = require("../internal/asterisk/eventNames");
+const astUtil_1 = require("../internal/astUtil");
 const Manager_1 = require("../internal/server/Manager");
 const DahdiModel_1 = require("../models/DahdiModel");
-const astUtil_1 = require("../internal/astUtil");
-const DAHDIChannelsCollection_1 = require("../collections/channels/DAHDIChannelsCollection");
-const eventNames_1 = require("../internal/asterisk/eventNames");
-const actionNames_1 = require("../internal/asterisk/actionNames");
 const P_PROP_CHANNELS_BY_DAHDI_ID = "channelsByDahdiId";
 const P_PROP_ACTIVE_COUNT = "activeCount";
 /**

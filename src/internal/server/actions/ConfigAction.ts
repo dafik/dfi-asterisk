@@ -1,13 +1,14 @@
-import BaseServerAction from "./BaseAction";
 import {IDfiCallbackResult} from "../../../definitions/interfaces";
+import ManagerError from "../../../errors/ManagerError";
+import AST_ACTION from "../../asterisk/actionNames";
 import {IAstActionGetConfig} from "../../asterisk/actions";
 import AstUtil from "../../astUtil";
-import ManagerError from "../../../errors/ManagerError";
 import ConfigFile from "../ConfigFile";
-import AST_ACTION from "../../asterisk/actionNames";
+import BaseServerAction from "./BaseAction";
+
 class ConfigServerAction extends BaseServerAction {
 
-    public getConfig(filename, callbackFn: IDfiCallbackResult, context?) {
+    public getConfig(filename, callbackFn: IDfiCallbackResult<Error, ConfigFile>, context?) {
 
         // TODO check OCB
         this._server.start()
@@ -27,7 +28,7 @@ class ConfigServerAction extends BaseServerAction {
                 const error = new ManagerError("Response to GetConfigAction(\"" + filename + "\") " + err.message);
                 AstUtil.maybeCallbackOnce(callbackFn, context, error);
             }
-            const res: {categories: Map<string, {name: string, lines: Map<string, string|string[]>}>} = {categories: new Map()};
+            const res: { categories: Map<string, { name: string, lines: Map<string, string | string[]> }> } = {categories: new Map()};
             let val;
             let parts;
             let lParts;
@@ -66,4 +67,5 @@ class ConfigServerAction extends BaseServerAction {
     }
 
 }
+
 export default ConfigServerAction;

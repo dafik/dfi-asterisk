@@ -1,7 +1,7 @@
-import Peer from "./PeerModel";
-import Ip from "../IpAddressModel";
-import {IDfiAstModelAttribsIAXPeer, IDfiAstModelAttribsPeer, IDfiAstModelOptions} from "../../definitions/models";
+import {IDfiAstModelAttribsIAXPeer,  IDfiAstModelOptions} from "../../definitions/models";
 import AstUtil from "../../internal/astUtil";
+import Ip from "../IpAddressModel";
+import Peer from "./PeerModel";
 
 const PROP_CHANNEL_TYPE = "channelType";
 const PROP_OBJECT_NAME = "objectName";
@@ -31,8 +31,8 @@ class IAXPeer extends Peer {
 
         const attr: IDfiAstModelAttribsIAXPeer = {
             ...attributes,
-            Encryption: AstUtil.isTrue(attributes.Encryption) ? true : false,
-            Trunk: AstUtil.isTrue(attributes.Trunk) ? true : false,
+            Encryption: AstUtil.isTrue(attributes.Encryption),
+            Trunk: AstUtil.isTrue(attributes.Trunk),
             ip: new Ip({
                 ipAddress: attributes.IPaddress,
                 mask: attributes.Mask,

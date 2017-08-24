@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Manager_1 = require("../internal/server/Manager");
 const PeersCollection_1 = require("../collections/PeersCollection");
-const PeerModel_1 = require("../models/peers/PeerModel");
+const actionNames_1 = require("../internal/asterisk/actionNames");
+const eventNames_1 = require("../internal/asterisk/eventNames");
 const astUtil_1 = require("../internal/astUtil");
+const Manager_1 = require("../internal/server/Manager");
+const IpAddressModel_1 = require("../models/IpAddressModel");
 const IAXPeerModel_1 = require("../models/peers/IAXPeerModel");
+const PeerModel_1 = require("../models/peers/PeerModel");
 const PJSIPPeerModel_1 = require("../models/peers/PJSIPPeerModel");
 const SIPPeerModel_1 = require("../models/peers/SIPPeerModel");
-const IpAddressModel_1 = require("../models/IpAddressModel");
-const eventNames_1 = require("../internal/asterisk/eventNames");
-const actionNames_1 = require("../internal/asterisk/actionNames");
 /**
  * Manages all events related to peers on Asterisk server. For correct work
  * ensure enabled PeerCalledEvents. You have to set

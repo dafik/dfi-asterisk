@@ -1,5 +1,5 @@
-import AsteriskModel from "../../internal/asteriskModel";
 import {IDfiAstModelAttribsDialplanExtension, IDfiAstModelOptionsDialplanExtension} from "../../definitions/models";
+import AsteriskModel from "../../internal/asteriskModel";
 import DialplanContext from "./DialplanContextModel";
 import DialplanPriority from "./DialplanPriorityModel";
 

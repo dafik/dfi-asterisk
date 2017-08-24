@@ -1,9 +1,9 @@
-import AsteriskModel from "../internal/asteriskModel";
 import Queues from "../collections/QueuesCollection";
 import {IDfiAstModelAttribsAgent, IDfiAstModelOptions} from "../definitions/models";
+import AsteriskModel from "../internal/asteriskModel";
 import AgentState from "../states/agentState";
-import Peer from "./peers/PeerModel";
 import Device from "./DeviceModel";
+import Peer from "./peers/PeerModel";
 import Queue from "./queues/QueueModel";
 
 const PROP_NAME = "name";

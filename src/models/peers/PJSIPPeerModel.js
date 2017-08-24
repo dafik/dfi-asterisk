@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const PeerModel_1 = require("./PeerModel");
 const IpAddressModel_1 = require("../IpAddressModel");
+const PeerModel_1 = require("./PeerModel");
 /*const PROP_CHANNEL_TYPE = "channelType";
  const PROP_OBJECT_NAME = "objectName";
  const PROP_CHAN_OBJECT_TYPE = "chanObjectType";

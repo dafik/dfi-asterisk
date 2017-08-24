@@ -1,13 +1,8 @@
-import AsteriskManager from "../internal/server/Manager";
 import Bridges from "../collections/BridgesCollection";
-import Bridge from "../models/BridgeModel";
-import ChannelManager from "./ChannelManager";
-
-import AstUtil from "../internal/astUtil";
-import AST_EVENT from "../internal/asterisk/eventNames";
-import AST_ACTION from "../internal/asterisk/actionNames";
 import {IDfiAMIResponseMessageMulti, IDfiCallbackResult} from "../definitions/interfaces";
 import {IDfiAstModelAttribsBridge} from "../definitions/models";
+import AST_ACTION from "../internal/asterisk/actionNames";
+import AST_EVENT from "../internal/asterisk/eventNames";
 import {
     IAstEventBridgeCreate,
     IAstEventBridgeDestroy,
@@ -18,6 +13,10 @@ import {
     IAstEventHangup,
     IAstEventLocalBridge
 } from "../internal/asterisk/events";
+import AstUtil from "../internal/astUtil";
+import AsteriskManager from "../internal/server/Manager";
+import Bridge from "../models/BridgeModel";
+import ChannelManager from "./ChannelManager";
 
 const PROP_LOCAL_MAP = "localMap";
 const PROP_CHANNEL_MANAGER = "channelManager";
@@ -74,7 +73,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
     /**
      * Retrieves all bridges registered at Asterisk server by sending an BridgesAction.
      */
-    public start(callbackFn: IDfiCallbackResult, context?) {
+    public start(callbackFn: IDfiCallbackResult<Error, "DeviceManager">, context?) {
 
         function finish() {
             this.server.logger.info('manager "BridgeManager" started');
@@ -88,7 +87,7 @@ class BridgeManager extends AsteriskManager<Bridge, Bridges> {
             return;
         }
 
-        this.server.sendEventGeneratingAction({Action: AST_ACTION.BRIDGE_LIST}, (err, re: IDfiAMIResponseMessageMulti<IAstEventBridgeListItem>) => {
+        this.server.sendEventGeneratingAction({Action: AST_ACTION.BRIDGE_LIST}, (err, re: IDfiAMIResponseMessageMulti<IAstEventBridgeListItem, Error, {}>) => {
             if (err) {
                 AstUtil.maybeCallbackOnce(callbackFn, context, err);
                 return;

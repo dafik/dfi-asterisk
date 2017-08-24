@@ -1,6 +1,6 @@
-import Peer from "./PeerModel";
-import {IDfiAstModelAttribsPeer, IDfiAstModelAttribsPJSIPPeer, IDfiAstModelOptions} from "../../definitions/models";
+import { IDfiAstModelAttribsPJSIPPeer, IDfiAstModelOptions} from "../../definitions/models";
 import Ip from "../IpAddressModel";
+import Peer from "./PeerModel";
 
 /*const PROP_CHANNEL_TYPE = "channelType";
  const PROP_OBJECT_NAME = "objectName";

@@ -1,5 +1,5 @@
-import AsteriskModel from "../internal/asteriskModel";
 import {IDfiAstModelAttribsDevice, IDfiAstModelOptions} from "../definitions/models";
+import AsteriskModel from "../internal/asteriskModel";
 import DeviceState from "../states/deviceState";
 
 const PROP_DEVICE = "device";

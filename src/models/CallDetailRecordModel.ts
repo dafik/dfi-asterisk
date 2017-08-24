@@ -1,8 +1,8 @@
 import {IDfiAstModelAttribsCDR} from "../definitions/models";
-import AsteriskModel from "../internal/asteriskModel";
 import AmaFlags from "../enums/flags/amaFlags";
 import CdrFlags from "../enums/flags/cdrFlags";
 import DispositionFlags from "../enums/flags/dispositionFlags";
+import AsteriskModel from "../internal/asteriskModel";
 
 class CallDetailRecord extends AsteriskModel {
 

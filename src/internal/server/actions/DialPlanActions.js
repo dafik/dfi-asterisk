@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseAction_1 = require("./BaseAction");
-const astUtil_1 = require("../../astUtil");
 const DialplanContextModel_1 = require("../../../models/dialplans/DialplanContextModel");
 const DialplanExtensionModel_1 = require("../../../models/dialplans/DialplanExtensionModel");
 const DialplanPriorityModel_1 = require("../../../models/dialplans/DialplanPriorityModel");
 const actionNames_1 = require("../../asterisk/actionNames");
+const astUtil_1 = require("../../astUtil");
+const BaseAction_1 = require("./BaseAction");
 class DialPlanServerAction extends BaseAction_1.default {
     getDialplans(callbackFn, context) {
         this._server.start()

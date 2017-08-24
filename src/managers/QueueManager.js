@@ -1,13 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Manager_1 = require("../internal/server/Manager");
 const QueuesCollection_1 = require("../collections/QueuesCollection");
-const QueueModel_1 = require("../models/queues/QueueModel");
-const QueueMemberModel_1 = require("../models/queues/QueueMemberModel");
-const queueMemberState_1 = require("../states/queueMemberState");
-const astUtil_1 = require("../internal/astUtil");
-const eventNames_1 = require("../internal/asterisk/eventNames");
+const Manager_1 = require("../internal/server/Manager");
 const actionNames_1 = require("../internal/asterisk/actionNames");
+const eventNames_1 = require("../internal/asterisk/eventNames");
+const astUtil_1 = require("../internal/astUtil");
+const QueueMemberModel_1 = require("../models/queues/QueueMemberModel");
+const QueueModel_1 = require("../models/queues/QueueModel");
+const queueMemberState_1 = require("../states/queueMemberState");
 const PROP_CHANNEL_MANAGER = "channelManager";
 /**
  * Manages queue events on behalf of an AsteriskServer.
@@ -44,11 +44,11 @@ class QueueManager extends Manager_1.default {
     static get events() {
         return EVENTS;
     }
-    start(callback, thisp) {
+    start(callbackFn, context) {
         function finish() {
-            if (typeof callback === "function") {
+            if (typeof callbackFn === "function") {
                 this.server.logger.info('manager "QueueManager" started');
-                callback.call(thisp, null, "queueManager");
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, "queueManager");
             }
         }
         function handleQueueParamsEvent(event) {
@@ -104,7 +104,7 @@ class QueueManager extends Manager_1.default {
         const action = { Action: actionNames_1.default.QUEUE_STATUS };
         this.server.sendEventGeneratingAction(action, (err, response) => {
             if (err) {
-                callback.call(thisp, err);
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
                 return;
             }
             response.events.forEach((event) => {

@@ -2,6 +2,7 @@ import AsteriskServer from "../../../asteriskServer";
 import {IDfiAMIResponseOriginate, IDfiAsOriginateCallback, IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../../../definitions/interfaces";
 import ChannelStates from "../../../enums/channelStates";
 import NoSuchChannel from "../../../errors/NoSuchChannel";
+import NotAllowedAction from "../../../errors/NotAllowedAction";
 import CallerId from "../../../models/CallerIdModel";
 import Channel from "../../../models/ChannelModel";
 import ChannelState from "../../../states/channelState";
@@ -13,6 +14,8 @@ import BaseServerAction from "./BaseAction";
 
 let VARIABLE_TRACE_ID = "AN_TRACE_ID";
 let ACTION_ID_PREFIX_ORIGINATE = "AN_ORIGINATE_";
+
+type IDfiOriginateResult = IDfiCallbackResult<NoSuchChannel | NotAllowedAction | Error, Channel>;
 
 class OriginateServerAction extends BaseServerAction {
     private _originateCallbacks: Map<string, IDfiAstOriginateCallbackData>;
@@ -157,9 +160,10 @@ class OriginateServerAction extends BaseServerAction {
      * @param  callbackFn callback to inform about the result
      * @param  [context] callback this
      */
-    public async(originateAction: IAstActionOriginate, callbackFn: IDfiAsOriginateCallback, context?) {
+    public async(originateAction: IAstActionOriginate, callbackFn?: IDfiAsOriginateCallback, context?) {
         if (!this._server.managers.channel.enabled) {
-            throw new Error("channel manager is not enabled but required for originate async");
+            const error = new Error("channel manager is not enabled but required for originate async");
+            AstUtil.maybeCallbackOnce(callbackFn.onFailure, callbackFn, error);
         }
 
         this._server.start()
@@ -212,9 +216,9 @@ class OriginateServerAction extends BaseServerAction {
      * @param callbackFn
      * @param context
      */
-    public originate(originateAction: IAstActionOriginate, callbackFn: IDfiCallbackResult, context?) {
+    public originate(originateAction: IAstActionOriginate, callbackFn?: IDfiOriginateResult, context?) {
 
-        function onChannel(err, channel) {
+        function onChannel(err?: {}, channel?: Channel) {
             if (err || channel == null) {
                 const error = new NoSuchChannel("Channel '" + originateAction.Channel + "' is not available");
                 AstUtil.maybeCallback(callbackFn, context, error);
@@ -263,7 +267,7 @@ class OriginateServerAction extends BaseServerAction {
      * @param callbackFn
      * @param context
      */
-    public toApplication(channel: string, application: string, data: string, timeout: string, callerId: CallerId, variables: string[], callbackFn?: IDfiCallbackResult, context?) {
+    public toApplication(channel: string, application: string, data: string, timeout: string, callerId: CallerId, variables: string[], callbackFn?: IDfiOriginateResult, context?) {
         callerId = callerId || null;
         variables = variables || null;
 
@@ -328,7 +332,7 @@ class OriginateServerAction extends BaseServerAction {
      * @param callbackFn
      * @param context
      */
-    public toExtension(channel: string, ctx: string, exten: string, priority: string, timeout: string, callerId: string, variables: string[], callbackFn?: IDfiCallbackResult, context?) {
+    public toExtension(channel: string, ctx: string, exten: string, priority: string, timeout: string, callerId: string, variables: string[], callbackFn?: IDfiOriginateResult, context?) {
         callerId = callerId || null;
         variables = variables || null;
 

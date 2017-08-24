@@ -1,5 +1,5 @@
-import AsteriskModel from "../internal/asteriskModel";
 import {IDfiAstDAHDIOnChannel, IDfiAstModelAttribsDAHDI, IDfiAstModelOptions} from "../definitions/models";
+import AsteriskModel from "../internal/asteriskModel";
 
 const PROP_NAME = "name";
 const PROP_CONTEXT = "context";

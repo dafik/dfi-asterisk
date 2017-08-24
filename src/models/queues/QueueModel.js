@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const asteriskModel_1 = require("../../internal/asteriskModel");
-const QueueEntryModel_1 = require("./QueueEntryModel");
 const serviceLeverTimerTask_1 = require("../../internal/serviceLeverTimerTask");
+const QueueEntryModel_1 = require("./QueueEntryModel");
 const PROP_NAME = "name";
 const PROP_MAX = "max";
 const PROP_STRATEGY = "strategy";

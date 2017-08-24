@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseAction_1 = require("./BaseAction");
-const astUtil_1 = require("../../astUtil");
 const ManagerError_1 = require("../../../errors/ManagerError");
-const ConfigFile_1 = require("../ConfigFile");
 const actionNames_1 = require("../../asterisk/actionNames");
+const astUtil_1 = require("../../astUtil");
+const ConfigFile_1 = require("../ConfigFile");
+const BaseAction_1 = require("./BaseAction");
 class ConfigServerAction extends BaseAction_1.default {
     getConfig(filename, callbackFn, context) {
         // TODO check OCB

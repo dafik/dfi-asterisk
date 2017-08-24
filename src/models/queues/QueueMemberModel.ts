@@ -1,16 +1,16 @@
-import AsteriskModel from "../../internal/asteriskModel";
 import {IDfiAstModelAttribsQueueMember, IDfiAstModelOptions} from "../../definitions/models";
-import {IAstActionQueuePause, IAstActionQueuePenalty} from "../../internal/asterisk/actions";
-import {IAstEventQueueMemberStatus} from "../../internal/asterisk/events";
-import QueueMemberState from "../../states/queueMemberState";
-import AstUtil from "../../internal/astUtil";
-import ManagerError from "../../errors/ManagerError";
+import QueueMemberStates from "../../enums/queueMemberStates";
 import IllegalArgumentError from "../../errors/IllegalArgument";
 import InvalidPenalty from "../../errors/InvalidPenatly";
-import QueueMemberStates from "../../enums/queueMemberStates";
+import ManagerError from "../../errors/ManagerError";
 import NoSuchInterface from "../../errors/NoSuchInterface";
-import Agent from "../AgentModel";
 import AST_ACTION from "../../internal/asterisk/actionNames";
+import {IAstActionQueuePause, IAstActionQueuePenalty} from "../../internal/asterisk/actions";
+import {IAstEventQueueMemberStatus} from "../../internal/asterisk/events";
+import AsteriskModel from "../../internal/asteriskModel";
+import AstUtil from "../../internal/astUtil";
+import QueueMemberState from "../../states/queueMemberState";
+import Agent from "../AgentModel";
 
 const PROP_QUEUE = "queue";
 const PROP_NAME = "name";
@@ -206,7 +206,7 @@ class QueueMember extends AsteriskModel {
             Queue: this.queue
         };
 
-        this._server.sendAction(action, (err, response) => {
+        AsteriskModel._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError) {
                 const msg = "Unable to set penalty for '" + this.interface +
                     "' on '" + this.queue + "': " + response.message;
@@ -220,7 +220,7 @@ class QueueMember extends AsteriskModel {
     }
 
     private _sendPauseAction(action: IAstActionQueuePause) {
-        this._server.sendAction(action, (err, response) => {
+        AsteriskModel._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError) {
                 if (action.Queue != null) {
                     const msg = "Unable to change paused state for '" + action.Interface +

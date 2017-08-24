@@ -1,23 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const asteriskModel_1 = require("../internal/asteriskModel");
-const astUtil_1 = require("../internal/astUtil");
 const BridgesCollection_1 = require("../collections/BridgesCollection");
-const CallerIdModel_1 = require("./CallerIdModel");
-const ChannelStateHistoryEntry_1 = require("./histories/ChannelStateHistoryEntry");
-const channelState_1 = require("../states/channelState");
+const PeersCollection_1 = require("../collections/PeersCollection");
+const VariablesCollection_1 = require("../collections/VariablesCollection");
 const channelStates_1 = require("../enums/channelStates");
-const DialedChannelHistoryEntry_1 = require("./histories/DialedChannelHistoryEntry");
-const ExtensionHistoryEntry_1 = require("./histories/ExtensionHistoryEntry");
 const hangupCauses_1 = require("../enums/hangupCauses");
 const IllegalArgument_1 = require("../errors/IllegalArgument");
-const LinkedChannelHistoryEntry_1 = require("./histories/LinkedChannelHistoryEntry");
 const ManagerError_1 = require("../errors/ManagerError");
 const NoSuchChannel_1 = require("../errors/NoSuchChannel");
-const PeersCollection_1 = require("../collections/PeersCollection");
-const VariableModel_1 = require("./VariableModel");
-const VariablesCollection_1 = require("../collections/VariablesCollection");
 const actionNames_1 = require("../internal/asterisk/actionNames");
+const asteriskModel_1 = require("../internal/asteriskModel");
+const astUtil_1 = require("../internal/astUtil");
+const channelState_1 = require("../states/channelState");
+const CallerIdModel_1 = require("./CallerIdModel");
+const ChannelStateHistoryEntry_1 = require("./histories/ChannelStateHistoryEntry");
+const DialedChannelHistoryEntry_1 = require("./histories/DialedChannelHistoryEntry");
+const ExtensionHistoryEntry_1 = require("./histories/ExtensionHistoryEntry");
+const LinkedChannelHistoryEntry_1 = require("./histories/LinkedChannelHistoryEntry");
+const VariableModel_1 = require("./VariableModel");
 const CAUSE_VARIABLE_NAME = "PRI_CAUSE";
 const ID = "id";
 const PROP_ACCOUNT = "account";
@@ -77,21 +77,21 @@ class Channel extends asteriskModel_1.default {
         this.setProp(P_PROP_STATE_HISTORY, []);
         this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
         this.setProp(P_PROP_DIALED_CHANNEL_HISTORY, []);
-        if (attributes.Linkedid && attributes.UniqueID !== attributes.Linkedid && this._server.managers.channel.hasChannel(attributes.Linkedid)) {
-            this.channelLinked(attributes.$time, this._server.managers.channel.getChannelById(attributes.Linkedid));
+        if (attributes.Linkedid && attributes.UniqueID !== attributes.Linkedid && asteriskModel_1.default._server.managers.channel.hasChannel(attributes.Linkedid)) {
+            this.channelLinked(attributes.$time, asteriskModel_1.default._server.managers.channel.getChannelById(attributes.Linkedid));
         }
-        if (attributes.BridgeId && this._server.managers.bridge.hasBridge(attributes.BridgeId)) {
-            this._bridges.add(this._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeId));
+        if (attributes.BridgeId && asteriskModel_1.default._server.managers.bridge.hasBridge(attributes.BridgeId)) {
+            this._bridges.add(asteriskModel_1.default._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeId));
         }
-        else if (attributes.BridgeID && this._server.managers.bridge.hasBridge(attributes.BridgeID)) {
-            this._bridges.add(this._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeID));
+        else if (attributes.BridgeID && asteriskModel_1.default._server.managers.bridge.hasBridge(attributes.BridgeID)) {
+            this._bridges.add(asteriskModel_1.default._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeID));
         }
         if (this.name) {
-            if (this.destroyed || !this._server.managers.peer.enabled) {
+            if (this.destroyed || !asteriskModel_1.default._server.managers.peer.enabled) {
                 return;
             }
             const peerName = this.name.split("-")[0];
-            const peer = this._server.managers.peer.peers.get(peerName);
+            const peer = asteriskModel_1.default._server.managers.peer.peers.get(peerName);
             if (peer) {
                 peer.addChannel(this);
                 this._peers.add(peer);
@@ -103,7 +103,7 @@ class Channel extends asteriskModel_1.default {
             }
         }
         if (this._bridges.size) {
-            if (!this._server.managers.bridge.enabled) {
+            if (!asteriskModel_1.default._server.managers.bridge.enabled) {
                 return;
             }
             this._bridges.forEach((bridge) => {
@@ -370,7 +370,7 @@ class Channel extends asteriskModel_1.default {
             this.setVariable(CAUSE_VARIABLE_NAME, cause.status);
             action.Cause = cause.status;
         }
-        this._server.sendAction(action, Channel.onServerResponse, this);
+        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
     }
     setAbsoluteTimeout(seconds) {
         const action = {
@@ -378,7 +378,7 @@ class Channel extends asteriskModel_1.default {
             Channel: this.name,
             Timeout: seconds.toString()
         };
-        this._server.sendAction(action, Channel.onServerResponse, this);
+        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
     }
     redirect(context, exten, priority) {
         const action = {
@@ -388,7 +388,7 @@ class Channel extends asteriskModel_1.default {
             Exten: exten,
             Priority: priority.toString()
         };
-        this._server.sendAction(action, Channel.onServerResponse, this);
+        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
     }
     redirectBothLegs(context, exten, priority) {
         const action = {
@@ -404,7 +404,7 @@ class Channel extends asteriskModel_1.default {
             action.ExtraExten = exten;
             action.ExtraPriority = priority.toString();
         }
-        this._server.sendAction(action, Channel.onServerResponse, this);
+        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
     }
     playDtmf(digit) {
         if (digit == null) {
@@ -415,7 +415,7 @@ class Channel extends asteriskModel_1.default {
             Channel: this.name,
             Digit: digit
         };
-        this._server.sendAction(action, Channel.onServerResponse, this);
+        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
     }
     startMonitoring(filename, format, mix) {
         const action = {
@@ -425,7 +425,7 @@ class Channel extends asteriskModel_1.default {
             Format: format,
             Mix: mix.toString()
         };
-        this._server.sendAction(action, Channel.onServerResponse, this);
+        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
     }
     changeMonitoring(filename) {
         if (filename == null) {
@@ -436,28 +436,28 @@ class Channel extends asteriskModel_1.default {
             Channel: this.name,
             File: filename
         };
-        this._server.sendAction(action, Channel.onServerResponse, this);
+        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
     }
     stopMonitoring() {
         const action = {
             Action: actionNames_1.default.STOP_MONITOR,
             Channel: this.name
         };
-        this._server.sendAction(action, Channel.onServerResponse, this);
+        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
     }
     pauseMonitoring() {
         const action = {
             Action: actionNames_1.default.PAUSE_MONITOR,
             Channel: this.name
         };
-        this._server.sendAction(action, Channel.onServerResponse, this);
+        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
     }
     unpauseMonitoring() {
         const action = {
             Action: actionNames_1.default.UNPAUSE_MONITOR,
             Channel: this.name
         };
-        this._server.sendAction(action, Channel.onServerResponse, this);
+        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
     }
     setVariable(name, value) {
         const action = {
@@ -466,7 +466,7 @@ class Channel extends asteriskModel_1.default {
             Value: value,
             Variable: name
         };
-        this._server.sendAction(action, (err, response) => {
+        asteriskModel_1.default._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError_1.default) {
                 throw new NoSuchChannel_1.default("Channel " + self.name + " is not available: " + response.response, this);
             }
@@ -483,9 +483,9 @@ class Channel extends asteriskModel_1.default {
         }
     }
     getVariable(name, callbackFn, context) {
-        const value = this._variables.get(name);
-        if (value !== undefined) {
-            astUtil_1.default.maybeCallbackOnce(callbackFn, context, value);
+        const variable = this._variables.get(name);
+        if (variable !== undefined) {
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, variable.value);
             return;
         }
         if (this._varsCallbacks.has(name)) {
@@ -498,7 +498,7 @@ class Channel extends asteriskModel_1.default {
                 Channel: this.name,
                 Variable: name
             };
-            this._server.sendAction(action, (err, response) => {
+            asteriskModel_1.default._server.sendAction(action, (err, response) => {
                 // TODO check callback and getVarsCallbacks
                 if (this.destroyed) {
                     return;

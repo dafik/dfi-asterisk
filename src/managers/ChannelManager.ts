@@ -1,6 +1,6 @@
 import Channels from "../collections/channels/ChannelsCollection";
 import {IDfiAstEventsChannelManager} from "../definitions/events";
-import {IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../definitions/interfaces";
+import { IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../definitions/interfaces";
 import ChannelStates from "../enums/channelStates";
 import {IAstActionCommand} from "../internal/asterisk/actions";
 import {
@@ -39,6 +39,7 @@ import * as moment from "moment";
 import AST_ACTION from "../internal/asterisk/actionNames";
 import AST_EVENT from "../internal/asterisk/eventNames";
 import Moment = moment.Moment;
+import NoSuchChannel from "../errors/NoSuchChannel";
 
 const REMOVAL_THRESHOLD = 5; // 15 minutes in seconds
 let VARIABLE_TRACE_ID = "AJ_TRACE_ID";
@@ -95,7 +96,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         return this.getProp("technologyCount");
     }
 
-    public start(callbackFn, context) {
+    public start(callbackFn: IDfiCallbackResult<Error, "DeviceManager">, context) {
 
         function finish() {
             this.server.logger.info('manager "ChannelManager" started');
@@ -479,7 +480,6 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
     private _handleHangupEvent(event: IAstEventHangup) {
         this.logger.debug("handle HangupEvent: %j (%s)", event.Channel, event.ChannelStateDesc, event["Cause-txt"]);
 
-        let cause: HangupCause = null;
         let channel: Channel = this.getChannelById(event.Uniqueid);
 
         if (channel == null) {
@@ -492,7 +492,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             }
         }
 
-        cause = event.Cause != null ? HangupCause.byValue(parseInt(event.Cause, 10)) : HangupCause.byValue(-1);
+        const cause: HangupCause = event.Cause != null ? HangupCause.byValue(parseInt(event.Cause, 10)) : HangupCause.byValue(-1);
 
         channel.handleHangup(event.$time, cause);
         this.logger.info('Removing channel "' + channel.name + '" due to hangup (' + cause.name + ')"');
@@ -736,10 +736,10 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         }
     }
 
-    private _getTraceId(channel: Channel, callbackFn: IDfiCallbackResult, context?) {
+    private _getTraceId(channel: Channel, callbackFn: IDfiCallbackResult<NoSuchChannel, string>, context?) {
         channel.getVariable(VARIABLE_TRACE_ID, onResponse, this);
 
-        function onResponse(traceId) {
+        function onResponse(err?: NoSuchChannel, traceId?: string) {
             this.logger.trace("TraceId for channel %s is %s", channel.name, traceId);
             AstUtil.maybeCallbackOnce(callbackFn, context, null, traceId);
 

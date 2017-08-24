@@ -1,5 +1,5 @@
-import AsteriskState from "../internal/asteriskState";
 import QueueMemberStates from "../enums/queueMemberStates";
+import AsteriskState from "../internal/asteriskState";
 
 class QueueMemberState extends AsteriskState {
 

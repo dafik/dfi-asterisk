@@ -1,14 +1,13 @@
-import BaseServerAction from "./BaseAction";
-import AstUtil from "../../astUtil";
-import AST_ACTION from "../../asterisk/actionNames";
-import {IDfiAMIResponseGetvar, IDfiCallbackError, IDfiCallbackResult} from "../../../definitions/interfaces";
-
 import {format} from "util";
+import {IDfiAMIResponseGetvar, IDfiCallbackError, IDfiCallbackResult} from "../../../definitions/interfaces";
+import AST_ACTION from "../../asterisk/actionNames";
 import {IAstActionGetvar, IAstActionSetvar} from "../../asterisk/actions";
+import AstUtil from "../../astUtil";
+import BaseServerAction from "./BaseAction";
 
 class VariableServerAction extends BaseServerAction {
 
-    public getGlobalVariable(variable: string, callbackFn: IDfiCallbackResult, context?) {
+    public getGlobalVariable(variable: string, callbackFn: IDfiCallbackResult<Error, string>, context?) {
 
         this._server.start()
             .then(() => {
@@ -31,7 +30,7 @@ class VariableServerAction extends BaseServerAction {
             });
     }
 
-    public setGlobalVariable(variable: string, value: string, callbackFn: IDfiCallbackError, context?) {
+    public setGlobalVariable(variable: string, value: string, callbackFn: IDfiCallbackError<Error>, context?) {
 
         this._server.start()
             .then(() => {

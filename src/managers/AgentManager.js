@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Manager_1 = require("../internal/server/Manager");
 const AgentsCollection_1 = require("../collections/AgentsCollection");
+const astUtil_1 = require("../internal/astUtil");
+const Manager_1 = require("../internal/server/Manager");
 const AgentModel_1 = require("../models/AgentModel");
 const QueueManager_1 = require("./QueueManager");
-const astUtil_1 = require("../internal/astUtil");
-const agentState_1 = require("../states/agentState");
 const agentStates_1 = require("../enums/agentStates");
 const actionNames_1 = require("../internal/asterisk/actionNames");
 const eventNames_1 = require("../internal/asterisk/eventNames");
+const agentState_1 = require("../states/agentState");
 const RINGING_AGENTS = "ringingAgents";
 class AgentManager extends Manager_1.default {
     constructor(options, state) {
@@ -52,7 +52,7 @@ class AgentManager extends Manager_1.default {
     start(callbackFn, context) {
         function finish() {
             this.server.logger.info('manager "AgentManager" started');
-            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, "agentManager");
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, "AgentManager");
         }
         this.server.logger.info('starting manager "AgentManager"');
         if (!this.enabled) {

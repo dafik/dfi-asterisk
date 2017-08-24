@@ -1,9 +1,9 @@
 import DfiEventObject from "local-dfi-base/src/dfiEventObject";
+import AsteriskServer from "../../asteriskServer";
 import {IDfiAstManagerOptions} from "../../definitions/configs";
 import {IDfiAstEventsManager, IDfiAstEventsServer} from "../../definitions/events";
 import {IDfiCallbackResult, IEventHandle, IEventHandlersMap} from "../../definitions/interfaces";
 import {IAstEvent} from "../asterisk/events";
-import AsteriskServer from "../../asteriskServer";
 import AsteriskCollection from "../asteriskCollection";
 import AsteriskModel from "../asteriskModel";
 import AstUtil from "../astUtil";
@@ -25,7 +25,7 @@ abstract class AsteriskManager<M extends AsteriskModel, C extends AsteriskCollec
         this.setProp(P_PROP_COLLECTION, collection);
         this.setProp(P_PROP_EVENTSMAP, new Map());
 
-        this.setProp(P_PROP_ENABLED, !!enabled);
+        this.setProp(P_PROP_ENABLED, enabled);
     }
 
     get enabled(): boolean {
@@ -56,7 +56,8 @@ abstract class AsteriskManager<M extends AsteriskModel, C extends AsteriskCollec
         return this.getProp(P_PROP_MANAGERS);
     }
 
-    public restart(callbackFn: IDfiCallbackResult, context?): void {
+    public restart(callbackFn: IDfiCallbackResult<null, string>, context?): void {
+        // TODO implement
         this.server.logger.info("manager %s restarted", this.constructor.name);
         AstUtil.maybeCallbackOnce(callbackFn, context, null, this.constructor.name);
     }

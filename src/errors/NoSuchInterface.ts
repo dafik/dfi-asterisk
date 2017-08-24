@@ -1,7 +1,7 @@
 import QueueMember from "../models/queues/QueueMemberModel";
 
 class NoSuchInterface extends Error {
-    public member;
+    private member: QueueMember;
 
     constructor(message: string, member?: QueueMember) {
         super(message);
@@ -11,4 +11,5 @@ class NoSuchInterface extends Error {
         this.member = member;
     }
 }
+
 export default NoSuchInterface;

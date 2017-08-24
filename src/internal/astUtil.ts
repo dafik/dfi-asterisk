@@ -35,7 +35,7 @@ class AstUtil {
      * To support the dnd property of ZapShowChannelsEvent this method
      * also considered the string "Enabled" as true.
      */
-    public static isTrue(o) {
+    public static isTrue(o): boolean {
         if (o == null || typeof o === "undefined") {
             return false;
         }
@@ -134,13 +134,13 @@ class AstUtil {
         return uniqueActionID();
     }
 
-    public static maybeCallback(fn: IDfiCallbackResult, context, err?, response?): void {
+    public static maybeCallback<Er extends Error, R>(fn: IDfiCallbackResult<Er, R>, context, err?: Er, response?: R): void {
         if (_.isFunction(fn)) {
             fn.call(context, err, response);
         }
     }
 
-    public static maybeCallbackOnce(fn: IDfiCallbackResult, context, err?, response?): void {
+    public static maybeCallbackOnce<Er extends Error, R>(fn: IDfiCallbackResult<Er, R>, context, err?: Er, response?: R): void {
         if (_.isFunction(fn)) {
             if (fn.fired) {
                 AstUtil.logger.error("callback was fired before fn : \n%s", ((fn.prototype && fn.prototype.constructor) ? fn.prototype.constructor : fn.toString()));

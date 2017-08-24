@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseAction_1 = require("./BaseAction");
-const astUtil_1 = require("../../astUtil");
 const ManagerCommunication_1 = require("../../../errors/ManagerCommunication");
 const actionNames_1 = require("../../asterisk/actionNames");
+const astUtil_1 = require("../../astUtil");
+const BaseAction_1 = require("./BaseAction");
 class ModuleServerAction extends BaseAction_1.default {
     isModuleLoaded(module, callbackFn, context) {
         this._server.start()
@@ -53,6 +53,9 @@ class ModuleServerAction extends BaseAction_1.default {
             this._server.sendAction(action, (err, response) => {
                 if (err) {
                     astUtil_1.default.maybeCallback(callbackFn, context, new ManagerCommunication_1.default(response.Message ? response.Message : response.Response));
+                }
+                else {
+                    astUtil_1.default.maybeCallback(callbackFn, context);
                 }
             });
         })

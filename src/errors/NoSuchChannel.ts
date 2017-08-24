@@ -1,7 +1,7 @@
 import Channel from "../models/ChannelModel";
 
 class NoSuchChannel extends Error {
-    public channel;
+    public channel: Channel;
 
     constructor(message: string, channel?: Channel) {
         super(message);
@@ -11,4 +11,5 @@ class NoSuchChannel extends Error {
         this.channel = channel;
     }
 }
+
 export default NoSuchChannel;

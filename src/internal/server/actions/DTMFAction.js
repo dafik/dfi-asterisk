@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseAction_1 = require("./BaseAction");
 const ChannelModel_1 = require("../../../models/ChannelModel");
-const astUtil_1 = require("../../astUtil");
 const actionNames_1 = require("../../asterisk/actionNames");
+const astUtil_1 = require("../../astUtil");
+const BaseAction_1 = require("./BaseAction");
 class DTMFServerAction extends BaseAction_1.default {
     send(channel, digit, callbackFn, context) {
         this._server.start()

@@ -1,17 +1,16 @@
-import BaseServerAction from "./BaseAction";
-import AstUtil from "../../astUtil";
 import {IDfiAMIResponseCommand, IDfiAMIResponseMailboxCount, IDfiCallbackResult} from "../../../definitions/interfaces";
-
-import {IAstActionMailboxCount} from "../../asterisk/actions";
 import VoiceMailbox from "../../../models/VoiceMailboxModel";
 import AST_ACTION from "../../asterisk/actionNames";
+import {IAstActionMailboxCount} from "../../asterisk/actions";
+import AstUtil from "../../astUtil";
+import BaseServerAction from "./BaseAction";
 
 const SHOW_VOICEMAIL_USERS_COMMAND = "voicemail show users";
 const SHOW_VOICEMAIL_USERS_PATTERN = /^(\S+)\s+(\S+)\s+(.{25})\s+(\d+)/;
 
 class VoiceMailServerAction extends BaseServerAction {
 
-    public getVoicemailBoxes(callbackFn: IDfiCallbackResult, context?) {
+    public getVoicemailBoxes(callbackFn: IDfiCallbackResult<Error, VoiceMailbox[]>, context?) {
         this._server.start()
             .then(() => {
                 this._server.sendAction(
@@ -84,4 +83,5 @@ class VoiceMailServerAction extends BaseServerAction {
             });
     }
 }
+
 export default VoiceMailServerAction;

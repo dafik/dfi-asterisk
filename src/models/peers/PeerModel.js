@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const PeerChannelsCollection_1 = require("../../collections/channels/PeerChannelsCollection");
+const peerStates_1 = require("../../enums/peerStates");
 const asteriskModel_1 = require("../../internal/asteriskModel");
 const astUtil_1 = require("../../internal/astUtil");
-const PeerStateHistoryEntry_1 = require("../histories/PeerStateHistoryEntry");
-const peerStates_1 = require("../../enums/peerStates");
-const PeerChannelsCollection_1 = require("../../collections/channels/PeerChannelsCollection");
 const peerState_1 = require("../../states/peerState");
 const PeerAddressHistoryEntry_1 = require("../histories/PeerAddressHistoryEntry");
+const PeerStateHistoryEntry_1 = require("../histories/PeerStateHistoryEntry");
 const PROP_TECHNOLOGY = "technology";
 const PROP_IP = "ip";
 const PROP_STATE = "state";
@@ -27,7 +27,7 @@ const PEER_TECH = {
 class Peer extends asteriskModel_1.default {
     constructor(attributes, options) {
         attributes.id = attributes.technology + "/" + attributes.ObjectName;
-        attributes.Dynamic = astUtil_1.default.isTrue(attributes.Dynamic) ? true : false;
+        attributes.Dynamic = astUtil_1.default.isTrue(attributes.Dynamic);
         if (attributes.Status) {
             const status = attributes.Status;
             attributes.state = status.match(/OK \(.*\)/) ? peerState_1.default.byValue(2) : peerState_1.default.byName(status);

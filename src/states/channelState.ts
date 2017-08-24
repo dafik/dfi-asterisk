@@ -1,5 +1,5 @@
-import AsteriskState from "../internal/asteriskState";
 import ChannelStates from "../enums/channelStates";
+import AsteriskState from "../internal/asteriskState";
 
 class ChannelState extends AsteriskState {
 

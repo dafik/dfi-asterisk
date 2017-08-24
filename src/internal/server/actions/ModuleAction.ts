@@ -1,14 +1,14 @@
-import BaseServerAction from "./BaseAction";
-import AstUtil from "../../astUtil";
+import {IDfiCallbackError, IDfiCallbackResult} from "../../../definitions/interfaces";
 import ManagerCommunication from "../../../errors/ManagerCommunication";
 import AST_ACTION from "../../asterisk/actionNames";
-import {IDfiCallbackResult} from "../../../definitions/interfaces";
+import AstUtil from "../../astUtil";
+import BaseServerAction from "./BaseAction";
 
 import {IAstActionModuleCheck, IAstActionModuleLoad} from "../../asterisk/actions";
 
 class ModuleServerAction extends BaseServerAction {
 
-    public isModuleLoaded(module: string, callbackFn: IDfiCallbackResult, context?) {
+    public isModuleLoaded(module: string, callbackFn: IDfiCallbackResult<Error, boolean>, context?) {
         this._server.start()
             .then(() => {
                 const action: IAstActionModuleCheck = {
@@ -50,7 +50,7 @@ class ModuleServerAction extends BaseServerAction {
         this._sendModuleLoadAction(null, MODULE_LOAD_TYPES.LOAD_TYPE_RELOAD);
     }
 
-    private _sendModuleLoadAction(module: string, loadType: string, callbackFn?: IDfiCallbackResult, context?) {
+    private _sendModuleLoadAction(module: string, loadType: string, callbackFn?: IDfiCallbackError<ManagerCommunication>, context?) {
 
         this._server.start()
             .then(() => {
@@ -62,6 +62,8 @@ class ModuleServerAction extends BaseServerAction {
                 this._server.sendAction(action, (err, response) => {
                     if (err) {
                         AstUtil.maybeCallback(callbackFn, context, new ManagerCommunication(response.Message ? response.Message : response.Response));
+                    } else {
+                        AstUtil.maybeCallback(callbackFn, context);
                     }
                 });
             })

@@ -1,13 +1,22 @@
-import QueueEntry from "../models/queues/QueueEntryModel";
-import QueueMember from "../models/queues/QueueMemberModel";
-import Channel from "../models/ChannelModel";
-import AsteriskVersion from "../internal/server/Version";
-import DialplanContext from "../models/dialplans/DialplanContextModel";
 import {IAstAction, IAstActionCommand, IAstActionDBGet, IAstActionGetvar, IAstActionOriginate, IAstActionShowDialPlan} from "../internal/asterisk/actions";
 import {IAstEvent} from "../internal/asterisk/events";
+import AsteriskVersion from "../internal/server/Version";
+import Channel from "../models/ChannelModel";
+import DialplanContext from "../models/dialplans/DialplanContextModel";
+import QueueEntry from "../models/queues/QueueEntryModel";
+import QueueMember from "../models/queues/QueueMemberModel";
 
-export interface IDfiCallbackError extends Function {
-    (error?: Error): void;
+export type AsteriskActionType1 = IAstAction | IAstActionGetvar | IAstActionCommand;
+export type AsteriskActionType2 = IAstAction | IAstActionCommand;
+
+export interface IDfiCallbackError<Er extends Error> extends Function {
+    (error?: Er): void;
+
+    fired?: boolean;
+}
+
+export interface IDfiCallbackResult<Er extends Error, R> extends IDfiCallbackError<Er> {
+    (error?: Er, result?: R): void;
 
     fired?: boolean;
 }
@@ -18,12 +27,6 @@ export interface IDfiAMIResponseError<A extends IAstAction> extends Error {
 
 export interface IDfiAMICallbackError<A extends IAstAction> extends Function {
     (error?: IDfiAMIResponseError<A>): void;
-
-    fired?: boolean;
-}
-
-export interface IDfiCallbackResult extends IDfiCallbackError {
-    (error?: Error, result?): void;
 
     fired?: boolean;
 }
@@ -40,8 +43,8 @@ export interface IDfiActionCallback<R extends IDfiAMIResponse, A extends IAstAct
     fired?: boolean;
 }
 
-export interface IDfiAMIMultiCallback<E extends IAstEvent, A extends IAstAction> extends Function {
-    (error?: IDfiAMIResponseError<IAstAction | IAstActionCommand>, result?: IDfiAMIResponseMessageMulti<E>): void;
+export interface IDfiAMIMultiCallback<Ev extends IAstEvent, A extends IAstAction, Er extends Error, R> extends Function {
+    (error?: IDfiAMIResponseError<IAstAction | IAstActionCommand>, result?: IDfiAMIResponseMessageMulti<Ev, Er, R>): void;
 
     fired?: boolean;
 }
@@ -59,7 +62,7 @@ export interface IDfiDBGetCallback extends Function {
 }
 
 export interface IDfiGetDialplansCallback extends Function {
-    (error?: IDfiAMIResponseError<IAstActionShowDialPlan>, result?: DialplanContext[]): void;
+    (error?: IDfiAMIResponseError<IAstActionShowDialPlan>, result?: Map<string, DialplanContext>): void;
 
     fired?: boolean;
 }
@@ -76,8 +79,8 @@ export interface IDfiGetFileVersionCallback extends Function {
     fired?: boolean;
 }
 
-export interface IDfiVariableCallback extends Object {
-    fn: IDfiCallbackResult;
+export interface IDfiVariableCallback<Er extends Error, R> extends Object {
+    fn: IDfiCallbackResult<Er, R>;
     context?;
 }
 
@@ -170,18 +173,19 @@ interface IDfiAstQueueListener {
     onMemberRemoved(member: QueueMember) ;
 }
 
-export interface IDfiAMIResponseMessageMulti<E extends IAstEvent> extends IAstEvent {
+// TODO check fn
+export interface IDfiAMIResponseMessageMulti<Ev extends IAstEvent, Er extends Error, R> extends IAstEvent {
     Response: string;
     EventList: string;
     Message: string;
-    events: E[];
-    fn: IDfiCallbackResult;
+    events: Ev[];
+    fn: IDfiCallbackResult<Er, R>;
     ctx?: any;
 }
 
-export interface IDfiAstResponseMessageMulti<E extends IAstEvent> {
-    events: E[];
-    fn: IDfiCallbackResult;
+export interface IDfiAstResponseMessageMulti<Ev extends IAstEvent, Er extends Error, R> {
+    events: Ev[];
+    fn: IDfiCallbackResult<Er, R>;
     ctx?: any;
 }
 

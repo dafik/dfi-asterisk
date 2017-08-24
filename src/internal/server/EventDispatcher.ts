@@ -1,9 +1,9 @@
 import DfiObject from "local-dfi-base/src/dfiObject";
 import AsteriskServer from "../../asteriskServer";
-import AsteriskManager from "./Manager";
-import AsteriskModel from "../asteriskModel";
-import AsteriskCollection from "../asteriskCollection";
 import AST_EVENT from "../asterisk/eventNames";
+import AsteriskCollection from "../asteriskCollection";
+import AsteriskModel from "../asteriskModel";
+import AsteriskManager from "./Manager";
 
 class EventDispatcher extends DfiObject {
 

@@ -1,14 +1,14 @@
-import BaseServerAction from "./BaseAction";
-import Channel from "../../../models/ChannelModel";
-import AstUtil from "../../astUtil";
-import AST_ACTION from "../../asterisk/actionNames";
 import {IDfiCallbackResult} from "../../../definitions/interfaces";
+import Channel from "../../../models/ChannelModel";
+import AST_ACTION from "../../asterisk/actionNames";
+import AstUtil from "../../astUtil";
+import BaseServerAction from "./BaseAction";
 
 import {IAstActionPlayDTMF} from "../../asterisk/actions";
 
 class DTMFServerAction extends BaseServerAction {
 
-    public send(channel: Channel | string | string, digit, callbackFn?: IDfiCallbackResult, context?) {
+    public send(channel: Channel | string | string, digit, callbackFn?: IDfiCallbackResult<Error, {}>, context?) {
 
         this._server.start()
             .then(() => {

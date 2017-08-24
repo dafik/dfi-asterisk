@@ -1,6 +1,6 @@
-import AsteriskModel from "./asteriskModel";
 import {DfiCollection} from "local-dfi-base";
 import {IDfiAstConfigCollection} from "../definitions/configs";
+import AsteriskModel from "./asteriskModel";
 
 const ID_FIELD = "id";
 const COLLECTION = "collection";

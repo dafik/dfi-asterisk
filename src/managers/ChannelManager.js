@@ -374,7 +374,6 @@ class ChannelManager extends Manager_1.default {
     }
     _handleHangupEvent(event) {
         this.logger.debug("handle HangupEvent: %j (%s)", event.Channel, event.ChannelStateDesc, event["Cause-txt"]);
-        let cause = null;
         let channel = this.getChannelById(event.Uniqueid);
         if (channel == null) {
             channel = this.getChannelByName(event.Channel);
@@ -386,7 +385,7 @@ class ChannelManager extends Manager_1.default {
                 this.logger.error("error");
             }
         }
-        cause = event.Cause != null ? hangupCause_1.default.byValue(parseInt(event.Cause, 10)) : hangupCause_1.default.byValue(-1);
+        const cause = event.Cause != null ? hangupCause_1.default.byValue(parseInt(event.Cause, 10)) : hangupCause_1.default.byValue(-1);
         channel.handleHangup(event.$time, cause);
         this.logger.info('Removing channel "' + channel.name + '" due to hangup (' + cause.name + ')"');
         const technology = channel.technology;
@@ -582,7 +581,7 @@ class ChannelManager extends Manager_1.default {
     }
     _getTraceId(channel, callbackFn, context) {
         channel.getVariable(VARIABLE_TRACE_ID, onResponse, this);
-        function onResponse(traceId) {
+        function onResponse(err, traceId) {
             this.logger.trace("TraceId for channel %s is %s", channel.name, traceId);
             astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, traceId);
         }

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const PeerModel_1 = require("./PeerModel");
-const IpAddressModel_1 = require("../IpAddressModel");
 const astUtil_1 = require("../../internal/astUtil");
+const IpAddressModel_1 = require("../IpAddressModel");
+const PeerModel_1 = require("./PeerModel");
 const PROP_CHANNEL_TYPE = "channelType";
 const PROP_OBJECT_NAME = "objectName";
 const PROP_CHAN_OBJECT_TYPE = "chanObjectType";
@@ -19,7 +19,7 @@ const PROP_REAL_TIME_DEVICE = "realtimeDevice";
 const PROP_DESCRIPTION = "description";
 class SIPPeer extends PeerModel_1.default {
     constructor(attributes, options) {
-        const attr = Object.assign({}, attributes, { ACL: !!astUtil_1.default.isTrue(attributes.ACL), AutoComedia: !!astUtil_1.default.isTrue(attributes.AutoComedia), AutoForcerport: !!astUtil_1.default.isTrue(attributes.AutoForcerport), Comedia: !!astUtil_1.default.isTrue(attributes.Comedia), Forcerport: !!astUtil_1.default.isTrue(attributes.Forcerport), RealtimeDevice: !!astUtil_1.default.isTrue(attributes.RealtimeDevice), TextSupport: !!astUtil_1.default.isTrue(attributes.TextSupport), VideoSupport: !!astUtil_1.default.isTrue(attributes.VideoSupport), ip: new IpAddressModel_1.default({
+        const attr = Object.assign({}, attributes, { ACL: astUtil_1.default.isTrue(attributes.ACL), AutoComedia: astUtil_1.default.isTrue(attributes.AutoComedia), AutoForcerport: astUtil_1.default.isTrue(attributes.AutoForcerport), Comedia: astUtil_1.default.isTrue(attributes.Comedia), Forcerport: astUtil_1.default.isTrue(attributes.Forcerport), RealtimeDevice: astUtil_1.default.isTrue(attributes.RealtimeDevice), TextSupport: astUtil_1.default.isTrue(attributes.TextSupport), VideoSupport: astUtil_1.default.isTrue(attributes.VideoSupport), ip: new IpAddressModel_1.default({
                 ipAddress: astUtil_1.default.isNull(attributes.IPaddress) ? null : attributes.IPaddress,
                 mask: "255.255.255.255",
                 port: parseInt(attributes.IPport, 10)

@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseAction_1 = require("./BaseAction");
-const Version_1 = require("../Version");
-const astUtil_1 = require("../../astUtil");
 const ManagerCommunication_1 = require("../../../errors/ManagerCommunication");
 const ManagerError_1 = require("../../../errors/ManagerError");
 const actionNames_1 = require("../../asterisk/actionNames");
+const astUtil_1 = require("../../astUtil");
+const Version_1 = require("../Version");
+const BaseAction_1 = require("./BaseAction");
 const SHOW_VERSION_FILES_COMMAND = "core show file version";
 const SHOW_VERSION_FILES_PATTERN = /^([\S]+)\s+([0-9.]+)/;
 const SHOW_VERSION_COMMAND = "core show version";

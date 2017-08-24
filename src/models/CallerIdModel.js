@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const astUtil_1 = require("../internal/astUtil");
 const dfiObject_1 = require("local-dfi-base/src/dfiObject");
+const astUtil_1 = require("../internal/astUtil");
 const P_PROP_NAME = "name";
 const P_PROP_NUMBER = "number";
 class CallerId extends dfiObject_1.default {

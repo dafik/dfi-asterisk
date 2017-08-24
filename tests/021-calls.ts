@@ -3,7 +3,7 @@ import DebugLogger from "local-dfi-debug-logger";
 import Linphone from "local-dfi-linphone";
 import {getInstance as manager} from "local-dfi-linphone-endpoint-manager";
 import EndpointManger from "local-dfi-linphone-endpoint-manager/src/endpointManager";
-import {IDfiAsOriginateCallback, IDfiCallbackResult} from "../src/definitions/interfaces";
+import {IDfiAsOriginateCallback, IDfiCallbackError, IDfiCallbackResult} from "../src/definitions/interfaces";
 import {AST_ACTION} from "../src/internal/asterisk/actionNames";
 import {IAstActionDialplanExtensionAdd, IAstActionDialplanExtensionRemove, IAstActionOriginate} from "../src/internal/asterisk/actions";
 import asterisk from "./mock/asterisk-real";
@@ -39,7 +39,7 @@ describe("calls", () => {
 
     function onBefore(done) {
 
-        function init(callback: IDfiCallbackResult, context?) {
+        function init(callback: IDfiCallbackError<Error>, context?) {
 
             function finishInit(err?) {
                 if (err) {

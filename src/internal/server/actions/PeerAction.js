@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const BaseAction_1 = require("./BaseAction");
-const astUtil_1 = require("../../astUtil");
 const actionNames_1 = require("../../asterisk/actionNames");
 const eventNames_1 = require("../../asterisk/eventNames");
+const astUtil_1 = require("../../astUtil");
+const BaseAction_1 = require("./BaseAction");
 class PeersServerAction extends BaseAction_1.default {
     getEntries(callbackFn, context) {
         this._server.start()

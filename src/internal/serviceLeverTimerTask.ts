@@ -1,7 +1,7 @@
 "use strict";
+import DfiObject from "local-dfi-base/src/dfiObject";
 import QueueEntry from "../models/queues/QueueEntryModel";
 import Queue from "../models/queues/QueueModel";
-import DfiObject from "local-dfi-base/src/dfiObject";
 
 const PROP_ENTRY = Symbol("entry");
 const PROP_QUEUE = Symbol("queue");

@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Manager_1 = require("../internal/server/Manager");
 const DevicesCollection_1 = require("../collections/DevicesCollection");
-const DeviceModel_1 = require("../models/DeviceModel");
-const astUtil_1 = require("../internal/astUtil");
-const deviceState_1 = require("../states/deviceState");
-const eventNames_1 = require("../internal/asterisk/eventNames");
+const NotAllowedAction_1 = require("../errors/NotAllowedAction");
 const actionNames_1 = require("../internal/asterisk/actionNames");
+const eventNames_1 = require("../internal/asterisk/eventNames");
+const astUtil_1 = require("../internal/astUtil");
+const Manager_1 = require("../internal/server/Manager");
+const DeviceModel_1 = require("../models/DeviceModel");
+const deviceState_1 = require("../states/deviceState");
 class DeviceManager extends Manager_1.default {
     constructor(options, state) {
         super(options, state, new DevicesCollection_1.default());
@@ -32,7 +33,7 @@ class DeviceManager extends Manager_1.default {
         else {
             this.server.sendEventGeneratingAction({ Action: actionNames_1.default.DEVICE_STATE_LIST }, (err, re) => {
                 if (err) {
-                    if (!err.message.match("Not Allowed Action")) {
+                    if (!(err instanceof NotAllowedAction_1.default)) {
                         astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
                         return;
                     }

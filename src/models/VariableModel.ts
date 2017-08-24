@@ -1,5 +1,5 @@
-import AsteriskModel from "../internal/asteriskModel";
 import {IDfiAstModelAttribsVariable} from "../definitions/models";
+import AsteriskModel from "../internal/asteriskModel";
 
 const PROP_NAME = "name";
 const PROP_VALUE = "value";

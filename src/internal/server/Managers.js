@@ -58,6 +58,9 @@ class ServerManagers extends dfiObject_1.default {
     }
     restart(callbackFn, context) {
         const self = this;
+        const aResult = (err) => {
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
+        };
         async.series([
             self.device.restart.bind(self.device),
             self.peer.restart.bind(self.peer),
@@ -66,13 +69,14 @@ class ServerManagers extends dfiObject_1.default {
             self.dahdi.restart.bind(self.dahdi),
             self.queue.restart.bind(self.queue),
             self.agent.restart.bind(self.agent)
-        ], (err) => {
-            astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
-        });
+        ], aResult);
     }
     start(callbackFn, context) {
         const self = this;
         try {
+            const aResult = (err) => {
+                astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
+            };
             async.series([
                 self.device.start.bind(self.device),
                 self.peer.start.bind(self.peer),
@@ -81,9 +85,7 @@ class ServerManagers extends dfiObject_1.default {
                 self.dahdi.start.bind(self.dahdi),
                 self.queue.start.bind(self.queue),
                 self.agent.start.bind(self.agent)
-            ], (err) => {
-                astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);
-            });
+            ], aResult);
         }
         catch (err) {
             astUtil_1.default.maybeCallbackOnce(callbackFn, context, err);

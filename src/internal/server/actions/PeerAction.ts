@@ -1,14 +1,14 @@
-import BaseServerAction from "./BaseAction";
-import AstUtil from "../../astUtil";
-import AST_ACTION from "../../asterisk/actionNames";
-import AST_EVENT from "../../asterisk/eventNames";
 import {IDfiCallbackResult} from "../../../definitions/interfaces";
+import AST_ACTION from "../../asterisk/actionNames";
 import {IAstActionSIPpeers} from "../../asterisk/actions";
+import AST_EVENT from "../../asterisk/eventNames";
 import {IAstEventPeerSIPEntry} from "../../asterisk/events";
+import AstUtil from "../../astUtil";
+import BaseServerAction from "./BaseAction";
 
 class PeersServerAction extends BaseServerAction {
 
-    public getEntries(callbackFn: IDfiCallbackResult, context?) {
+    public getEntries(callbackFn: IDfiCallbackResult<Error, IAstEventPeerSIPEntry[]>, context?) {
 
         this._server.start()
             .then(() => {
@@ -17,7 +17,7 @@ class PeersServerAction extends BaseServerAction {
                     if (err) {
                         AstUtil.maybeCallback(callbackFn, context, err);
                     }
-                    const peerEntries = [];
+                    const peerEntries: IAstEventPeerSIPEntry[] = [];
 
                     response.events.forEach((event: IAstEventPeerSIPEntry) => {
                         if (event.Event === AST_EVENT.PEER_ENTRY) {

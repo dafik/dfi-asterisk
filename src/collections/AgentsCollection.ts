@@ -1,5 +1,5 @@
-import Agent from "../models/AgentModel";
 import AsteriskCollection from "../internal/asteriskCollection";
+import Agent from "../models/AgentModel";
 class Agents extends AsteriskCollection<Agent> {
     constructor() {
         super({

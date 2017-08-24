@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const asteriskModel_1 = require("../../internal/asteriskModel");
-const queueMemberState_1 = require("../../states/queueMemberState");
-const astUtil_1 = require("../../internal/astUtil");
-const ManagerError_1 = require("../../errors/ManagerError");
+const queueMemberStates_1 = require("../../enums/queueMemberStates");
 const IllegalArgument_1 = require("../../errors/IllegalArgument");
 const InvalidPenatly_1 = require("../../errors/InvalidPenatly");
-const queueMemberStates_1 = require("../../enums/queueMemberStates");
+const ManagerError_1 = require("../../errors/ManagerError");
 const NoSuchInterface_1 = require("../../errors/NoSuchInterface");
 const actionNames_1 = require("../../internal/asterisk/actionNames");
+const asteriskModel_1 = require("../../internal/asteriskModel");
+const astUtil_1 = require("../../internal/astUtil");
+const queueMemberState_1 = require("../../states/queueMemberState");
 const PROP_QUEUE = "queue";
 const PROP_NAME = "name";
 const PROP_INTERFACE = "interface";
@@ -142,7 +142,7 @@ class QueueMember extends asteriskModel_1.default {
             Penalty: penalty.toString(),
             Queue: this.queue
         };
-        this._server.sendAction(action, (err, response) => {
+        asteriskModel_1.default._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError_1.default) {
                 const msg = "Unable to set penalty for '" + this.interface +
                     "' on '" + this.queue + "': " + response.message;
@@ -154,7 +154,7 @@ class QueueMember extends asteriskModel_1.default {
         return ((this.state.status === queueMemberStates_1.default.DEVICE_NOT_INUSE) && !this.paused);
     }
     _sendPauseAction(action) {
-        this._server.sendAction(action, (err, response) => {
+        asteriskModel_1.default._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError_1.default) {
                 if (action.Queue != null) {
                     const msg = "Unable to change paused state for '" + action.Interface +
