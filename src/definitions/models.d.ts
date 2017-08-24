@@ -15,6 +15,7 @@ import DeviceState from "../states/deviceState";
 import PeerState from "../states/peerState";
 import QueueEntryState from "../states/queueEntryState";
 import QueueMemberState from "../states/queueMemberState";
+import Extension from "../models/ExtensionModel";
 
 export interface IDfiAstModelOptions extends IDfiBaseModelConfig {
     sourceEvent?: string;
@@ -158,6 +159,7 @@ export interface IDfiAstModelAttribsChannel extends IDfiAstModelAttribs {
     state?: ChannelState;
     connectedCallerId?: CallerId;
     dateOfCreation?: number;
+    extension?: Extension;
 }
 
 export interface IDfiAstDAHDIOnChannel {

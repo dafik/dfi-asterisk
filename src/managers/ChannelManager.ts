@@ -746,12 +746,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         }
     }
 
-    /**
-     *
-     * @param {Channel} channel
-     * @private
-     */
-    private _addChannel(channel) {
+    private _addChannel(channel: Channel) {
         if (!this.channels.has(channel.id)) {
             const technology = channel.technology;
             if (!this.technologyCount.hasOwnProperty(technology)) {

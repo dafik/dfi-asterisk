@@ -2,7 +2,7 @@ import Bridges from "../collections/BridgesCollection";
 import Peers from "../collections/PeersCollection";
 import Variables from "../collections/VariablesCollection";
 import {IDfiAMIResponseError, IDfiAMIResponseGetvar, IDfiCallbackResult, IDfiVariableCallback} from "../definitions/interfaces";
-import {IDfiAstModelAttribsChannel, IDfiAstModelOptions} from "../definitions/models";
+import {IDfiAstModelAttribsChannel, IDfiAstModelAttribsExtension, IDfiAstModelOptions} from "../definitions/models";
 import ChannelStates from "../enums/channelStates";
 import HangupCauses from "../enums/hangupCauses";
 import IllegalArgumentError from "../errors/IllegalArgument";
@@ -40,12 +40,15 @@ const CAUSE_VARIABLE_NAME = "PRI_CAUSE";
 const ID = "id";
 
 const PROP_ACCOUNT = "account";
+const PROP_EXTEN = "exten";
+/*
 const PROP_APP = "app";
 const PROP_APP_DATA = "appData";
 const PROP_CONTEXT = "context";
-const PROP_EXTEN = "exten";
-const PROP_NAME = "name";
+
 const PROP_PRIORITY = "priority";
+*/
+const PROP_NAME = "name";
 const PROP_CREATE_DATE = "createDate";
 const PROP_CALLER_ID = "callerId";
 const PROP_STATE = "state";
@@ -99,11 +102,11 @@ class Channel extends AsteriskModel {
 
         ["AccountCode", PROP_ACCOUNT],
 
-        ["Context", PROP_CONTEXT],
+        /*["Context", PROP_CONTEXT],
         ["Exten", PROP_EXTEN],
         ["Priority", PROP_PRIORITY],
         ["Application", PROP_APP],
-        ["ApplicationData", PROP_APP_DATA],
+        ["ApplicationData", PROP_APP_DATA],*/
 
         ["createDate", PROP_CREATE_DATE],
         ["callerId", PROP_CALLER_ID],
@@ -119,6 +122,7 @@ class Channel extends AsteriskModel {
         attributes.state = ChannelState.byValue(parseInt(attributes.ChannelState, 10));
         attributes.connectedCallerId = new CallerId(attributes.ConnectedLineName, attributes.ConnectedLineNum);
 
+
         super(attributes, options);
 
         this.setProp(P_PROP_TRACE_ID, null);
@@ -129,9 +133,23 @@ class Channel extends AsteriskModel {
         this.setProp(P_PROP_VARIABLES, new Variables());
 
         this.setProp(P_PROP_EXTENSION_HISTORY, []);
+
+        this.extensionVisited(
+            attributes.$time,
+            new Extension({
+                AppData: attributes.ApplicationData,
+                Application: attributes.Application,
+                Context: attributes.Context,
+                Event: attributes.Event,
+                Exten: attributes.Exten,
+                Priority: attributes.Priority
+            })
+        );
+
         this.setProp(P_PROP_STATE_HISTORY, []);
         this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
         this.setProp(P_PROP_DIALED_CHANNEL_HISTORY, []);
+
 
         if (attributes.Linkedid && attributes.UniqueID !== attributes.Linkedid && AsteriskModel._server.managers.channel.hasChannel(attributes.Linkedid)) {
             this.channelLinked(attributes.$time, AsteriskModel._server.managers.channel.getChannelById(attributes.Linkedid));
@@ -170,33 +188,33 @@ class Channel extends AsteriskModel {
         }
     }
 
-    get name() {
+    get name(): string {
         return this.get(PROP_NAME);
     }
 
-    get accountCode() {
-        return this.get(PROP_ACCOUNT);
-    }
+    /*    get accountCode() {
+            return this.get(PROP_ACCOUNT);
+        }
 
-    get context() {
-        return this.get(PROP_CONTEXT);
-    }
+        get context() {
+            return this.get(PROP_CONTEXT);
+        }
 
-    get exten() {
-        return this.get(PROP_EXTEN);
-    }
+        get exten() {
+            return this.get(PROP_EXTEN);
+        }
 
-    get priority() {
-        return this.get(PROP_PRIORITY);
-    }
+        get priority() {
+            return this.get(PROP_PRIORITY);
+        }
 
-    get app() {
-        return this.get(PROP_APP);
-    }
+        get app() {
+            return this.get(PROP_APP);
+        }
 
-    get appData() {
-        return this.get(PROP_APP_DATA);
-    }
+        get appData() {
+            return this.get(PROP_APP_DATA);
+        }*/
 
     // computed
 
@@ -453,6 +471,8 @@ class Channel extends AsteriskModel {
      */
     public extensionVisited(date: number, extension: Extension) {
         this._extensionHistory.push(new ExtensionHistoryEntry(date, extension));
+
+        this.set(PROP_EXTEN, extension);
     }
 
     public handleHangup(date: number, hangupCause: HangupCause) {

@@ -13,6 +13,7 @@ const asteriskModel_1 = require("../internal/asteriskModel");
 const astUtil_1 = require("../internal/astUtil");
 const channelState_1 = require("../states/channelState");
 const CallerIdModel_1 = require("./CallerIdModel");
+const ExtensionModel_1 = require("./ExtensionModel");
 const ChannelStateHistoryEntry_1 = require("./histories/ChannelStateHistoryEntry");
 const DialedChannelHistoryEntry_1 = require("./histories/DialedChannelHistoryEntry");
 const ExtensionHistoryEntry_1 = require("./histories/ExtensionHistoryEntry");
@@ -21,12 +22,15 @@ const VariableModel_1 = require("./VariableModel");
 const CAUSE_VARIABLE_NAME = "PRI_CAUSE";
 const ID = "id";
 const PROP_ACCOUNT = "account";
+const PROP_EXTEN = "exten";
+/*
 const PROP_APP = "app";
 const PROP_APP_DATA = "appData";
 const PROP_CONTEXT = "context";
-const PROP_EXTEN = "exten";
-const PROP_NAME = "name";
+
 const PROP_PRIORITY = "priority";
+*/
+const PROP_NAME = "name";
 const PROP_CREATE_DATE = "createDate";
 const PROP_CALLER_ID = "callerId";
 const PROP_STATE = "state";
@@ -74,6 +78,14 @@ class Channel extends asteriskModel_1.default {
         this.setProp(P_PROP_PEERS, new PeersCollection_1.default());
         this.setProp(P_PROP_VARIABLES, new VariablesCollection_1.default());
         this.setProp(P_PROP_EXTENSION_HISTORY, []);
+        this.extensionVisited(attributes.$time, new ExtensionModel_1.default({
+            AppData: attributes.ApplicationData,
+            Application: attributes.Application,
+            Context: attributes.Context,
+            Event: attributes.Event,
+            Exten: attributes.Exten,
+            Priority: attributes.Priority
+        }));
         this.setProp(P_PROP_STATE_HISTORY, []);
         this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
         this.setProp(P_PROP_DIALED_CHANNEL_HISTORY, []);
@@ -122,24 +134,29 @@ class Channel extends asteriskModel_1.default {
     get name() {
         return this.get(PROP_NAME);
     }
-    get accountCode() {
-        return this.get(PROP_ACCOUNT);
-    }
-    get context() {
-        return this.get(PROP_CONTEXT);
-    }
-    get exten() {
-        return this.get(PROP_EXTEN);
-    }
-    get priority() {
-        return this.get(PROP_PRIORITY);
-    }
-    get app() {
-        return this.get(PROP_APP);
-    }
-    get appData() {
-        return this.get(PROP_APP_DATA);
-    }
+    /*    get accountCode() {
+            return this.get(PROP_ACCOUNT);
+        }
+
+        get context() {
+            return this.get(PROP_CONTEXT);
+        }
+
+        get exten() {
+            return this.get(PROP_EXTEN);
+        }
+
+        get priority() {
+            return this.get(PROP_PRIORITY);
+        }
+
+        get app() {
+            return this.get(PROP_APP);
+        }
+
+        get appData() {
+            return this.get(PROP_APP_DATA);
+        }*/
     // computed
     get callerId() {
         return this.get(PROP_CALLER_ID);
@@ -333,6 +350,7 @@ class Channel extends asteriskModel_1.default {
      */
     extensionVisited(date, extension) {
         this._extensionHistory.push(new ExtensionHistoryEntry_1.default(date, extension));
+        this.set(PROP_EXTEN, extension);
     }
     handleHangup(date, hangupCause) {
         this.set(P_PROP_HANGUP_DATE, date);
@@ -561,11 +579,11 @@ Channel.map = new Map([
     ["UniqueID", ID],
     ["Channel", PROP_NAME],
     ["AccountCode", PROP_ACCOUNT],
-    ["Context", PROP_CONTEXT],
+    /*["Context", PROP_CONTEXT],
     ["Exten", PROP_EXTEN],
     ["Priority", PROP_PRIORITY],
     ["Application", PROP_APP],
-    ["ApplicationData", PROP_APP_DATA],
+    ["ApplicationData", PROP_APP_DATA],*/
     ["createDate", PROP_CREATE_DATE],
     ["callerId", PROP_CALLER_ID],
     ["state", PROP_STATE],

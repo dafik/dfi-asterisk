@@ -586,11 +586,6 @@ class ChannelManager extends Manager_1.default {
             astUtil_1.default.maybeCallbackOnce(callbackFn, context, err, traceId);
         }
     }
-    /**
-     *
-     * @param {Channel} channel
-     * @private
-     */
     _addChannel(channel) {
         if (!this.channels.has(channel.id)) {
             const technology = channel.technology;
