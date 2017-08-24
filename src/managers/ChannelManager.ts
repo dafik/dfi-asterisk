@@ -741,7 +741,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
 
         function onResponse(err?: NoSuchChannel, traceId?: string) {
             this.logger.trace("TraceId for channel %s is %s", channel.name, traceId);
-            AstUtil.maybeCallbackOnce(callbackFn, context, null, traceId);
+            AstUtil.maybeCallbackOnce(callbackFn, context, err, traceId);
 
         }
     }

@@ -160,8 +160,6 @@ class OriginateServerAction extends BaseAction_1.default {
                 const callbackData = {
                     action: originateAction,
                     callbackFn,
-                    channel: originateAction.Channel,
-                    context,
                     date: Date.now()
                 };
                 this._originateCallbacks.set(traceId, callbackData);

@@ -189,8 +189,6 @@ class OriginateServerAction extends BaseServerAction {
                     const callbackData: IDfiAstOriginateCallbackData = {
                         action: originateAction,
                         callbackFn,
-                        channel: originateAction.Channel,
-                        context,
                         date: Date.now()
                     };
                     this._originateCallbacks.set(traceId, callbackData);

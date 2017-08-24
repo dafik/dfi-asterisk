@@ -90,8 +90,7 @@ export interface IDfiAstOriginateCallbackData {
     action: IAstActionOriginate;
     date: number;
     callbackFn: IDfiAsOriginateCallback;
-    context?;
-    channel: string;
+    channel?: Channel;
 }
 
 export interface IDfiAsOriginateCallback {

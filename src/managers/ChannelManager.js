@@ -583,7 +583,7 @@ class ChannelManager extends Manager_1.default {
         channel.getVariable(VARIABLE_TRACE_ID, onResponse, this);
         function onResponse(err, traceId) {
             this.logger.trace("TraceId for channel %s is %s", channel.name, traceId);
-            astUtil_1.default.maybeCallbackOnce(callbackFn, context, null, traceId);
+            astUtil_1.default.maybeCallbackOnce(callbackFn, context, err, traceId);
         }
     }
     /**
