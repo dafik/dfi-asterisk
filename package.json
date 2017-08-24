@@ -10,6 +10,7 @@
   "author": "z.wieczorek",
   "license": "UNLICENSED",
   "dependencies": {
+    "@types/async": "^2.0.32",
     "local-asterisk-ami-client": "^1.0.5",
     "async": "^2.0.0-rc.5",
     "local-dfi-base": "*",
@@ -18,7 +19,6 @@
     "moment": "^2.16.0"
   },
   "devDependencies": {
-    "@types/async": "^2.0.32",
     "@types/moment": "^2.13.0",
     "@types/include-path": "^0.4.7",
     "@types/json-stringify-safe": "^5.0.1",
