@@ -1,6 +1,6 @@
 import Channels from "../collections/channels/ChannelsCollection";
 import {IDfiAstEventsChannelManager} from "../definitions/events";
-import { IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../definitions/interfaces";
+import {IDfiAstOriginateCallbackData, IDfiCallbackResult} from "../definitions/interfaces";
 import ChannelStates from "../enums/channelStates";
 import {IAstActionCommand} from "../internal/asterisk/actions";
 import {
@@ -807,7 +807,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         this.logger.info("Adding new channel %j-%j(%s)", channel.name, channel.id, channel.state.name);
         this._addChannel(channel);
 
-        this._getTraceId(channel, (traceId) => {
+        this._getTraceId(channel, (err?: NoSuchChannel, traceId?: string) => {
             if (!traceId) {
                 return;
             }

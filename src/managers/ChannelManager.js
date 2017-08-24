@@ -641,7 +641,7 @@ class ChannelManager extends Manager_1.default {
         channel.stateChanged(event.$time, channelState_1.default.byValue(parseInt(event.ChannelState, 10)));
         this.logger.info("Adding new channel %j-%j(%s)", channel.name, channel.id, channel.state.name);
         this._addChannel(channel);
-        this._getTraceId(channel, (traceId) => {
+        this._getTraceId(channel, (err, traceId) => {
             if (!traceId) {
                 return;
             }
