@@ -112,7 +112,7 @@ exports.AST_EVENT = {
     NEW_CALLERID: "NewCallerid",
     NEW_CHANNEL: "Newchannel",
     NEW_CONNECTED_LINE: "NewConnectedLine",
-    NEW_EXTEN: "NewExten",
+    NEW_EXTEN: "Newexten",
     NEW_STATE: "Newstate",
     ORIGINATE_RESPONSE: "OriginateResponse",
     PARKED_CALL: "ParkedCall",
