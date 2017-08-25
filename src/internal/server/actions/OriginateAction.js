@@ -25,7 +25,7 @@ class OriginateServerAction extends BaseAction_1.default {
         let onRingingTimeout;
         let otherChannel;
         function onRingingWait(model, attribute, value, old) {
-            if (attribute === "state" && value.status === channelStates_1.default.RINGING) {
+            if (attribute === "state" && old.status === channelStates_1.default.RINGING) {
                 clearTimeout(onRingingTimeout);
                 channel.off(ChannelModel_1.default.events.UPDATE, onRingingWait);
                 if (channel.wasBusy()) {

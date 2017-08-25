@@ -245,7 +245,7 @@ class AsteriskServer extends local_dfi_base_1.DfiEventObject {
                         this._finishMultipartResponse.call(this, response, resp);
                     }
                 }
-                else if (response.Response === "Follows") {
+                else if (-1 !== ["Follows", "Success", "Failure"].indexOf(response.Response)) {
                     Object.assign(resp, response);
                     this._finishMultipartResponse.call(this, response, resp);
                 }
