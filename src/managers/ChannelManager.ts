@@ -823,10 +823,10 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
                         this.logger.warn("Exception dispatching originate progress.", t);
                     }
                 }
-                if (callbackData && !callbackData.channel1) {
+                if (callbackData && !callbackData.channel1 && name.slice(-1) === "1") {
                     callbackData.channel1 = channel;
                 }
-                if (callbackData && !callbackData.channel2) {
+                if (callbackData && !callbackData.channel2 && name.slice(-1) === "2") {
                     callbackData.channel2 = channel;
                 }
             }
