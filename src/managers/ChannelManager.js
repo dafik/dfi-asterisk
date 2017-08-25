@@ -642,10 +642,11 @@ class ChannelManager extends Manager_1.default {
             }
             const name = channel.name;
             const reS = /^local\//;
-            const reE = /,1$|;1$/;
+            const reE = /[,;][12]$/;
             if (traceId && (!reS.test(name.toLowerCase()) || reE.test(name))) {
                 const callbackData = this.server.actions.originate.getOriginateCallbackDataByTraceId(traceId);
-                if (callbackData && callbackData.channel == null) {
+                if (callbackData && !callbackData.channel) {
+                    callbackData.channel = channel;
                     try {
                         callbackData.callbackFn.onDialing(channel);
                     }
@@ -653,6 +654,12 @@ class ChannelManager extends Manager_1.default {
                         // Throwable
                         this.logger.warn("Exception dispatching originate progress.", t);
                     }
+                }
+                if (callbackData && !callbackData.channel1) {
+                    callbackData.channel1 = channel;
+                }
+                if (callbackData && !callbackData.channel2) {
+                    callbackData.channel2 = channel;
                 }
             }
         }, this);

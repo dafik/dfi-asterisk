@@ -91,6 +91,8 @@ export interface IDfiAstOriginateCallbackData {
     date: number;
     callbackFn: IDfiAsOriginateCallback;
     channel?: Channel;
+    channel2?: Channel;
+    channel1?: Channel ;
 }
 
 export interface IDfiAsOriginateCallback {
