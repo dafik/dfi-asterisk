@@ -59,7 +59,7 @@ class OriginateServerAction extends BaseAction_1.default {
         }
         this._originateCallbacks.delete(traceId);
         const cb = callbackData.callbackFn;
-        channel = originateEvent.Uniqueid ? this._server.managers.channel.channels.get(originateEvent.Uniqueid) : this._server.managers.channel.getChannelByName(callbackData.channel);
+        channel = originateEvent.Uniqueid ? this._server.managers.channel.channels.get(originateEvent.Uniqueid) : callbackData.channel;
         try {
             if (channel == null) {
                 const cause = new NoSuchChannel_1.default("Channel '" + callbackData.action.Channel + "' is not available");
