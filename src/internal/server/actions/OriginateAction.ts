@@ -79,7 +79,7 @@ class OriginateServerAction extends BaseServerAction {
 
         const cb = callbackData.callbackFn;
 
-        channel = originateEvent.Uniqueid ? this._server.managers.channel.channels.get(originateEvent.Uniqueid) : callbackData.channel;
+        channel = !AstUtil.isNull(originateEvent.Uniqueid) ? this._server.managers.channel.channels.get(originateEvent.Uniqueid) : callbackData.channel;
 
         try {
             if (channel == null) {
