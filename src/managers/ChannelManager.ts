@@ -41,7 +41,9 @@ import AST_EVENT from "../internal/asterisk/eventNames";
 import Moment = moment.Moment;
 import NoSuchChannel from "../errors/NoSuchChannel";
 
-const REMOVAL_THRESHOLD = 5; // 15 minutes in seconds
+const REMOVAL_THRESHOLD = 5 * 60; // 5 minutes in seconds
+const SLEEP_TIME_BEFORE_GET_VAR = 50; // miliseconds
+
 let VARIABLE_TRACE_ID = "AJ_TRACE_ID";
 
 class ChannelManager extends AsteriskManager<Channel, Channels> {
@@ -674,8 +676,8 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
             return;
         }
 
-        channel.updateVariable(event.Variable, event.Value, event.Event);
-
+        // remove initial underscore as it is inheritace flag https://wiki.asterisk.org/wiki/display/AST/Variable+Inheritance
+        channel.updateVariable(event.Variable.replace(/^_+/g, ""), event.Value, event.Event);
     }
 
     private _handleDtmfEvent(event: IAstEventDTMFBegin | IAstEventDTMFEnd) {
@@ -802,35 +804,37 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         this.logger.info("Adding new channel %j-%j(%s)", channel.name, channel.id, channel.state.name);
         this._addChannel(channel);
 
-        this._getTraceId(channel, (err?: NoSuchChannel, traceId?: string) => {
-            if (!traceId) {
-                return;
-            }
-            const name = channel.name;
+        setTimeout(() => {
+            this._getTraceId(channel, (err?: NoSuchChannel, traceId?: string) => {
+                if (!traceId) {
+                    return;
+                }
+                const name = channel.name;
 
-            const reS = /^local\//;
-            const reE = /[,;][12]$/;
-            if (traceId && (!reS.test(name.toLowerCase()) || reE.test(name) )) {
+                const reS = /^local\//;
+                const reE = /[,;][12]$/;
+                if (traceId && (!reS.test(name.toLowerCase()) || reE.test(name) )) {
 
-                const callbackData: IDfiAstOriginateCallbackData = this.server.actions.originate.getOriginateCallbackDataByTraceId(traceId);
-                if (callbackData && !callbackData.channel) {
+                    const callbackData: IDfiAstOriginateCallbackData = this.server.actions.originate.getOriginateCallbackDataByTraceId(traceId);
+                    if (callbackData && !callbackData.channel) {
 
-                    callbackData.channel = channel;
-                    try {
-                        callbackData.callbackFn.onDialing(channel);
-                    } catch (t) {
-                        // Throwable
-                        this.logger.warn("Exception dispatching originate progress.", t);
+                        callbackData.channel = channel;
+                        try {
+                            callbackData.callbackFn.onDialing(channel);
+                        } catch (t) {
+                            // Throwable
+                            this.logger.warn("Exception dispatching originate progress.", t);
+                        }
+                    }
+                    if (callbackData && !callbackData.channel1 && name.slice(-1) === "1") {
+                        callbackData.channel1 = channel;
+                    }
+                    if (callbackData && !callbackData.channel2 && name.slice(-1) === "2") {
+                        callbackData.channel2 = channel;
                     }
                 }
-                if (callbackData && !callbackData.channel1 && name.slice(-1) === "1") {
-                    callbackData.channel1 = channel;
-                }
-                if (callbackData && !callbackData.channel2 && name.slice(-1) === "2") {
-                    callbackData.channel2 = channel;
-                }
-            }
-        }, this);
+            }, this);
+        }, SLEEP_TIME_BEFORE_GET_VAR);
 
         this.emit(ChannelManager.events.CHANNEL_ADD, channel);
         return channel;
