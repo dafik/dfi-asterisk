@@ -1,4 +1,6 @@
 import AsteriskHistoryEntry from "../../internal/asteriskHistoryEntry";
+import Channel from "../ChannelModel";
+
 /**
  * An entry in the linked channels history of an AsteriskChannel
  * Creates a new instance.
@@ -9,11 +11,11 @@ class LinkedChannelHistoryEntry extends AsteriskHistoryEntry {
     /**
      * Returns the channel that has been linked.
      */
-    get channel() {
+    get channel(): Channel {
         return this.entry;
     }
 
-    constructor(date, entry) {
+    constructor(date, entry: Channel) {
         super(date, entry);
         this.dateUnlinked = null;
     }
@@ -45,7 +47,7 @@ class LinkedChannelHistoryEntry extends AsteriskHistoryEntry {
 
         sb = "LinkedChannelHistoryEntry[";
         sb += "dateLinked=" + this.date.toString() + ",";
-        sb += "dateUnlinked=" + this.dateUnlinked.toString() + ",";
+        sb += "dateUnlinked=" + (this.dateUnlinked ? this.dateUnlinked.toString() : "") + ",";
         sb += "channel=" + this.channel.toString() + "]";
         return sb;
     }

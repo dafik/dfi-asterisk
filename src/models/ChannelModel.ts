@@ -78,6 +78,7 @@ const P_PROP_QUEUE_ENTRY = "queueEntry";
 const P_PROP_VARIABLES = "variables";
 const P_PROP_HANGUP_REQUEST_DATE = "hangupRequestDate";
 const P_PROP_HANGUP_REQUEST_METHOD = "hangupRequestMethod";
+const P_PROP_ORIGINAL_ATTR = "origialAttributes";
 
 /**
  * Creates a new Channel.
@@ -116,15 +117,16 @@ class Channel extends AsteriskModel {
     ]);
 
     constructor(attributes: IDfiAstModelAttribsChannel, options?: IDfiAstModelOptions) {
+        const originalAttributes = {...attributes};
         options = options || {};
         options.idAttribute = ID;
         attributes.callerId = new CallerId(attributes.CallerIDName, attributes.CallerIDNum);
         attributes.state = ChannelState.byValue(parseInt(attributes.ChannelState, 10));
         attributes.connectedCallerId = new CallerId(attributes.ConnectedLineName, attributes.ConnectedLineNum);
 
-
         super(attributes, options);
 
+        this.setProp(P_PROP_ORIGINAL_ATTR, originalAttributes);
         this.setProp(P_PROP_TRACE_ID, null);
         this.setProp(P_PROP_VARS_CALLBACKS, new Map());
 
@@ -149,7 +151,6 @@ class Channel extends AsteriskModel {
         this.setProp(P_PROP_STATE_HISTORY, []);
         this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
         this.setProp(P_PROP_DIALED_CHANNEL_HISTORY, []);
-
 
         if (attributes.Linkedid && attributes.UniqueID !== attributes.Linkedid && AsteriskModel._server.managers.channel.hasChannel(attributes.Linkedid)) {
             this.channelLinked(attributes.$time, AsteriskModel._server.managers.channel.getChannelById(attributes.Linkedid));

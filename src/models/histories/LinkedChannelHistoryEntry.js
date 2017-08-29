@@ -38,7 +38,7 @@ class LinkedChannelHistoryEntry extends asteriskHistoryEntry_1.default {
         let sb;
         sb = "LinkedChannelHistoryEntry[";
         sb += "dateLinked=" + this.date.toString() + ",";
-        sb += "dateUnlinked=" + this.dateUnlinked.toString() + ",";
+        sb += "dateUnlinked=" + (this.dateUnlinked ? this.dateUnlinked.toString() : "") + ",";
         sb += "channel=" + this.channel.toString() + "]";
         return sb;
     }

@@ -59,6 +59,7 @@ const P_PROP_QUEUE_ENTRY = "queueEntry";
 const P_PROP_VARIABLES = "variables";
 const P_PROP_HANGUP_REQUEST_DATE = "hangupRequestDate";
 const P_PROP_HANGUP_REQUEST_METHOD = "hangupRequestMethod";
+const P_PROP_ORIGINAL_ATTR = "origialAttributes";
 /**
  * Creates a new Channel.
  * @class
@@ -66,12 +67,14 @@ const P_PROP_HANGUP_REQUEST_METHOD = "hangupRequestMethod";
  */
 class Channel extends asteriskModel_1.default {
     constructor(attributes, options) {
+        const originalAttributes = Object.assign({}, attributes);
         options = options || {};
         options.idAttribute = ID;
         attributes.callerId = new CallerIdModel_1.default(attributes.CallerIDName, attributes.CallerIDNum);
         attributes.state = channelState_1.default.byValue(parseInt(attributes.ChannelState, 10));
         attributes.connectedCallerId = new CallerIdModel_1.default(attributes.ConnectedLineName, attributes.ConnectedLineNum);
         super(attributes, options);
+        this.setProp(P_PROP_ORIGINAL_ATTR, originalAttributes);
         this.setProp(P_PROP_TRACE_ID, null);
         this.setProp(P_PROP_VARS_CALLBACKS, new Map());
         this.setProp(P_PROP_BRIDGES, new BridgesCollection_1.default());

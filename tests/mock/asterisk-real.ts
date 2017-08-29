@@ -5,7 +5,7 @@ const asterisk: AsteriskServer = getServerInstance({
     config: {
         managers: {
             agent: false,
-            bridge: false,
+            bridge: true,
             channel: true,
             dahdi: false,
             device: true,
