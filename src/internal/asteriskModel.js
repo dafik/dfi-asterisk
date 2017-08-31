@@ -1,17 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const local_dfi_base_1 = require("local-dfi-base");
+const asteriskServerInstance_1 = require("../asteriskServerInstance");
 const asteriskState_1 = require("./asteriskState");
-let getServerInstance;
 class AsteriskModel extends local_dfi_base_1.DfiModel {
     get sourceEvent() {
         return this.getProp("sourceEvent");
     }
     static get _server() {
-        if (typeof getServerInstance !== "function") {
-            getServerInstance = require("../asteriskServerInstance").getServerInstance;
-        }
-        return getServerInstance();
+        return asteriskServerInstance_1.getServerInstance();
     }
     constructor(attributes, options) {
         options = options || {};

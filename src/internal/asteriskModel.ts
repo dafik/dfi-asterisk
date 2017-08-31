@@ -1,9 +1,8 @@
 import {DfiModel} from "local-dfi-base";
 import AsteriskServer from "../asteriskServer";
+import {getServerInstance} from "../asteriskServerInstance";
 import {IDfiAstModelAttribs, IDfiAstModelOptions} from "../definitions/models";
 import AsteriskState from "./asteriskState";
-
-let getServerInstance;
 
 abstract class AsteriskModel extends DfiModel {
 
@@ -12,10 +11,7 @@ abstract class AsteriskModel extends DfiModel {
     }
 
     protected static get _server(): AsteriskServer {
-        if (typeof getServerInstance !== "function") {
-            getServerInstance = require("../asteriskServerInstance").getServerInstance;
-        }
-        return getServerInstance() as AsteriskServer;
+       return getServerInstance() as AsteriskServer;
     }
 
     constructor(attributes: IDfiAstModelAttribs, options?: IDfiAstModelOptions) {

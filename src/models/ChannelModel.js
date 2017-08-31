@@ -92,6 +92,7 @@ class Channel extends asteriskModel_1.default {
         this.setProp(P_PROP_STATE_HISTORY, []);
         this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
         this.setProp(P_PROP_DIALED_CHANNEL_HISTORY, []);
+        asteriskModel_1.default._server.managers.toPlain();
         if (attributes.Linkedid && attributes.UniqueID !== attributes.Linkedid && asteriskModel_1.default._server.managers.channel.hasChannel(attributes.Linkedid)) {
             this.channelLinked(attributes.$time, asteriskModel_1.default._server.managers.channel.getChannelById(attributes.Linkedid));
         }

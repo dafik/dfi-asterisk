@@ -1,15 +1,10 @@
 import AsteriskCollection from "../../internal/asteriskCollection";
 import Channel from "../../models/ChannelModel";
 
-let channelClass;
-
 class BridgeChannels extends AsteriskCollection<Channel> {
     constructor() {
-        if (typeof channelClass !== "function") {
-            channelClass = require("../../models/ChannelModel");
-        }
         super({
-            model: channelClass
+            model: Channel
         });
     }
 

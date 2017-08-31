@@ -1,14 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const asteriskCollection_1 = require("../../internal/asteriskCollection");
-let channelClass;
+const ChannelModel_1 = require("../../models/ChannelModel");
 class BridgeChannels extends asteriskCollection_1.default {
     constructor() {
-        if (typeof channelClass !== "function") {
-            channelClass = require("../../models/ChannelModel");
-        }
         super({
-            model: channelClass
+            model: ChannelModel_1.default
         });
     }
     destroy() {

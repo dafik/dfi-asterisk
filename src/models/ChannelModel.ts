@@ -152,6 +152,8 @@ class Channel extends AsteriskModel {
         this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
         this.setProp(P_PROP_DIALED_CHANNEL_HISTORY, []);
 
+        AsteriskModel._server.managers.toPlain();
+
         if (attributes.Linkedid && attributes.UniqueID !== attributes.Linkedid && AsteriskModel._server.managers.channel.hasChannel(attributes.Linkedid)) {
             this.channelLinked(attributes.$time, AsteriskModel._server.managers.channel.getChannelById(attributes.Linkedid));
         }
