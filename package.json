@@ -19,11 +19,11 @@
     "moment": "^2.16.0"
   },
   "devDependencies": {
-    "@types/moment": "^2.13.0",
     "@types/include-path": "^0.4.7",
     "@types/json-stringify-safe": "^5.0.1",
     "@types/lodash": "^4.14.36",
     "@types/mocha": "^2.2.41",
+    "@types/moment": "^2.13.0",
     "@types/node": "^8.0.16",
     "heapdump": "latest",
     "include-path": "^0.4.7",
@@ -33,7 +33,8 @@
     "local-dfi-linphone-endpoint-manager": "*",
     "mocha": "^2.5.3",
     "ts-node": "^3.3.0",
-    "ts-register": "^0.1.0"
+    "ts-register": "^0.1.0",
+    "typescript": "^2.5.1"
   },
   "typings": "index.ts"
 }

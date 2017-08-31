@@ -1,37 +1,28 @@
 class AsteriskVersion {
+    private _fullVersion: string;
 
-    constructor(version) {
-        const fullVersion = version;
-        const parts = version.split(".");
-        const branch = parseInt(parts[0], 10);
-        const nbr = parseInt(parts[2], 10);
-        const series = parseInt(parts[1], 10);
+    constructor(version: string) {
+        this._fullVersion = version;
+    }
 
-        Object.defineProperties(this, {
-            branch: {
-                get: () => {
-                    return branch;
-                }
-            },
-            isAmi2: {
-                get: () => {
-                    return branch > 11;
-                }
-            },
-            number: {
-                get: () => {
-                    return nbr;
-                }
-            },
-            series: {
-                get: () => {
-                    return series;
-                }
-            },
-            toString() {
-                return fullVersion;
-            }
-        });
+    get branch() {
+        return parseInt(this._fullVersion.split(".")[0], 10);
+    }
+
+    get isAmi2() {
+        return parseInt(this._fullVersion.split(".")[0], 10) > 11;
+    }
+
+    get number() {
+        return parseInt(this._fullVersion.split(".")[2], 10);
+    }
+
+    get series() {
+        return parseInt(this._fullVersion.split(".")[1], 10);
+    }
+
+    get toString() {
+        return this._fullVersion;
     }
 }
 
