@@ -64,7 +64,7 @@ class QueueManager extends Manager_1.default {
             }
             let member = queue.getMember(event.Name);
             if (member == null) {
-                member = new QueueMemberModel_1.default(event);
+                member = new QueueMemberModel_1.default(event, this.server);
             }
             queue.addMember(member);
             if (this.server.managers.peer.enabled) {
@@ -266,7 +266,7 @@ class QueueManager extends Manager_1.default {
         }
         let member = queue.getMember(event.Interface);
         if (member == null) {
-            member = new QueueMemberModel_1.default(event);
+            member = new QueueMemberModel_1.default(event, this.server);
         }
         queue.addMember(member);
         if (this.server.managers.peer.enabled) {

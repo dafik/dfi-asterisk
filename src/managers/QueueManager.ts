@@ -99,7 +99,7 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
             }
             let member = queue.getMember(event.Name);
             if (member == null) {
-                member = new QueueMember(event);
+                member = new QueueMember(event, this.server);
             }
             queue.addMember(member);
 
@@ -329,7 +329,7 @@ class QueueManager extends AsteriskManager<Queue, Queues> {
         }
         let member = queue.getMember(event.Interface);
         if (member == null) {
-            member = new QueueMember(event);
+            member = new QueueMember(event, this.server);
         }
         queue.addMember(member);
         if (this.server.managers.peer.enabled) {

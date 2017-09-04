@@ -73,7 +73,7 @@ class ChannelManager extends Manager_1.default {
                         moment(now.subtract(astUtil_1.default.duration2sec(event.Duration), "seconds")) :
                         now;
                     event.dateOfCreation = dateOfCreation;
-                    channel = new ChannelModel_1.default(event);
+                    channel = new ChannelModel_1.default(event, this.server);
                     isNew = true;
                 }
                 if (event.Context != null && event.Exten != null && event.Priority != null) {
@@ -634,7 +634,7 @@ class ChannelManager extends Manager_1.default {
         /**
          * type Channel
          */
-        const channel = new ChannelModel_1.default(event);
+        const channel = new ChannelModel_1.default(event, this.server);
         channel.stateChanged(event.$time, channelState_1.default.byValue(parseInt(event.ChannelState, 10)));
         this.logger.info("Adding new channel %j-%j(%s)", channel.name, channel.id, channel.state.name);
         this._addChannel(channel);

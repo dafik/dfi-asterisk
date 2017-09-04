@@ -1,3 +1,4 @@
+import AsteriskServer from "../../asteriskServer";
 import {IDfiAstModelAttribsQueueMember, IDfiAstModelOptions} from "../../definitions/models";
 import QueueMemberStates from "../../enums/queueMemberStates";
 import IllegalArgumentError from "../../errors/IllegalArgument";
@@ -31,6 +32,8 @@ const P_PROP_AGENT = "agent";
 const MEMBERSHIP_STATIC = "static";
 const MEMBERSHIP_DYNAMIC = "dynamic";
 
+const P_PROP_SERVER = "server";
+
 class QueueMember extends AsteriskModel {
 
     protected static map = new Map([
@@ -57,7 +60,11 @@ class QueueMember extends AsteriskModel {
         ["ringInUse", PROP_RING_IN_USE]
     ]);
 
-    constructor(attributes: IDfiAstModelAttribsQueueMember, options?: IDfiAstModelOptions) {
+    protected get _server(): AsteriskServer {
+        return this.getProp(P_PROP_SERVER);
+    }
+
+    constructor(attributes: IDfiAstModelAttribsQueueMember, server: AsteriskServer, options?: IDfiAstModelOptions) {
         options = options || {};
         options.idAttribute = PROP_INTERFACE;
 
@@ -73,6 +80,8 @@ class QueueMember extends AsteriskModel {
         attributes.ringInUse = false;
 
         super(attributes, options);
+
+        this.setProp(P_PROP_SERVER, server);
     }
 
     get queue(): string {
@@ -206,7 +215,7 @@ class QueueMember extends AsteriskModel {
             Queue: this.queue
         };
 
-        AsteriskModel._server.sendAction(action, (err, response) => {
+        this._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError) {
                 const msg = "Unable to set penalty for '" + this.interface +
                     "' on '" + this.queue + "': " + response.message;
@@ -220,7 +229,7 @@ class QueueMember extends AsteriskModel {
     }
 
     private _sendPauseAction(action: IAstActionQueuePause) {
-        AsteriskModel._server.sendAction(action, (err, response) => {
+        this._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError) {
                 if (action.Queue != null) {
                     const msg = "Unable to change paused state for '" + action.Interface +

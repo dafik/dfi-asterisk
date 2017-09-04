@@ -25,8 +25,9 @@ const PROP_RING_IN_USE = "ringInUse";
 const P_PROP_AGENT = "agent";
 const MEMBERSHIP_STATIC = "static";
 const MEMBERSHIP_DYNAMIC = "dynamic";
+const P_PROP_SERVER = "server";
 class QueueMember extends asteriskModel_1.default {
-    constructor(attributes, options) {
+    constructor(attributes, server, options) {
         options = options || {};
         options.idAttribute = PROP_INTERFACE;
         attributes.state = queueMemberState_1.default.byValue(parseInt(attributes.Status, 10));
@@ -37,6 +38,10 @@ class QueueMember extends asteriskModel_1.default {
         attributes.Paused = astUtil_1.default.isTrue(attributes.Paused.toString());
         attributes.ringInUse = false;
         super(attributes, options);
+        this.setProp(P_PROP_SERVER, server);
+    }
+    get _server() {
+        return this.getProp(P_PROP_SERVER);
     }
     get queue() {
         return this.get(PROP_QUEUE);
@@ -142,7 +147,7 @@ class QueueMember extends asteriskModel_1.default {
             Penalty: penalty.toString(),
             Queue: this.queue
         };
-        asteriskModel_1.default._server.sendAction(action, (err, response) => {
+        this._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError_1.default) {
                 const msg = "Unable to set penalty for '" + this.interface +
                     "' on '" + this.queue + "': " + response.message;
@@ -154,7 +159,7 @@ class QueueMember extends asteriskModel_1.default {
         return ((this.state.status === queueMemberStates_1.default.DEVICE_NOT_INUSE) && !this.paused);
     }
     _sendPauseAction(action) {
-        asteriskModel_1.default._server.sendAction(action, (err, response) => {
+        this._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError_1.default) {
                 if (action.Queue != null) {
                     const msg = "Unable to change paused state for '" + action.Interface +

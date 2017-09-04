@@ -1,3 +1,4 @@
+import AsteriskServer from "../asteriskServer";
 import Bridges from "../collections/BridgesCollection";
 import Peers from "../collections/PeersCollection";
 import Variables from "../collections/VariablesCollection";
@@ -79,6 +80,7 @@ const P_PROP_VARIABLES = "variables";
 const P_PROP_HANGUP_REQUEST_DATE = "hangupRequestDate";
 const P_PROP_HANGUP_REQUEST_METHOD = "hangupRequestMethod";
 const P_PROP_ORIGINAL_ATTR = "origialAttributes";
+const P_PROP_SERVER = "server";
 
 /**
  * Creates a new Channel.
@@ -116,7 +118,11 @@ class Channel extends AsteriskModel {
 
     ]);
 
-    constructor(attributes: IDfiAstModelAttribsChannel, options?: IDfiAstModelOptions) {
+    protected get _server(): AsteriskServer {
+        return this.getProp(P_PROP_SERVER);
+    }
+
+    constructor(attributes: IDfiAstModelAttribsChannel, server: AsteriskServer, options?: IDfiAstModelOptions) {
         const originalAttributes = {...attributes};
         options = options || {};
         options.idAttribute = ID;
@@ -125,6 +131,8 @@ class Channel extends AsteriskModel {
         attributes.connectedCallerId = new CallerId(attributes.ConnectedLineName, attributes.ConnectedLineNum);
 
         super(attributes, options);
+
+        this.setProp(P_PROP_SERVER, server);
 
         this.setProp(P_PROP_ORIGINAL_ATTR, originalAttributes);
         this.setProp(P_PROP_TRACE_ID, null);
@@ -152,25 +160,25 @@ class Channel extends AsteriskModel {
         this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
         this.setProp(P_PROP_DIALED_CHANNEL_HISTORY, []);
 
-        AsteriskModel._server.managers.toPlain();
+        this._server.managers.toPlain();
 
-        if (attributes.Linkedid && attributes.UniqueID !== attributes.Linkedid && AsteriskModel._server.managers.channel.hasChannel(attributes.Linkedid)) {
-            this.channelLinked(attributes.$time, AsteriskModel._server.managers.channel.getChannelById(attributes.Linkedid));
+        if (attributes.Linkedid && attributes.UniqueID !== attributes.Linkedid && this._server.managers.channel.hasChannel(attributes.Linkedid)) {
+            this.channelLinked(attributes.$time, this._server.managers.channel.getChannelById(attributes.Linkedid));
         }
 
-        if (attributes.BridgeId && AsteriskModel._server.managers.bridge.hasBridge(attributes.BridgeId)) {
-            this._bridges.add(AsteriskModel._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeId));
-        } else if (attributes.BridgeID && AsteriskModel._server.managers.bridge.hasBridge(attributes.BridgeID)) {
-            this._bridges.add(AsteriskModel._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeID));
+        if (attributes.BridgeId && this._server.managers.bridge.hasBridge(attributes.BridgeId)) {
+            this._bridges.add(this._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeId));
+        } else if (attributes.BridgeID && this._server.managers.bridge.hasBridge(attributes.BridgeID)) {
+            this._bridges.add(this._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeID));
         }
 
         if (this.name) {
-            if (this.destroyed || !AsteriskModel._server.managers.peer.enabled) {
+            if (this.destroyed || !this._server.managers.peer.enabled) {
                 return;
             }
 
             const peerName = this.name.split("-")[0];
-            const peer = AsteriskModel._server.managers.peer.peers.get(peerName);
+            const peer = this._server.managers.peer.peers.get(peerName);
             if (peer) {
                 peer.addChannel(this);
                 this._peers.add(peer);
@@ -182,7 +190,7 @@ class Channel extends AsteriskModel {
         }
 
         if (this._bridges.size) {
-            if (!AsteriskModel._server.managers.bridge.enabled) {
+            if (!this._server.managers.bridge.enabled) {
                 return;
             }
             this._bridges.forEach((bridge) => {
@@ -526,7 +534,7 @@ class Channel extends AsteriskModel {
             action.Cause = cause.status;
         }
 
-        AsteriskModel._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
 
     public setAbsoluteTimeout(seconds: number) {
@@ -536,7 +544,7 @@ class Channel extends AsteriskModel {
             Timeout: seconds.toString()
         };
 
-        AsteriskModel._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
 
     public redirect(context: string, exten: string, priority: number) {
@@ -548,7 +556,7 @@ class Channel extends AsteriskModel {
             Priority: priority.toString()
         };
 
-        AsteriskModel._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
 
     public redirectBothLegs(context, exten, priority) {
@@ -567,7 +575,7 @@ class Channel extends AsteriskModel {
             action.ExtraPriority = priority.toString();
         }
 
-        AsteriskModel._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
 
     public playDtmf(digit: string) {
@@ -580,7 +588,7 @@ class Channel extends AsteriskModel {
             Channel: this.name,
             Digit: digit
         };
-        AsteriskModel._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
 
     public startMonitoring(filename: string, format: string, mix: boolean) {
@@ -592,7 +600,7 @@ class Channel extends AsteriskModel {
             Mix: mix.toString()
 
         };
-        AsteriskModel._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
 
     public changeMonitoring(filename: string) {
@@ -604,7 +612,7 @@ class Channel extends AsteriskModel {
             Channel: this.name,
             File: filename
         };
-        AsteriskModel._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
 
     public stopMonitoring() {
@@ -612,7 +620,7 @@ class Channel extends AsteriskModel {
             Action: AST_ACTION.STOP_MONITOR,
             Channel: this.name
         };
-        AsteriskModel._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
 
     public pauseMonitoring() {
@@ -620,7 +628,7 @@ class Channel extends AsteriskModel {
             Action: AST_ACTION.PAUSE_MONITOR,
             Channel: this.name
         };
-        AsteriskModel._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
 
     public unpauseMonitoring() {
@@ -628,7 +636,7 @@ class Channel extends AsteriskModel {
             Action: AST_ACTION.UNPAUSE_MONITOR,
             Channel: this.name
         };
-        AsteriskModel._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
 
     public setVariable(name: string, value: string) {
@@ -638,7 +646,7 @@ class Channel extends AsteriskModel {
             Value: value,
             Variable: name
         };
-        AsteriskModel._server.sendAction(action, (err, response) => {
+        this._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError) {
                 throw new NoSuchChannelError("Channel " + self.name + " is not available: " + response.response, this);
             }
@@ -673,7 +681,7 @@ class Channel extends AsteriskModel {
                 Channel: this.name,
                 Variable: name
             };
-            AsteriskModel._server.sendAction(action, (err: IDfiAMIResponseError<IAstActionGetvar>, response: IDfiAMIResponseGetvar) => {
+            this._server.sendAction(action, (err: IDfiAMIResponseError<IAstActionGetvar>, response: IDfiAMIResponseGetvar) => {
                 // TODO check callback and getVarsCallbacks
 
                 if (this.destroyed) {

@@ -6,6 +6,7 @@ import Channel from "../models/ChannelModel";
 import Device from "../models/DeviceModel";
 import DialplanContext from "../models/dialplans/DialplanContextModel";
 import DialplanExtension from "../models/dialplans/DialplanExtensionModel";
+import Extension from "../models/ExtensionModel";
 import Ip from "../models/IpAddressModel";
 import Peer from "../models/peers/PeerModel";
 import Queue from "../models/queues/QueueModel";
@@ -15,7 +16,6 @@ import DeviceState from "../states/deviceState";
 import PeerState from "../states/peerState";
 import QueueEntryState from "../states/queueEntryState";
 import QueueMemberState from "../states/queueMemberState";
-import Extension from "../models/ExtensionModel";
 
 export interface IDfiAstModelOptions extends IDfiBaseModelConfig {
     sourceEvent?: string;

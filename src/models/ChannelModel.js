@@ -60,13 +60,14 @@ const P_PROP_VARIABLES = "variables";
 const P_PROP_HANGUP_REQUEST_DATE = "hangupRequestDate";
 const P_PROP_HANGUP_REQUEST_METHOD = "hangupRequestMethod";
 const P_PROP_ORIGINAL_ATTR = "origialAttributes";
+const P_PROP_SERVER = "server";
 /**
  * Creates a new Channel.
  * @class
  * @extends AsteriskModel
  */
 class Channel extends asteriskModel_1.default {
-    constructor(attributes, options) {
+    constructor(attributes, server, options) {
         const originalAttributes = Object.assign({}, attributes);
         options = options || {};
         options.idAttribute = ID;
@@ -74,6 +75,7 @@ class Channel extends asteriskModel_1.default {
         attributes.state = channelState_1.default.byValue(parseInt(attributes.ChannelState, 10));
         attributes.connectedCallerId = new CallerIdModel_1.default(attributes.ConnectedLineName, attributes.ConnectedLineNum);
         super(attributes, options);
+        this.setProp(P_PROP_SERVER, server);
         this.setProp(P_PROP_ORIGINAL_ATTR, originalAttributes);
         this.setProp(P_PROP_TRACE_ID, null);
         this.setProp(P_PROP_VARS_CALLBACKS, new Map());
@@ -92,22 +94,22 @@ class Channel extends asteriskModel_1.default {
         this.setProp(P_PROP_STATE_HISTORY, []);
         this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
         this.setProp(P_PROP_DIALED_CHANNEL_HISTORY, []);
-        asteriskModel_1.default._server.managers.toPlain();
-        if (attributes.Linkedid && attributes.UniqueID !== attributes.Linkedid && asteriskModel_1.default._server.managers.channel.hasChannel(attributes.Linkedid)) {
-            this.channelLinked(attributes.$time, asteriskModel_1.default._server.managers.channel.getChannelById(attributes.Linkedid));
+        this._server.managers.toPlain();
+        if (attributes.Linkedid && attributes.UniqueID !== attributes.Linkedid && this._server.managers.channel.hasChannel(attributes.Linkedid)) {
+            this.channelLinked(attributes.$time, this._server.managers.channel.getChannelById(attributes.Linkedid));
         }
-        if (attributes.BridgeId && asteriskModel_1.default._server.managers.bridge.hasBridge(attributes.BridgeId)) {
-            this._bridges.add(asteriskModel_1.default._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeId));
+        if (attributes.BridgeId && this._server.managers.bridge.hasBridge(attributes.BridgeId)) {
+            this._bridges.add(this._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeId));
         }
-        else if (attributes.BridgeID && asteriskModel_1.default._server.managers.bridge.hasBridge(attributes.BridgeID)) {
-            this._bridges.add(asteriskModel_1.default._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeID));
+        else if (attributes.BridgeID && this._server.managers.bridge.hasBridge(attributes.BridgeID)) {
+            this._bridges.add(this._server.managers.bridge.getBridgeByBridgeId(attributes.BridgeID));
         }
         if (this.name) {
-            if (this.destroyed || !asteriskModel_1.default._server.managers.peer.enabled) {
+            if (this.destroyed || !this._server.managers.peer.enabled) {
                 return;
             }
             const peerName = this.name.split("-")[0];
-            const peer = asteriskModel_1.default._server.managers.peer.peers.get(peerName);
+            const peer = this._server.managers.peer.peers.get(peerName);
             if (peer) {
                 peer.addChannel(this);
                 this._peers.add(peer);
@@ -119,7 +121,7 @@ class Channel extends asteriskModel_1.default {
             }
         }
         if (this._bridges.size) {
-            if (!asteriskModel_1.default._server.managers.bridge.enabled) {
+            if (!this._server.managers.bridge.enabled) {
                 return;
             }
             this._bridges.forEach((bridge) => {
@@ -134,6 +136,9 @@ class Channel extends asteriskModel_1.default {
         if (response instanceof ManagerError_1.default) {
             throw new NoSuchChannel_1.default("Channel " + self.name + ' is not available: "' + response.response);
         }
+    }
+    get _server() {
+        return this.getProp(P_PROP_SERVER);
     }
     get name() {
         return this.get(PROP_NAME);
@@ -392,7 +397,7 @@ class Channel extends asteriskModel_1.default {
             this.setVariable(CAUSE_VARIABLE_NAME, cause.status);
             action.Cause = cause.status;
         }
-        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
     setAbsoluteTimeout(seconds) {
         const action = {
@@ -400,7 +405,7 @@ class Channel extends asteriskModel_1.default {
             Channel: this.name,
             Timeout: seconds.toString()
         };
-        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
     redirect(context, exten, priority) {
         const action = {
@@ -410,7 +415,7 @@ class Channel extends asteriskModel_1.default {
             Exten: exten,
             Priority: priority.toString()
         };
-        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
     redirectBothLegs(context, exten, priority) {
         const action = {
@@ -426,7 +431,7 @@ class Channel extends asteriskModel_1.default {
             action.ExtraExten = exten;
             action.ExtraPriority = priority.toString();
         }
-        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
     playDtmf(digit) {
         if (digit == null) {
@@ -437,7 +442,7 @@ class Channel extends asteriskModel_1.default {
             Channel: this.name,
             Digit: digit
         };
-        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
     startMonitoring(filename, format, mix) {
         const action = {
@@ -447,7 +452,7 @@ class Channel extends asteriskModel_1.default {
             Format: format,
             Mix: mix.toString()
         };
-        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
     changeMonitoring(filename) {
         if (filename == null) {
@@ -458,28 +463,28 @@ class Channel extends asteriskModel_1.default {
             Channel: this.name,
             File: filename
         };
-        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
     stopMonitoring() {
         const action = {
             Action: actionNames_1.default.STOP_MONITOR,
             Channel: this.name
         };
-        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
     pauseMonitoring() {
         const action = {
             Action: actionNames_1.default.PAUSE_MONITOR,
             Channel: this.name
         };
-        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
     unpauseMonitoring() {
         const action = {
             Action: actionNames_1.default.UNPAUSE_MONITOR,
             Channel: this.name
         };
-        asteriskModel_1.default._server.sendAction(action, Channel.onServerResponse, this);
+        this._server.sendAction(action, Channel.onServerResponse, this);
     }
     setVariable(name, value) {
         const action = {
@@ -488,7 +493,7 @@ class Channel extends asteriskModel_1.default {
             Value: value,
             Variable: name
         };
-        asteriskModel_1.default._server.sendAction(action, (err, response) => {
+        this._server.sendAction(action, (err, response) => {
             if (response instanceof ManagerError_1.default) {
                 throw new NoSuchChannel_1.default("Channel " + self.name + " is not available: " + response.response, this);
             }
@@ -520,7 +525,7 @@ class Channel extends asteriskModel_1.default {
                 Channel: this.name,
                 Variable: name
             };
-            asteriskModel_1.default._server.sendAction(action, (err, response) => {
+            this._server.sendAction(action, (err, response) => {
                 // TODO check callback and getVarsCallbacks
                 if (this.destroyed) {
                     return;

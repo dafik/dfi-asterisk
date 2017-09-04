@@ -124,7 +124,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
 
                     (event as IAstEventCoreShowChannel).dateOfCreation = dateOfCreation;
 
-                    channel = new Channel(event);
+                    channel = new Channel(event, this.server);
                     isNew = true;
                 }
 
@@ -798,7 +798,7 @@ class ChannelManager extends AsteriskManager<Channel, Channels> {
         /**
          * type Channel
          */
-        const channel = new Channel(event);
+        const channel = new Channel(event, this.server);
         channel.stateChanged(event.$time, ChannelState.byValue(parseInt(event.ChannelState, 10)));
 
         this.logger.info("Adding new channel %j-%j(%s)", channel.name, channel.id, channel.state.name);

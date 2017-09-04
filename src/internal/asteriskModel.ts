@@ -1,17 +1,14 @@
-import {DfiModel} from "local-dfi-base";
+import {DfiModel} from "local-dfi-base/src/dfiModel";
 import AsteriskServer from "../asteriskServer";
 import {getServerInstance} from "../asteriskServerInstance";
 import {IDfiAstModelAttribs, IDfiAstModelOptions} from "../definitions/models";
 import AsteriskState from "./asteriskState";
 
+
 abstract class AsteriskModel extends DfiModel {
 
     get sourceEvent(): string {
         return this.getProp("sourceEvent");
-    }
-
-    protected static get _server(): AsteriskServer {
-       return getServerInstance() as AsteriskServer;
     }
 
     constructor(attributes: IDfiAstModelAttribs, options?: IDfiAstModelOptions) {
