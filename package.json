@@ -36,7 +36,7 @@
   },
   "typings": "index.ts",
   "scripts": {
-    "postinstall": "tsc",
+    "build": "tsc",
     "clean": "./scripts/clean.sh"
   }
 }
