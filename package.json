@@ -37,6 +37,6 @@
   "typings": "index.ts",
   "scripts": {
     "postinstall": "tsc",
-    "clean": ""
+    "clean": "./scripts/clean.sh"
   }
 }
