@@ -1,11 +1,12 @@
 import * as async from "async";
 import AmiClient from "local-asterisk-ami-client";
 import {DfiEventObject} from "local-dfi-base";
-import * as _ from "lodash";
 import {IDfiAstConfigAstManager, IDfiAstConfigAstManagerConfig, IDfiAstConfigAstOriginate, IDfiAstConfigAstServer, IDfiAstConfigServerOptions} from "./definitions/configs";
 import {IDfiAstEventsServer} from "./definitions/events";
 import {
-    AsteriskActionType1, AsteriskActionType2,
+    AsteriskActionType1,
+    AsteriskActionType2,
+    AsyncResultArrayCallback,
     IDfiActionCallback,
     IDfiAMICallbackError,
     IDfiAMIMultiCallback,
@@ -351,7 +352,7 @@ class AsteriskServer extends DfiEventObject {
     private _initializeAmiHandlers() {
         const handlers = {};
         for (const eventName in amiHandlers) {
-            if (_.has(amiHandlers, eventName)) {
+            if (amiHandlers.hasOwnProperty(eventName)) {
                 handlers[eventName] = amiHandlers[eventName].bind(this);
             }
         }
@@ -369,7 +370,7 @@ class AsteriskServer extends DfiEventObject {
             if (typeof ami === "undefined") {
                 onInitializedError.call(this, new Error("nor event connection object and proper configuration provided"));
             }
-            if (_.isFunction(callbackFn)) {
+            if (typeof callbackFn === "function") {
                 this.once(AsteriskServer.events.INIT, () => {
                     ami.removeListener("amiConnectionTimeout", errorFn);
                     ami.removeListener("amiConnectionError", errorFn);

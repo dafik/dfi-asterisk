@@ -6,3 +6,5 @@
 /examples/
 /src/event-classification.js
 /npm-debug.log
+/*.js
+/*.map
