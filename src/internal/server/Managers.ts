@@ -2,7 +2,7 @@ import * as async from "async";
 import DfiObject from "local-dfi-base/src/dfiObject";
 import AsteriskServer from "../../asteriskServer";
 import {IDfiAstConfigAstManager} from "../../definitions/configs";
-import {IDfiCallbackError} from "../../definitions/interfaces";
+import {AsyncResultArrayCallback, IDfiCallbackError} from "../../definitions/interfaces";
 import AgentManager from "../../managers/AgentManager";
 import BridgeManager from "../../managers/BridgeManager";
 import ChannelManager from "../../managers/ChannelManager";

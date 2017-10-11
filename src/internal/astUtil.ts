@@ -1,5 +1,4 @@
 import DebugLogger from "local-dfi-debug-logger";
-import * as _ from "lodash";
 import {IDfiCallbackResult} from "../definitions/interfaces";
 import {IAstAction} from "./asterisk/actions";
 
@@ -40,11 +39,11 @@ class AstUtil {
             return false;
         }
 
-        if (_.isBoolean(o)) {
+        if (o === true || o === false) {
             return o;
         }
 
-        const s = _.isString(o) ? o.toString() : o.toString();
+        const s = typeof o === "string" ? o.toString() : o.toString();
         return -1 !== TRUE_LITERALS.indexOf(s.toLowerCase());
 
     }
@@ -135,13 +134,13 @@ class AstUtil {
     }
 
     public static maybeCallback<Er extends Error, R>(fn: IDfiCallbackResult<Er, R>, context, err?: Er, response?: R): void {
-        if (_.isFunction(fn)) {
+        if (typeof fn === "function") {
             fn.call(context, err, response);
         }
     }
 
     public static maybeCallbackOnce<Er extends Error, R>(fn: IDfiCallbackResult<Er, R>, context, err?: Er, response?: R): void {
-        if (_.isFunction(fn)) {
+        if (typeof fn === "function") {
             if (fn.fired) {
                 AstUtil.logger.error("callback was fired before fn : \n%s", ((fn.prototype && fn.prototype.constructor) ? fn.prototype.constructor : fn.toString()));
                 throw err ? err : response;

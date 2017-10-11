@@ -233,3 +233,5 @@ export interface IDfiAMIResponseOriginate extends IDfiAMIResponse {
 export interface IEventHandlersMap {
     [key: string]: IEventHandle;
 }
+
+export interface AsyncResultArrayCallback<T, E> { (err?: E, results?: (T | undefined)[]): void; }

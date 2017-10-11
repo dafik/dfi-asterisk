@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const local_dfi_debug_logger_1 = require("local-dfi-debug-logger");
-const _ = require("lodash");
 const TRUE_LITERALS = [
     "yes",
     "true",
@@ -36,10 +35,10 @@ class AstUtil {
         if (o == null || typeof o === "undefined") {
             return false;
         }
-        if (_.isBoolean(o)) {
+        if (o === true || o === false) {
             return o;
         }
-        const s = _.isString(o) ? o.toString() : o.toString();
+        const s = typeof o === "string" ? o.toString() : o.toString();
         return -1 !== TRUE_LITERALS.indexOf(s.toLowerCase());
     }
     /**
@@ -116,12 +115,12 @@ class AstUtil {
         return uniqueActionID();
     }
     static maybeCallback(fn, context, err, response) {
-        if (_.isFunction(fn)) {
+        if (typeof fn === "function") {
             fn.call(context, err, response);
         }
     }
     static maybeCallbackOnce(fn, context, err, response) {
-        if (_.isFunction(fn)) {
+        if (typeof fn === "function") {
             if (fn.fired) {
                 AstUtil.logger.error("callback was fired before fn : \n%s", ((fn.prototype && fn.prototype.constructor) ? fn.prototype.constructor : fn.toString()));
                 throw err ? err : response;

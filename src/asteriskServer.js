@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const async = require("async");
 const local_asterisk_ami_client_1 = require("local-asterisk-ami-client");
 const local_dfi_base_1 = require("local-dfi-base");
-const _ = require("lodash");
 const DfiAMIResponseError_1 = require("./errors/DfiAMIResponseError");
 const ErrorMultiple_1 = require("./errors/ErrorMultiple");
 const ManagerCommunication_1 = require("./errors/ManagerCommunication");
@@ -269,7 +268,7 @@ class AsteriskServer extends local_dfi_base_1.DfiEventObject {
     _initializeAmiHandlers() {
         const handlers = {};
         for (const eventName in amiHandlers) {
-            if (_.has(amiHandlers, eventName)) {
+            if (amiHandlers.hasOwnProperty(eventName)) {
                 handlers[eventName] = amiHandlers[eventName].bind(this);
             }
         }
@@ -282,7 +281,7 @@ class AsteriskServer extends local_dfi_base_1.DfiEventObject {
             if (typeof ami === "undefined") {
                 onInitializedError.call(this, new Error("nor event connection object and proper configuration provided"));
             }
-            if (_.isFunction(callbackFn)) {
+            if (typeof callbackFn === "function") {
                 this.once(AsteriskServer.events.INIT, () => {
                     ami.removeListener("amiConnectionTimeout", errorFn);
                     ami.removeListener("amiConnectionError", errorFn);
