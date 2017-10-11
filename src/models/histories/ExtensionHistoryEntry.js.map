@@ -1,1 +1,0 @@
-{"version":3,"file":"ExtensionHistoryEntry.js","sourceRoot":"","sources":["ExtensionHistoryEntry.ts"],"names":[],"mappings":";;AAAA,8EAAuE;AAGvE,2BAA4B,SAAQ,8BAAoB;IAEpD,IAAI,SAAS;QACT,MAAM,CAAC,IAAI,CAAC,KAAK,CAAC;IACtB,CAAC;IAEM,MAAM;QACT,MAAM,CAAC,IAAI,CAAC,SAAS,CAAC,MAAM,EAAE,CAAC;IACnC,CAAC;CACJ;AACD,kBAAe,qBAAqB,CAAC"}
