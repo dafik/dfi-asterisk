@@ -1,6 +1,4 @@
-import {DfiModel} from "local-dfi-base/src/dfiModel";
-import AsteriskServer from "../asteriskServer";
-import {getServerInstance} from "../asteriskServerInstance";
+import {DfiModel} from "dfi-base/src/dfiModel";
 import {IDfiAstModelAttribs, IDfiAstModelOptions} from "../definitions/models";
 import AsteriskState from "./asteriskState";
 

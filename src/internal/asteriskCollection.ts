@@ -1,4 +1,4 @@
-import {DfiCollection} from "local-dfi-base";
+import {DfiCollection} from "dfi-base";
 import {IDfiAstConfigCollection} from "../definitions/configs";
 import AsteriskModel from "./asteriskModel";
 

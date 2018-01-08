@@ -1,4 +1,4 @@
-import DfiModel from "local-dfi-base/src/dfiModel";
+import DfiModel from "dfi-base/src/dfiModel";
 import {IDfiAstModelAttribsIpAddress} from "../definitions/models";
 
 const PROP_IP = "ipAddress";

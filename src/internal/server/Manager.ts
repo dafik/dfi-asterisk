@@ -1,4 +1,4 @@
-import DfiEventObject from "local-dfi-base/src/dfiEventObject";
+import DfiEventObject from "dfi-base/src/dfiEventObject";
 import AsteriskServer from "../../asteriskServer";
 import {IDfiAstManagerOptions} from "../../definitions/configs";
 import {IDfiAstEventsManager, IDfiAstEventsServer} from "../../definitions/events";

@@ -1,4 +1,4 @@
-import {IDfiBaseModelAttribs, IDfiBaseModelConfig} from "local-dfi-base/src/dfiInterfaces";
+import {IDfiBaseModelAttribs, IDfiBaseModelConfig} from "dfi-base/src/dfiInterfaces";
 import AmaFlags from "../enums/flags/amaFlags";
 import DispositionFlag from "../enums/flags/dispositionFlags";
 import CallerId from "../models/CallerIdModel";

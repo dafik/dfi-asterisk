@@ -1,4 +1,4 @@
-import DfiObject from "local-dfi-base/src/dfiObject";
+import DfiObject from "dfi-base/src/dfiObject";
 import AstUtil from "../internal/astUtil";
 
 const P_PROP_NAME = "name";

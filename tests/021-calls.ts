@@ -1,8 +1,8 @@
 import * as assert from "assert";
-import DebugLogger from "local-dfi-debug-logger";
-import Linphone from "local-dfi-linphone";
-import {getInstance as manager} from "local-dfi-linphone-endpoint-manager";
-import EndpointManger from "local-dfi-linphone-endpoint-manager/src/endpointManager";
+import DebugLogger from "dfi-debug-logger";
+import Linphone from "dfi-linphone";
+import {getInstance as manager} from "dfi-linphone-endpoint-manager";
+import EndpointManger from "dfi-linphone-endpoint-manager/src/endpointManager";
 import {IDfiAsOriginateCallback, IDfiCallbackError, IDfiCallbackResult} from "../src/definitions/interfaces";
 import {AST_ACTION} from "../src/internal/asterisk/actionNames";
 import {IAstActionDialplanExtensionAdd, IAstActionDialplanExtensionRemove, IAstActionOriginate} from "../src/internal/asterisk/actions";

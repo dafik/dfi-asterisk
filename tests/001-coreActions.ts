@@ -1,5 +1,5 @@
 import * as assert from "assert";
-import aaaaa from "local-dfi-linphone-endpoint-manager";
+import aaaaa from "dfi-linphone-endpoint-manager";
 import AsteriskVersion from "../src/internal/server/Version";
 import asterisk from "./mock/asterisk-real";
 

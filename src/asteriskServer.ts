@@ -1,6 +1,6 @@
 import * as async from "async";
-import AmiClient from "local-asterisk-ami-client";
-import {DfiEventObject} from "local-dfi-base";
+import AmiClient from "dfi-asterisk-ami-client";
+import {DfiEventObject} from "dfi-base";
 import {IDfiAstConfigAstManager, IDfiAstConfigAstManagerConfig, IDfiAstConfigAstOriginate, IDfiAstConfigAstServer, IDfiAstConfigServerOptions} from "./definitions/configs";
 import {IDfiAstEventsServer} from "./definitions/events";
 import {

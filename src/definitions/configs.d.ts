@@ -1,5 +1,5 @@
-import {IAmiClientOptions} from "local-asterisk-ami-client/lib/Interfaces";
-import {IDfiBaseObjectConfig} from "local-dfi-base/src/dfiInterfaces";
+import {IAmiClientOptions} from "dfi-asterisk-ami-client/lib/Interfaces";
+import {IDfiBaseObjectConfig} from "dfi-base/src/dfiInterfaces";
 import AsteriskServer from "../asteriskServer";
 import AsteriskModel from "../internal/asteriskModel";
 import ServerManagers from "../internal/server/Managers";

@@ -1,4 +1,4 @@
-import {IDfiBaseEventObjectEvents, IDfiBaseModelEvents} from "local-dfi-base/src/dfiInterfaces";
+import {IDfiBaseEventObjectEvents, IDfiBaseModelEvents} from "dfi-base/src/dfiInterfaces";
 
 // events
 export interface IDfiAstEventsServer extends IDfiBaseEventObjectEvents {

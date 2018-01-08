@@ -1,4 +1,4 @@
-import DfiObject from "local-dfi-base/src/dfiObject";
+import DfiObject from "dfi-base/src/dfiObject";
 import AsteriskServer from "../../asteriskServer";
 import AST_EVENT from "../asterisk/eventNames";
 import AsteriskCollection from "../asteriskCollection";

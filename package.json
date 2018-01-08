@@ -1,5 +1,5 @@
 {
-  "name": "local-dfi-asterisk",
+  "name": "dfi-asterisk",
   "version": "1.2.35",
   "description": "asterisk-java port to node in type script",
   "main": "./src/asteriskServerInstance.ts",
@@ -10,29 +10,28 @@
   "author": "z.wieczorek",
   "license": "UNLICENSED",
   "dependencies": {
-    "@types/async": "^2.0.32",
-    "local-asterisk-ami-client": "^1.0.5",
-    "async": "^2.0.0-rc.5",
-    "local-dfi-base": "*",
-    "local-dfi-debug-logger": "^0.1.5",
-    "moment": "^2.16.0"
+    "@types/async": "^2.0.46",
+    "async": "^2.6.0",
+    "dfi-asterisk-ami-client": "^1.0.5",
+    "dfi-base": "^0.3.13",
+    "dfi-debug-logger": "^0.1.5",
+    "moment": "^2.20.1"
   },
   "devDependencies": {
     "@types/include-path": "^0.4.7",
     "@types/json-stringify-safe": "^5.0.1",
-    "@types/lodash": "^4.14.36",
-    "@types/mocha": "^2.2.41",
+    "@types/lodash": "^4.14.92",
+    "@types/mocha": "^2.2.46",
     "@types/moment": "^2.13.0",
-    "@types/node": "^8.0.16",
+    "@types/node": "^8.5.7",
+    "dfi-linphone": "*",
+    "dfi-linphone-endpoint-manager": "*",
     "heapdump": "latest",
     "json-stringify-safe": "^5.0.1",
-    "local-dfi-debug-logger": "^0.1.5",
-    "local-dfi-linphone": "*",
-    "local-dfi-linphone-endpoint-manager": "*",
     "mocha": "^2.5.3",
     "ts-node": "^3.3.0",
     "ts-register": "^0.1.0",
-    "typescript": "^2.5.1"
+    "typescript": "^2.6.2"
   },
   "typings": "index.ts",
   "scripts": {

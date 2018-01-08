@@ -1,4 +1,4 @@
-import DebugLogger from "local-dfi-debug-logger";
+import DebugLogger from "dfi-debug-logger";
 
 abstract class AsteriskState {
 

@@ -1,9 +1,9 @@
 import * as assert from "assert";
-import Linphone from "local-dfi-linphone";
+import Linphone from "dfi-linphone";
 
-import DebugLogger from "local-dfi-debug-logger";
-import {getInstance as manager} from "local-dfi-linphone-endpoint-manager";
-import EndpointManger from "local-dfi-linphone-endpoint-manager/src/endpointManager";
+import DebugLogger from "dfi-debug-logger";
+import {getInstance as manager} from "dfi-linphone-endpoint-manager";
+import EndpointManger from "dfi-linphone-endpoint-manager/src/endpointManager";
 import {AST_ACTION} from "../index";
 import DeviceStates from "../src/enums/deviceStates";
 import PeerStates from "../src/enums/peerStates";

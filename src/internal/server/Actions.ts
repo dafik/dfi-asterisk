@@ -1,4 +1,4 @@
-import DfiObject from "local-dfi-base/src/dfiObject";
+import DfiObject from "dfi-base/src/dfiObject";
 import AsteriskServer from "../../asteriskServer";
 import ConfigServerAction from "./actions/ConfigAction";
 import CoreServerAction from "./actions/CoreAction";

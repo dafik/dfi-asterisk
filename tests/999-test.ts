@@ -1,4 +1,4 @@
-import AmiClient from "local-asterisk-ami-client";
+import AmiClient from "dfi-asterisk-ami-client";
 
 describe("Core actions", () => {
 

@@ -1,5 +1,4 @@
-"use strict";
-import DfiObject from "local-dfi-base/src/dfiObject";
+import DfiObject from "dfi-base/src/dfiObject";
 import QueueEntry from "../models/queues/QueueEntryModel";
 import Queue from "../models/queues/QueueModel";
 

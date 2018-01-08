@@ -1,5 +1,5 @@
 import * as async from "async";
-import DfiObject from "local-dfi-base/src/dfiObject";
+import DfiObject from "dfi-base/src/dfiObject";
 import AsteriskServer from "../../asteriskServer";
 import {IDfiAstConfigAstManager} from "../../definitions/configs";
 import {AsyncResultArrayCallback, IDfiCallbackError} from "../../definitions/interfaces";
