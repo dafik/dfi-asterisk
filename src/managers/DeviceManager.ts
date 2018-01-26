@@ -86,6 +86,13 @@ class DeviceManager extends AsteriskManager<Device, Devices> {
             this.logger.info("Adding device %s (%s)", device.device, device.state.name);
             this._addDevice(device);
         }
+        if (!device.peer) {
+            const peer = this.server.managers.peer.peers.get(device.id);
+            if (peer) {
+                device.peer = peer;
+                peer.device = device;
+            }
+        }
 
         this.emit(AsteriskManager.events.UPDATE, device, event.State, oldState);
     }

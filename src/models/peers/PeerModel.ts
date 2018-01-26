@@ -107,7 +107,7 @@ class Peer extends AsteriskModel {
         return this.getProp(P_PROP_ADDRESS_HISTORY);
     }
 
-    private get _channels(): PeerChannels {
+    get channels(): PeerChannels {
         return this.getProp(P_PROP_CHANNELS);
     }
 
@@ -127,11 +127,11 @@ class Peer extends AsteriskModel {
     }
 
     public addChannel(channel: Channel) {
-        this._channels.add(channel);
+        this.channels.add(channel);
     }
 
     public removeChannel(channel: Channel) {
-        this._channels.remove(channel.id);
+        this.channels.remove(channel.id);
     }
 
     public addQueue(queueName: string) {

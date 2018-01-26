@@ -156,7 +156,11 @@ class PeerManager extends AsteriskManager<Peer, Peers> {
         if (this.server.managers.device.enabled) {
             const device = this.server.managers.device.devices.get(peer.id);
             if (device) {
+                if (peer.device) {
+                    this.logger.trace("peer hass device alredy %s", peer.device.id);
+                }
                 peer.device = device;
+                device.peer = peer;
             }
         }
 

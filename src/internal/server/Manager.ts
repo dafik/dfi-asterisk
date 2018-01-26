@@ -64,9 +64,7 @@ abstract class AsteriskManager<M extends AsteriskModel, C extends AsteriskCollec
 
     public handleEvent<T extends IAstEvent>(event: T) {
         this.logger.debug("handle from %s : %s", this.constructor.name, event.Event);
-        this.logger.trace("handle from %s : %s", this.constructor.name, event);
-
-        this.logger.debug("handle : %s", event.Event);
+        this.logger.trace("handle from %s : %j", this.constructor.name, event);
 
         if (this.eventsMap.has(event.Event)) {
             this.eventsMap.get(event.Event).call(this, event);

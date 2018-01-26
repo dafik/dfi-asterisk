@@ -3,7 +3,7 @@ import Bridges from "../collections/BridgesCollection";
 import Peers from "../collections/PeersCollection";
 import Variables from "../collections/VariablesCollection";
 import {IDfiAMIResponseError, IDfiAMIResponseGetvar, IDfiCallbackResult, IDfiVariableCallback} from "../definitions/interfaces";
-import {IDfiAstModelAttribsChannel, IDfiAstModelAttribsExtension, IDfiAstModelOptions} from "../definitions/models";
+import {IDfiAstModelAttribsChannel, IDfiAstModelOptions} from "../definitions/models";
 import ChannelStates from "../enums/channelStates";
 import HangupCauses from "../enums/hangupCauses";
 import IllegalArgumentError from "../errors/IllegalArgument";
@@ -79,7 +79,7 @@ const P_PROP_QUEUE_ENTRY = "queueEntry";
 const P_PROP_VARIABLES = "variables";
 const P_PROP_HANGUP_REQUEST_DATE = "hangupRequestDate";
 const P_PROP_HANGUP_REQUEST_METHOD = "hangupRequestMethod";
-const P_PROP_ORIGINAL_ATTR = "origialAttributes";
+const P_PROP_ORIGINAL_ATTR = "originalAttributes";
 const P_PROP_SERVER = "server";
 
 /**
@@ -88,6 +88,10 @@ const P_PROP_SERVER = "server";
  * @extends AsteriskModel
  */
 class Channel extends AsteriskModel {
+
+    static get events() {
+        return EVENTS;
+    }
 
     public static onServerResponse(err, response) {
         if (err) {
@@ -143,6 +147,11 @@ class Channel extends AsteriskModel {
         this.setProp(P_PROP_VARIABLES, new Variables());
 
         this.setProp(P_PROP_EXTENSION_HISTORY, []);
+        this.setProp(P_PROP_STATE_HISTORY, []);
+        this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
+        this.setProp(P_PROP_DIALED_CHANNEL_HISTORY, []);
+
+        this._bindPropertiesListener();
 
         this.extensionVisited(
             attributes.$time,
@@ -155,12 +164,7 @@ class Channel extends AsteriskModel {
                 Priority: attributes.Priority
             })
         );
-
-        this.setProp(P_PROP_STATE_HISTORY, []);
-        this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
-        this.setProp(P_PROP_DIALED_CHANNEL_HISTORY, []);
-
-        this._server.managers.toPlain();
+        // this._server.managers.toPlain();
 
         if (attributes.Linkedid && attributes.UniqueID !== attributes.Linkedid && this._server.managers.channel.hasChannel(attributes.Linkedid)) {
             this.channelLinked(attributes.$time, this._server.managers.channel.getChannelById(attributes.Linkedid));
@@ -432,7 +436,7 @@ class Channel extends AsteriskModel {
     public wasBusy(): boolean {
 
         return this.wasInState(ChannelStates.BUSY) ||
-            ( this.hangupDate &&
+            (this.hangupDate &&
                 (this.hangupCause.status === HangupCauses.AST_CAUSE_BUSY || this.hangupCause.status === HangupCauses.AST_CAUSE_USER_BUSY)
             );
     }
@@ -487,8 +491,8 @@ class Channel extends AsteriskModel {
     }
 
     public handleHangup(date: number, hangupCause: HangupCause) {
-        this.set(P_PROP_HANGUP_DATE, date);
-        this.set(P_PROP_HANGUP_CAUSE, hangupCause);
+        this.setProp(P_PROP_HANGUP_DATE, date);
+        this.setProp(P_PROP_HANGUP_CAUSE, hangupCause);
 
         this.stateChanged(date, ChannelState.byValue(ChannelStates.HANGUP));
     }
@@ -720,6 +724,7 @@ class Channel extends AsteriskModel {
     }
 
     public destroy() {
+        this._unBindPropertiesListener();
 
         this._peers.forEach((peer) => {
             peer.removeChannel(this);
@@ -747,6 +752,35 @@ class Channel extends AsteriskModel {
 
         super.destroy();
     }
+
+    private _bindPropertiesListener(): void {
+
+        this._bridges.on(Bridges.events.UPDATE, this.onBridgesUpdate, this);
+
+        // this._peers.on(Peers.events.UPDATE, this.onPropertyUpdate, this);
+        // this._variables.on(Variable.events.UPDATE, this.onPropertyUpdate, this);
+
+        /*        this.setProp(P_PROP_EXTENSION_HISTORY, []);
+                this.setProp(P_PROP_STATE_HISTORY, []);
+                this.setProp(P_PROP_LINKED_CHANNEL_HISTORY, []);
+                this.setProp(P_PROP_DIALED_CHANNEL_HISTORY, []);*/
+
+    }
+
+    private _unBindPropertiesListener(): void {
+        this._bridges.off(Bridges.events.UPDATE, this.onBridgesUpdate, this);
+        // this._peers.off(Peers.events.UPDATE, this.onPropertyUpdate, this);
+        // this._variables.off(Variable.events.UPDATE, this.onPropertyUpdate, this);
+    }
+
+    private onBridgesUpdate(collection, element, direction): void {
+        this.emit(Channel.events.UPDATE_BRIDGES, this._bridges, collection, element, direction);
+    }
 }
+
+const EVENTS = {
+    ...AsteriskModel.events,
+    UPDATE_BRIDGES: Symbol(Channel.prototype.constructor.name + ":update_bridges")
+};
 
 export default Channel;

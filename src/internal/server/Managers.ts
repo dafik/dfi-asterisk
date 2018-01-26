@@ -27,6 +27,7 @@ const QUEUE = "queue";
 const AGENT = "agent";
 
 class ServerManagers extends DfiObject {
+    private _gcTimer: NodeJS.Timer;
 
     constructor(server: AsteriskServer) {
         super();
@@ -46,6 +47,15 @@ class ServerManagers extends DfiObject {
         managers.set(CHANNEL, new ChannelManager(managerOptions, state.channel));
         managers.set(QUEUE, new QueueManager(managerOptions, state.queue));
         managers.set(AGENT, new AgentManager(managerOptions, state.agent));
+
+        this._gcTimer = setInterval(() => {
+            this._gc();
+        }, 1000 * 60);
+    }
+
+    public destroy(): void {
+        clearInterval(this._gcTimer);
+        super.destroy();
     }
 
     get channel(): ChannelManager {
@@ -116,6 +126,11 @@ class ServerManagers extends DfiObject {
 
     public managers<T extends AsteriskManager<AsteriskModel, AsteriskCollection<AsteriskModel>>>(): Map<string, T> {
         return new Map([...(this.getProp(PROP_MANAGERS) as Map<string, T>).entries()]);
+    }
+
+    private _gc() {
+        this.channel.gc();
+        this.peer.gc();
     }
 }
 

@@ -43,6 +43,13 @@ class CallerId extends DfiObject {
         }
         return !(this.number != null ? this.number !== callerId.number : callerId.number != null);
     }
+
+    public toJSON(): object {
+        const x = {};
+        x[P_PROP_NAME] = this.name;
+        x[P_PROP_NUMBER] = this.number;
+        return x;
+    }
 }
 
 export default CallerId;

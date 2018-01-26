@@ -45,6 +45,10 @@ class Channels extends AsteriskCollection<Channel> {
         return super.add(element);
     }
 
+    public remove(element: any): boolean {
+        return super.remove(element);
+    }
+
     public clear(): this {
         return super.clear();
     }

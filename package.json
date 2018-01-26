@@ -5,12 +5,12 @@
   "main": "./src/asteriskServerInstance.ts",
   "repository": {
     "type": "git",
-    "url": "git@gitlab.dev:dfi/dfi-asterisk.git"
+    "url": "https://github.com/dafik/dfi-asterisk.git"
   },
   "author": "z.wieczorek",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
-    "@types/async": "^2.0.46",
+    "@types/async": "^2.0.47",
     "async": "^2.6.0",
     "dfi-asterisk-ami-client": "^1.0.5",
     "dfi-base": "^0.3.13",
@@ -23,7 +23,7 @@
     "@types/lodash": "^4.14.92",
     "@types/mocha": "^2.2.46",
     "@types/moment": "^2.13.0",
-    "@types/node": "^8.5.7",
+    "@types/node": "^8.5.8",
     "dfi-linphone": "*",
     "dfi-linphone-endpoint-manager": "*",
     "heapdump": "latest",
